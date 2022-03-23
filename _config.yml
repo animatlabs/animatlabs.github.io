@@ -1,39 +1,38 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your whole blog, values
-# which you are expected to set up once and rarely edit after that. If you find
-# yourself editing this file very often, consider using Jekyll's data files
-# feature for the data you need to update frequently.
-#
 # For technical reasons, this file is *NOT* reloaded automatically when you use
 # 'bundle exec jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-# These are used to personalize your new site. If you look in the HTML files,
-# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
-# You can create any custom variable you would like, and they will be accessible
-# in the templates via {{ site.myvariable }}.
-title: Animat Labs
+locale: "en-US"
+title: AnimatLabs
 title_separator: "-"
-subtitle: My playground shared # site tagline that appears below site title in masthead
-email:
-description: >- # this means to ignore newlines until "baseurl:"
+subtitle: My playground shared
+logo: "/assets/images/logo_300x300.png"
+incremental: true
+
+description: >- 
   Write an awesome description for your new site here. You can edit this
   line in _config.yml. It will appear in your document head meta (for
   Google search results) and in your feed.xml site description.
 twitter_username: animat089
 github_username: animat089
-minimal_mistakes_skin: dark
+minimal_mistakes_skin: default
 search: true
+
+# Analytics
+analytics:
+  provider               : "google"
+  google:
+    tracking_id          : G-BPH7TLTL95
+    anonymize_ip         : # true, false (default)
 
 # Build settings
 markdown: kramdown
 remote_theme: mmistakes/minimal-mistakes
 # Outputting
 permalink: /:categories/:title/
-paginate: 5 # amount of posts to show
+paginate: 5
 paginate_path: /page:num/
-timezone: IN # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timezone: IN
 
 include:
   - _pages
@@ -60,13 +59,12 @@ plugins:
   - jekyll-include-cache
 
 author:
-  name   : "Animesh Agarwal"
-  avatar : "/assets/images/bio-photo.jpg"
-  bio    : "Technical Architect @ GlobalLogic. "
+  name    : "Animesh Agarwal"
+  avatar  : "/assets/images/bio-photo.jpg"
+  bio     : "Technical Architect @ GlobalLogic"
+  location: "India"
+  email   : animesh@animatlabs.com
   links:
-    - label: "Website"
-      icon: "fas fa-fw fa-link"
-      url: "https://animatlabs.github.io"
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: "https://linkedin.com/in/089ani"
@@ -89,7 +87,7 @@ defaults:
       path: ""
       type: posts
     values:
-      layout:  
+      layout: single
       author_profile: true
       read_time: true
       comments: true
