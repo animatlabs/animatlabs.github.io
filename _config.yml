@@ -7,6 +7,7 @@ title: AnimatLabs
 title_separator: "-"
 subtitle: My playground shared
 logo: "/assets/images/logo_300x300.png"
+og_image: "/assets/images/logo_300x300.png"
 incremental: true
 
 description: >- 
@@ -28,6 +29,8 @@ analytics:
 # Build settings
 markdown: kramdown
 remote_theme: mmistakes/minimal-mistakes
+breadcrumbs: true
+
 # Outputting
 permalink: /:categories/:title/
 paginate: 5
