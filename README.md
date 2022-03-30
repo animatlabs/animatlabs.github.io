@@ -22,6 +22,6 @@ In my general work day, I can be seen working on solutions for the software comp
 
 ## About the logo
 
-<img src="../assets/images/logo_300x300.png" alt="logo" style="float:left; height:120px; width:120px; margin: 30px 20px 0px 0px"/>
+<img src="https://github.com/animatlabs/animatlabs.github.io/tree/main/assets/images/logo_300x300.png" alt="logo" style="float:left; height:120px; width:120px; margin: 30px 20px 0px 0px"/>
 
 There are 2 facets to the logo, one textual and the other typographical. The textual representation is an 'A' balancing out the inverted 'A' on top it, representing my name and depicting the balance between skill, art, time-management that we need to muster with set boundaries to out-perform at our day to day work. The typographical take on the same, apart from representing the name if the initiative also showcases the infinity symbol in between the two A's representing multiple ways to solve a problem and also the limitless scope of learning and exploring that one can do.
