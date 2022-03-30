@@ -5,7 +5,7 @@
 locale: "en-US"
 title: AnimatLabs
 title_separator: "-"
-subtitle: Shared Playground
+subtitle: My playground shared 
 logo: "/assets/images/logo_300x300.png"
 og_image: "/assets/images/logo_300x300.png"
 incremental: true
@@ -13,8 +13,6 @@ incremental: true
 description: >- 
   This blog is an effort in the direction of sharing my active and ever-evolving playground and learnings with the larger community.
   I believe we learn better when we share, therefore, looking forward to explore, learn and collaborate to develop better solutions. 
-twitter_username: animat089
-github_username: animat089
 minimal_mistakes_skin: default
 search: true
 
@@ -60,10 +58,7 @@ plugins:
   - jemoji
   - jekyll-include-cache
 
-author:
-  name    : "Animesh Agarwal"
-  avatar  : "/assets/images/bio-photo.jpg"
-  bio     : "Technical Architect @ GlobalLogic"
+footer:
   links:
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
@@ -71,22 +66,7 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/animat089"
-    - label: "StackOverflow"
-      icon: "fab fa-fw fa-stack-overflow"
-      url: "https://stackoverflow.com/users/2822615/animat089"
-    
-footer:
-  links:
-    - label: "LinkedIn"
-      icon: "fab fa-fw fa-linkedin"
-      url: "https://in.linkedin.com/in/089ani"
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/animat089"
-    - label: "StackOverflow"
-      icon: "fab fa-fw fa-stack-overflow"
-      url: "https://stackoverflow.com/users/2822615/animat089"
-    
+
 defaults:
   # _posts
   - scope:

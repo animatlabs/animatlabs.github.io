@@ -1,0 +1,17 @@
+animat089:
+  name    : "Animesh Agarwal"
+  avatar  : "/assets/images/bio-photo.jpg"
+  bio     : >-
+   Technical Architect @ GlobalLogic
+  email   : animesh@animatlabs.com 
+  links:
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://linkedin.com/in/089ani"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/animat089"
+    - label: "StackOverflow"
+      icon: "fab fa-fw fa-stack-overflow"
+      url: "https://stackoverflow.com/users/2822615/animat089"
+      
