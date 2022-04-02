@@ -5,6 +5,7 @@ excerpt: >-
 categories:
   - Blog
 author: animat089
+comments: true
 ---
 
 Aah... as it goes, "There's always the first". So, here I am starting the journey with the very first blog I write. I am Animesh, a technologist, and you can find more [about me and this initiative here](../../about).

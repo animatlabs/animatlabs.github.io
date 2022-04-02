@@ -34,6 +34,11 @@ paginate: 5
 paginate_path: /page:num/
 timezone: IN
 
+comments:
+  provider: "disqus"
+  disqus:
+    shortname: "animatlabs"
+
 include:
   - _pages
 

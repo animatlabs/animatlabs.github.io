@@ -14,6 +14,7 @@ tags:
 author: animat089
 toc: true
 toc_label: "Table of Contents"
+comments: true
 ---
 
 We all yearn for clean code and a clear folder structure, in the efforts to makes navigating through the code and managing assemblies easy. With the advent of EF Core as an ORM and the code first approach, the dreaded management of ever-growing migration files along with the entities is something that has given nightmares to almost everyone.
