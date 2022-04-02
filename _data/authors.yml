@@ -3,7 +3,8 @@ animat089:
   avatar  : "/assets/images/bio-photo.jpg"
   bio     : >-
    Technical Architect @ GlobalLogic
-  email   : animesh@animatlabs.com 
+  email   : animesh@animatlabs.com
+  location: India
   links:
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
