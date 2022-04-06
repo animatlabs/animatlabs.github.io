@@ -5,7 +5,7 @@ excerpt: >-
 categories:
   - Technical
   - Infra
-  - WSL2
+  - WSL
 tags:
   - Windows Subsystem for Linux
   - WSL2
