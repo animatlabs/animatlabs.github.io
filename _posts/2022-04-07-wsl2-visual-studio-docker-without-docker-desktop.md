@@ -1,11 +1,11 @@
 ---
-title: "WSL: Integration of Visual Studio and WSL2"
+title: "WSL2: Running containerized solutions on Visual Studio without Docker Desktop"
 excerpt: >-
-  "Setting up docker on WSL and integrating it with Visual Studio"
+  "Setting up docker on WSL2 and integrating it with Visual Studio to run and debug the containerized applications"
 categories:
   - Technical
   - Infra
-  - WSL
+  - WSL2
 tags:
   - Windows Subsystem for Linux
   - WSL2
@@ -23,19 +23,17 @@ comments: true
 
 With the advent of containerization, Docker and Docker Desktop came in and provided GUI based simple solutions for most of the problems that a developer would face for setting up a local development environment. But with the news that broke out last year (2021) that Docker Desktop will no longer be free for an Enterprise setup, although it is still free for personal use.
 
-Therefore, looking out for alternate strategies as of right now, this article we would be looking forward to setup Visual Studio with WSL2. So, that the same could be leveraged without the use of Docker Desktop in Visual Studio 2022.
+Therefore, looking out for alternate strategies as of right now, this article we would be looking forward to setup Visual Studio with WSL2. So, that we could leverage the same without Docker Desktop in Visual Studio 2022 on a Windows machine.
 
-**Note:** If you have not set up WSL, you can [refer to this article](../wsl-installation-win11/) for setting it up before we continue.
+**Note:** If you have not set up WSL, you can [refer to this article](../wsl2-installation-windows/) for setting it up before we continue.
 
 ## Configuration
 
-Over here we are going to leverage the caveat that only Docker Desktop needs a license to be setup and not the actual docker services, which we will be hosting in our WSL setup. So, let's being with configuring docker in our WSL2 setup on Ubuntu.
+Over here we are going to leverage the caveat that only Docker Desktop needs a license to be used in a commercial setup and not the actual docker services which we will be hosting in our WSL setup. Noting, that it was always possible in Docker Desktop to integrate it with WSL but we generally never choose to do so! So, let's being with configuring docker in our WSL2 setup on Ubuntu.
 
 ### Configure Docker
 
-With Reference from the [setup guide on the official website](https://docs.docker.com/engine/install/ubuntu/), before we install Docker Engine for the first time on a new host machine, you need to set up the Docker repository.
-
-- Update the apt package index and install packages:
+- Update the apt package index and install the required packages:
 
   ```bash
   > sudo apt-get update
@@ -52,7 +50,7 @@ With Reference from the [setup guide on the official website](https://docs.docke
   > curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
   ```
 
-- Set up stable repository
+- Set up Docker's stable repository
 
   ```bash
   > echo \
@@ -60,7 +58,7 @@ With Reference from the [setup guide on the official website](https://docs.docke
     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
   ```
 
-- Install Docker Engine
+- Install Docker Engine and packages that go along with it
 
   ```bash
   > sudo apt-get update
@@ -73,7 +71,7 @@ With Reference from the [setup guide on the official website](https://docs.docke
     > sudo service docker start
   ```
 
-- Verify that Docker Engine is installed correctly
+- Verify that Docker is installed correctly
   
   ```bash
   > sudo docker run hello-world
@@ -81,14 +79,14 @@ With Reference from the [setup guide on the official website](https://docs.docke
 
 ### Configure .NET 6.0
 
-To be abe to run and build the services on docker, we need to install dotnet on WSL setup of Ubuntu as well. First, we would need to check if the version of dotnet we wish to install is supported on the version on Ubuntu we have installed. Here, we use Ubuntu 20.04 which is supported, therefore continuing... You can check the dependencies [here](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu).
+To be abe to run and build the services on docker, we need to install dotnet on WSL setup of Ubuntu as well. First, we would need to check on the [official provider](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu), if the version of dotnet we wish to install is supported on the version on Ubuntu we have installed. Here, we use Ubuntu 20.04 which is supported, therefore continuing...
 
 - Add the Microsoft package signing key to your list of trusted keys and add the package repository.
   
   ```bash
   > wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-    sudo dpkg -i packages-microsoft-prod.deb
-    rm packages-microsoft-prod.deb
+  > sudo dpkg -i packages-microsoft-prod.deb
+  > rm packages-microsoft-prod.deb
   ```
 
 - Install the SDK - The .NET SDK allows you to develop apps with .NET. If you install the .NET SDK, you don't need to install the corresponding runtime.
@@ -121,17 +119,17 @@ To be abe to run and build the services on docker, we need to install dotnet on 
   > dotnet --version
   ```
 
-## Setting up Visual Studio 2022
+### Configuring Visual Studio 2022
 
 - Now, let's setup Visual Studio 2022 and build our sample Hello-World Console App With Visual Studio. It is a the template console app as created by Visual Studio.
 
-  {% include figure image_path="/assets/images/posts/2022-04-06/ProjectSetup.jpg" alt="Console App Setup" caption="Console App Setup" %}
+  {% include figure image_path="/assets/images/posts/2022-04-07/ProjectSetup.jpg" alt="Console App Setup" caption="Console App Setup" %}
 
 - Add Docker Support - This creates the Dockerfile automatically in the solution
   
-  {% include figure image_path="/assets/images/posts/2022-04-06/AddDockerSupport.jpg" alt="Add Docker Support" caption="Add Docker Support" %}
+  {% include figure image_path="/assets/images/posts/2022-04-07/AddDockerSupport.jpg" alt="Add Docker Support" caption="Add Docker Support" %}
 
-  The docker file looks something like this:
+  For simplicity, we are using the generic docker file that is created by Visual Studio itself:
 
   ```yml
   FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
@@ -154,12 +152,12 @@ To be abe to run and build the services on docker, we need to install dotnet on 
   ENTRYPOINT ["dotnet", "ContainerizedSolution.dll"]
   ```
 
-- Select WSL to run the application - Visual Studio 2022 automatically detects WSL setup
+- Select WSL to run the application - Visual Studio 2022 automatically detects WSL setup on your machine
 
-  {% include figure image_path="/assets/images/posts/2022-04-06/SelectWSL.jpg" alt="Run with WSL" caption="Run with WSL" %}
+  {% include figure image_path="/assets/images/posts/2022-04-07/SelectWSL.jpg" alt="Run with WSL" caption="Run with WSL" %}
 
 - Run the application - The sample application is run and we can see the result in the output window
   
-  {% include figure image_path="/assets/images/posts/2022-04-06/SuccessfulRun.jpg" alt="Successful Run" caption="Successful Run" %}
+  {% include figure image_path="/assets/images/posts/2022-04-07/SuccessfulRun.jpg" alt="Successful Run" caption="Successful Run" %}
 
-Now, we have successfully setup WSL2 and can run containerized solutions via visual studio directly over there. Happy Coding!!
+Now, we have successfully setup WSL2 and can run containerized solutions via visual studio directly over there. _**Happy containerizing without Docker Desktop on Windows!!**_

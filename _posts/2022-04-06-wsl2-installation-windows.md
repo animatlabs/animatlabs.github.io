@@ -1,11 +1,11 @@
 ---
-title: "WSL: Linux in WSL2 on Windows"
+title: "WSL2: Setting up Linux on Windows"
 excerpt: >-
   "Setting up Windows Subsystem for Linux (WSL) on Windows 10/11"
 categories:
   - Technical
   - Infra
-  - WSL
+  - WSL2
 tags:
   - Windows Subsystem for Linux
   - WSL2
@@ -18,7 +18,7 @@ comments: true
 
 ## Introduction
 
-Being associated with software development, we all have worked with a terminal at some in time. And what better than Linux when it comes to the that, the developer and community support, the speed and simplicity to name a few! But, if we work in a personal/commercial setup, we might just have access to a machine with Microsoft Windows on it. Thereby limiting the options, either install Ubuntu on dual-boot or setup a VM within the windows machine, but both have quite a few pros and cons and might or might not be feasible for everyone.
+Being associated with software development, we all have worked with a terminal at some in time. And what better than Linux when it comes to the that, be it developer and community support, be it the speed or simplicity! But, if we work in a personal/commercial setup, we might just have access to a machine with Microsoft Windows on it. Thereby limiting the options, either install Ubuntu on dual-boot or setup a VM within the windows machine, but both have quite a few pros and cons and might or might not be feasible for everyone.
 
 In the past, Microsoft brought in the support for Linux within Windows OS with Windows Subsystem for Linux (WSL). With this, a dual-boot where we lose access to elements of Windows environment or a VM that potentially uses way too many resources of your machine. In this article, we will be talking about setting up WSL with Windows 10/11 and setup a basic environment.
 
@@ -99,10 +99,55 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
 
    {% include figure image_path="/assets/images/posts/2022-04-06/Ubuntu_SetupComplete.jpg" alt="Ubuntu Setup Completed" caption="Ubuntu Setup Completed" %}
 
-6. **Installing Windows Terminal (Optional)** - Although not required, but my personal preference is inclined towards using Windows Terminal, which can be installed via the App Store. It basically gives you the capability to work on multiple terminals in multiple tabs on a single application. Additionally, i can configure it to open Ubuntu as the default tab.
+6. **Update and Upgrade Ubuntu (Optional)** - If you wish to update and upgrade the packages installed on Ubuntu in general, you can use the following to do the same.
 
-**Note:** When we open wsl, by default we login at our windows' user home location, whereas I prefer to use Linux users' home rather Windows user. Therefore, by making the following configuration in the settings section (Open by pressing `Ctrl+,` and selecting `Ubuntu` configuration) on the Windows Terminal, you can always open a new terminal directly at your Ubuntu Users's home. **Ex**: My user is `animesh` therefore the path i would be setting is `\\wsl$\Ubuntu\home\animesh`
+   ```ps
+   > sudo apt-get update
+   > sudo at-get upgrade
+   ```
 
-{% include figure image_path="/assets/images/posts/2022-04-06/Ubuntu_HomeSetup.jpg" alt="Ubuntu Home Setup" caption="Ubuntu Home Setup" %}
+   Although not generally, but we might face an issue with WSL2 that we are not able to connect to the internet to download the packages when we do so, to fix the issue we add the following to the `/etc/resolv.conf`
+
+   ```ps
+   > sudo echo nameserver 8.8.8.8 > /etc/resolv.conf
+   ```
+
+   Again, it might be possible that this change does not hold with WSL2 and is overwritten, and is a [known issue](https://github.com/microsoft/WSL/issues/5420#issuecomment-646479747). Therefore, to make it permanent we can do the following:
+
+   ```ps
+   > sudo rm /etc/resolv.conf
+   > sudo bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
+   > sudo bash -c 'echo "[network]" > /etc/wsl.conf'
+   > sudo bash -c 'echo "generateResolvConf = false" >> /etc/wsl.conf'
+   > sudo chattr +i /etc/resolv.conf
+   ```
+
+7. **Installing Windows Terminal (Optional)** - Although not required, but my personal preference is inclined towards using Windows Terminal, which can be installed via the App Store. It basically gives you the capability to work on multiple terminals in multiple tabs on a single application. Additionally, i can configure it to open Ubuntu as the default tab.
+
+   **Note:** When we open wsl, by default we login at our windows' user home location, whereas I prefer to use Linux users' home rather Windows user. Therefore, by making the following configuration in the settings section (Open by pressing `Ctrl+,` and selecting `Ubuntu` configuration) on the Windows Terminal, you can always open a new terminal directly at your Ubuntu Users's home. **Ex**: My user is `animesh` therefore the path i would be setting is `\\wsl$\Ubuntu\home\animesh`
+
+   {% include figure image_path="/assets/images/posts/2022-04-06/Ubuntu_HomeSetup.jpg" alt="Ubuntu Home Setup" caption="Ubuntu Home Setup" %}
 
 *Now, we can enjoy all the goodness in the world of Linux in Windows itself...*
+
+## Uninstallation
+
+If for some reason we need to uninstall/remove any os from the machine, we need to do the following steps:
+
+1. Find the exact name of the distro you wish to remove from the one's installed
+  
+   ```ps
+   > wsl -l -v
+   ```
+
+2. Terminate the distro, this will shut-down the OS in WSL. Please note, we need to give the name as in the list above
+  
+   ```ps
+   > wsl --terminate Ubuntu
+   ```
+
+3. Unregister the distro, this will remove any associated filesystem and remove the WSL entry. Please note, we need to give the name as in the list above
+  
+   ```ps
+   > wsl --unregister Ubuntu
+   ```
