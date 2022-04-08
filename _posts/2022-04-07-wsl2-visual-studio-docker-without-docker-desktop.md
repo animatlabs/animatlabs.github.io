@@ -29,7 +29,7 @@ Therefore, looking out for alternate strategies as of right now, this article we
 
 ## Configuration
 
-Over here we are going to leverage the caveat that only Docker Desktop needs a license to be used in a commercial setup and not the actual docker services which we will be hosting in our WSL setup. Noting, that it was always possible in Docker Desktop to integrate it with WSL but we generally never choose to do so! So, let's being with configuring docker in our WSL2 setup on Ubuntu.
+Over here we are going to leverage the caveat that only Docker Desktop needs a license to be used in a commercial setup and not the actual docker services which we will be hosting in our WSL setup. Noting, that it was always possible in Docker Desktop to integrate it with WSL but we generally never choose to do so! So, let's begin with configuring docker in our WSL2 setup on Ubuntu.
 
 ### Configure Docker
 
