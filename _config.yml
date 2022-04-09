@@ -18,10 +18,10 @@ search: true
 
 # Analytics
 analytics:
-  provider               : "google"
+  provider               : "google-universal"
   google:
     tracking_id          : G-BPH7TLTL95
-    anonymize_ip         : false
+    anonymize_ip         : true
 
 # Build settings
 markdown: kramdown
