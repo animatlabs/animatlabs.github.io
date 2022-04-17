@@ -23,7 +23,7 @@ It is not just the migrations but also the configurations of constraints, indexe
 
 ## Objectives
 
-The objectives for the document is to provide for direction to manage the following:
+The objectives for the document are to provide for direction to manage the following:
 
 - Entity configurations - constraints, indexes, master data, etc.
 - Separating migrations from the entities
@@ -137,7 +137,7 @@ builder.HasData(
 
 ### Data Setup
 
-Now, comes the twist from the general practices we follow and the most crucial part in creating a clean data access layer, i.e. managing it all in a multiple projects. So, what I am going to do is set up not one but two setup projects, one for `Development` and the other for `Release`. Both of them could possibly maintain different versioning strategies, number of releases, etc. based on the requirements. But before we continue, lets look at the dependencies required for setting up the projects, again the latest packages available as of right now.
+Now, comes the twist from the general practices we follow and the most crucial part in creating a clean data access layer, i.e. managing it all in multiple projects. So, what I am going to do is set up not one but two setup projects, one for `Development` and the other for `Release`. Both of them could possibly maintain different versioning strategies, number of releases, etc. based on the requirements. But before we continue, let's look at the dependencies required for setting up the projects, again the latest packages available as of right now.
 
 - Microsoft.EntityFrameworkCore.Design (6.0.1)
 - Microsoft.EntityFrameworkCore.SqlServer (6.0.1 - Optional, as we would need to refer DataAccess project which already has it)

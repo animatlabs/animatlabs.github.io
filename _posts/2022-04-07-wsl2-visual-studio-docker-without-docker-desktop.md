@@ -54,7 +54,7 @@ Over here we are going to leverage the caveat that only Docker Desktop needs a l
 
   ```bash
   > echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] <https://download.docker.com/linux/ubuntu> \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
   ```
 
@@ -79,7 +79,7 @@ Over here we are going to leverage the caveat that only Docker Desktop needs a l
 
 ### Configure .NET 6.0
 
-To be abe to run and build the services on docker, we need to install dotnet on WSL setup of Ubuntu as well. First, we would need to check on the [official provider](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu), if the version of dotnet we wish to install is supported on the version on Ubuntu we have installed. Here, we use Ubuntu 20.04 which is supported, therefore continuing...
+To be able to run and build the services on docker, we need to install dotnet on WSL setup of Ubuntu as well. First, we would need to check on the [official provider](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu), if the version of dotnet we wish to install is supported on the version on Ubuntu we have installed. Here, we use Ubuntu 20.04 which is supported, therefore continuing...
 
 - Add the Microsoft package signing key to your list of trusted keys and add the package repository.
   
@@ -121,7 +121,7 @@ To be abe to run and build the services on docker, we need to install dotnet on 
 
 ### Configuring Visual Studio 2022
 
-- Now, let's setup Visual Studio 2022 and build our sample Hello-World Console App With Visual Studio. It is a the template console app as created by Visual Studio.
+- Now, let's setup Visual Studio 2022 and build our sample Hello-World Console App With Visual Studio. It is the template console app as created by Visual Studio.
 
   {% include figure image_path="/assets/images/posts/2022-04-07/ProjectSetup.jpg" alt="Console App Setup" caption="Console App Setup" %}
 

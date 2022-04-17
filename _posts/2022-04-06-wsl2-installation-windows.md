@@ -26,7 +26,7 @@ In the past, Microsoft brought in the support for Linux within Windows OS with W
 
 ### WSL vs WSL2
 
-As of right now, microsoft has already launched WSL2 which a major overhaul of the underlying architecture and uses virtualization technology and a Linux kernel to enable new features. The primary goals of this update are to increase file system performance and add full system call compatibility. For more details, refer to this [documentation](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
+As of right now, Microsoft has already launched WSL2 which a major overhaul of the underlying architecture and uses virtualization technology and a Linux kernel to enable new features. The primary goals of this update are to increase file system performance and add full system call compatibility. For more details, refer to this [documentation](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
 
 #### WSL
 
@@ -103,7 +103,7 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
 
    ```ps
    > sudo apt-get update
-   > sudo at-get upgrade
+   > sudo apt-get upgrade
    ```
 
    Although not generally, but we might face an issue with WSL2 that we are not able to connect to the internet to download the packages when we do so, to fix the issue we add the following to the `/etc/resolv.conf`
