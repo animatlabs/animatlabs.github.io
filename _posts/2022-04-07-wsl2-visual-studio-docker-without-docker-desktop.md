@@ -33,131 +33,126 @@ Over here we are going to leverage the caveat that only Docker Desktop needs a l
 
 ### Configure Docker
 
-- Update the apt package index and install the required packages:
+1. Update the apt package index and install packages:
 
-  ```bash
-  > sudo apt-get update
-  > sudo apt-get install \
-      ca-certificates \
-      curl \
-      gnupg \
-      lsb-release
-  ```
+    ```bash
+    sudo apt-get update && \
+    sudo apt-get install ca-certificates curl gnupg lsb-release -y
+    ```
 
-- Add Docker’s official GPG key:
+2. Add Docker’s official GPG key:
 
-  ```bash
-  > curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  ```
+    ```bash
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    ```
 
-- Set up Docker's stable repository
+3. Set up Docker's stable repository
 
-  ```bash
-  > echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+    ```bash
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  ```
+    ```
 
-- Install Docker Engine and packages that go along with it
+4. Install Docker Engine and packages that go along with it
 
-  ```bash
-  > sudo apt-get update
-  > sudo apt-get install docker-ce docker-ce-cli containerd.io
-  ```
+    ```bash
+    sudo apt-get update && /
+    sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+    ```
 
-- Start the docker service
+5. Start the docker service
 
-  ```bash
-    > sudo service docker start
-  ```
+    ```bash
+    sudo service docker start
+    ```
 
-- Verify that Docker is installed correctly
+6. Verify that Docker is installed correctly
   
-  ```bash
-  > sudo docker run hello-world
-  ```
+    ```bash
+    sudo docker run hello-world
+    ```
 
 ### Configure .NET 6.0
 
 To be able to run and build the services on docker, we need to install dotnet on WSL setup of Ubuntu as well. First, we would need to check on the [official provider](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu), if the version of dotnet we wish to install is supported on the version on Ubuntu we have installed. Here, we use Ubuntu 20.04 which is supported, therefore continuing...
 
-- Add the Microsoft package signing key to your list of trusted keys and add the package repository.
+1. Add the Microsoft package signing key to your list of trusted keys and add the package repository.
   
-  ```bash
-  > wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-  > sudo dpkg -i packages-microsoft-prod.deb
-  > rm packages-microsoft-prod.deb
-  ```
+    ```bash
+    wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+    sudo dpkg -i packages-microsoft-prod.deb && \
+    rm packages-microsoft-prod.deb
+    ```
 
-- Install the SDK - The .NET SDK allows you to develop apps with .NET. If you install the .NET SDK, you don't need to install the corresponding runtime.
+2. Install the SDK - The .NET SDK allows you to develop apps with .NET. If you install the .NET SDK, you don't need to install the corresponding runtime.
   
-  ```bash
-  > sudo apt-get update; \
+    ```bash
+    sudo apt-get update; \
     sudo apt-get install -y apt-transport-https && \
     sudo apt-get update && \
     sudo apt-get install -y dotnet-sdk-6.0
-  ```
+    ```
 
-- Install the runtime - The ASP.NET Core Runtime allows you to run apps that were made with .NET that didn't provide the runtime. The following commands install the ASP.NET Core Runtime, which is the most compatible runtime for .NET.
+3. Install the runtime - The ASP.NET Core Runtime allows you to run apps that were made with .NET that didn't provide the runtime. The following commands install the ASP.NET Core Runtime, which is the most compatible runtime for .NET.
 
-  ```bash
-  > sudo apt-get update; \
+    ```bash
+    sudo apt-get update; \
     sudo apt-get install -y apt-transport-https && \
     sudo apt-get update && \
     sudo apt-get install -y aspnetcore-runtime-6.0
-  ```
+    ```
 
-  As an alternative to the ASP.NET Core Runtime, you can install the .NET Runtime, which doesn't include ASP.NET Core support: replace aspnetcore-runtime-6.0 in the previous command with dotnet-runtime-6.0:
+    As an alternative to the ASP.NET Core Runtime, you can install the .NET Runtime, which doesn't include ASP.NET Core support: replace aspnetcore-runtime-6.0 in the previous command with dotnet-runtime-6.0:
 
-  ```bash
-  > sudo apt-get install -y dotnet-runtime-6.0
-  ```
+    ```bash
+    sudo apt-get install -y dotnet-runtime-6.0
+    ```
 
-- Verify .NET installed successfully - Running the following command should tell you the version of .NET installed on the machine.
+4. Verify .NET installed successfully - Running the following command should tell you the version of .NET installed on the machine.
 
-  ```bash
-  > dotnet --version
-  ```
+    ```bash
+    dotnet --version
+    ```
 
 ### Configuring Visual Studio 2022
 
-- Now, let's setup Visual Studio 2022 and build our sample Hello-World Console App With Visual Studio. It is the template console app as created by Visual Studio.
+1. Now, let's setup Visual Studio 2022 and build our sample Hello-World Console App With Visual Studio. It is the template console app as created by Visual Studio.
 
-  {% include figure image_path="/assets/images/posts/2022-04-07/ProjectSetup.jpg" alt="Console App Setup" caption="Console App Setup" %}
+    {% include figure image_path="/assets/images/posts/2022-04-07/ProjectSetup.jpg" alt="Console App Setup" caption="Console App Setup" %}
 
-- Add Docker Support - This creates the Dockerfile automatically in the solution
+2. Add Docker Support - This creates the Dockerfile automatically in the solution
+    
+    {% include figure image_path="/assets/images/posts/2022-04-07/AddDockerSupport.jpg" alt="Add Docker Support" caption="Add Docker Support" %}
+
+    For simplicity, we are using the generic docker file that is created by Visual Studio itself:
+
+    ```yml
+    FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
+    WORKDIR /app
+
+    FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+    WORKDIR /src
+    COPY ["ContainerizedSolution/ContainerizedSolution.csproj", "ContainerizedSolution/"]
+    RUN dotnet restore "ContainerizedSolution/ContainerizedSolution.csproj"
+    COPY . .
+    WORKDIR "/src/ContainerizedSolution"
+    RUN dotnet build "ContainerizedSolution.csproj" -c Release -o /app/build
+
+    FROM build AS publish
+    RUN dotnet publish "ContainerizedSolution.csproj" -c Release -o /app/publish
+
+    FROM base AS final
+    WORKDIR /app
+    COPY --from=publish /app/publish .
+    ENTRYPOINT ["dotnet", "ContainerizedSolution.dll"]
+    ```
+
+3. Select WSL to run the application - Visual Studio 2022 automatically detects WSL setup on your machine
+
+    {% include figure image_path="/assets/images/posts/2022-04-07/SelectWSL.jpg" alt="Run with WSL" caption="Run with WSL" %}
+
+4. Run the application - The sample application is run and we can see the result in the output window
   
-  {% include figure image_path="/assets/images/posts/2022-04-07/AddDockerSupport.jpg" alt="Add Docker Support" caption="Add Docker Support" %}
-
-  For simplicity, we are using the generic docker file that is created by Visual Studio itself:
-
-  ```yml
-  FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
-  WORKDIR /app
-
-  FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-  WORKDIR /src
-  COPY ["ContainerizedSolution/ContainerizedSolution.csproj", "ContainerizedSolution/"]
-  RUN dotnet restore "ContainerizedSolution/ContainerizedSolution.csproj"
-  COPY . .
-  WORKDIR "/src/ContainerizedSolution"
-  RUN dotnet build "ContainerizedSolution.csproj" -c Release -o /app/build
-
-  FROM build AS publish
-  RUN dotnet publish "ContainerizedSolution.csproj" -c Release -o /app/publish
-
-  FROM base AS final
-  WORKDIR /app
-  COPY --from=publish /app/publish .
-  ENTRYPOINT ["dotnet", "ContainerizedSolution.dll"]
-  ```
-
-- Select WSL to run the application - Visual Studio 2022 automatically detects WSL setup on your machine
-
-  {% include figure image_path="/assets/images/posts/2022-04-07/SelectWSL.jpg" alt="Run with WSL" caption="Run with WSL" %}
-
-- Run the application - The sample application is run and we can see the result in the output window
-  
-  {% include figure image_path="/assets/images/posts/2022-04-07/SuccessfulRun.jpg" alt="Successful Run" caption="Successful Run" %}
+    {% include figure image_path="/assets/images/posts/2022-04-07/SuccessfulRun.jpg" alt="Successful Run" caption="Successful Run" %}
 
 Now, we have successfully setup WSL2 and can run containerized solutions via visual studio directly over there. _**Happy containerizing without Docker Desktop on Windows!!**_

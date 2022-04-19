@@ -72,6 +72,10 @@ footer:
       icon: "fab fa-fw fa-github"
       url: "https://github.com/animat089"
 
+after_footer_scripts:
+  - https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js
+  - assets/scripts/clipboardrouge.js
+
 defaults:
   # _posts
   - scope:

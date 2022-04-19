@@ -55,80 +55,104 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
 1. **Enable Windows Features** - We can enable the windows features in 2 ways, either via CLI or GUI.
    - *Option 1* - Via Powershell CLI as Administrator
 
-   ```ps
-   > dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-   > dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-   ```
+      ```ps
+      dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+      dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+      ```
 
    - *Option 2* - Via GUI - Windows Features
-   {% include figure image_path="/assets/images/posts/2022-04-06/WindowsFeatures.jpg" alt="Windows Features" caption="Windows Features" %}
 
-   > You may have to restart you system after installing these for all configurations to be in place.
+      {% include figure image_path="/assets/images/posts/2022-04-06/WindowsFeatures.jpg" alt="Windows Features" caption="Windows Features" %}
+      
+      You _**may have to restart you system**_ after installing these for all configurations to be in place.
 
 2. **Set WSL2 as default** - To enable WSL2 we need to open Powershell as Administrator and execute the following command.
    
    ```ps
-   > wsl --set-default-version 2
+   wsl --set-default-version 2
    ```
 
 3. **Checking WSL versions installed** - We can use the following command to check for the distros installed in WSL.
    
    ```ps
-   > wsl -l
+   wsl -l
    ```
-
+   
    {% include figure image_path="/assets/images/posts/2022-04-06/WSL_FreshInstall.jpg" alt="WSL Fresh Installation" caption="WSL Fresh Installation" %}
 
 4. **List Available Versions (Optional)** - WSL provides the user to install from the various flavours supported, if you wish to see the same you can list the same with the following command.
 
    ```ps
-   > wsl --list --online
+   wsl --list --online
    ```
-   
+  
    {% include figure image_path="/assets/images/posts/2022-04-06/WSL_AvailableDistros.jpg" alt="WSL Available Distros" caption="WSL Available Distros" %}
 
 5. **Installing Ubuntu** - For the purpose of the demo, I would be setting up the latest version of Ubuntu, and am yet again going to use powershell for the same. We could also do this operation via GUI installing the Ubuntu app from the Windows App Store.
 
    ```ps
-   > wsl --install -d Ubuntu
+   wsl --install -d Ubuntu
    ```
+
+   {% include figure image_path="/assets/images/posts/2022-04-06/WSL_Install.jpg" alt="WSL Installing Ubuntu" caption="WSL Installing Ubuntu" %}   
    
-   {% include figure image_path="/assets/images/posts/2022-04-06/WSL_Install.jpg" alt="WSL Installing Ubuntu" caption="WSL Installing Ubuntu" %}
-
-   After this, we see another screen pop-up which is the actual Ubuntu machine asking for the required  configurations such as username and password. You basically get added to the list of sudoers by default and can run sudo commands using these credentials as well. Once you setup these, you would get the `$` prompt and _**Voila!! You are all setup and ready!!**_
-
+   After this, we see another screen pop-up which is the actual Ubuntu machine asking for the required  configurations such as username and password. You basically get added to the list of sudoers by default and can run sudo commands using these credentials as well. Once you setup these, you would get the `$` prompt and _**Voila!! You are all setup and ready!!**_  
+   
    {% include figure image_path="/assets/images/posts/2022-04-06/Ubuntu_SetupComplete.jpg" alt="Ubuntu Setup Completed" caption="Ubuntu Setup Completed" %}
 
-6. **Update and Upgrade Ubuntu (Optional)** - If you wish to update and upgrade the packages installed on Ubuntu in general, you can use the following to do the same.
+6. **Check Ubuntu's WSL Version** - You can check the version of the operating systems installed with the following command.
 
    ```ps
-   > sudo apt-get update
-   > sudo apt-get upgrade
+   wsl -l -v
+   ```
+
+   If the version of the OS is **not 2**, you can change the same using the following command:
+
+   ```ps
+   wsl set-version Ubutnu 2
+   ```
+
+   You might face the following issue when trying to update the WSL version in windows 10, _**WSL 2 requires an update to its kernel component. For information please visit https://aka.ms/wsl2kernel**_. If so hppens, you need to do the following:
+   - In the powershell, we need to run the following:
+      ```ps
+      wsl --shutdown
+      ```
+   - Download the latest repective arm/x64 kernel from [here](https://www.catalog.update.microsoft.com/Search.aspx?q=wsl)
+   - Extract the content cab file and install the package
+   - Go back to the powershell and start wsl again
+      ```ps
+      wsl
+      ```
+   > This should do the trick and you should be able to run the `set-version` command again and it would get converted.
+
+7. **Update and Upgrade Ubuntu (Optional)** - If you wish to update and upgrade the packages installed on Ubuntu in general, you can use the following to do the same.
+
+   ```bash
+   sudo apt-get update && sudo apt-get upgrade -y
    ```
 
    Although not generally, but we might face an issue with WSL2 that we are not able to connect to the internet to download the packages when we do so, to fix the issue we add the following to the `/etc/resolv.conf`
 
-   ```ps
-   > sudo echo nameserver 8.8.8.8 > /etc/resolv.conf
+   ```bash
+   sudo echo nameserver 8.8.8.8 > /etc/resolv.conf
    ```
-
    Again, it might be possible that this change does not hold with WSL2 and is overwritten, and is a [known issue](https://github.com/microsoft/WSL/issues/5420#issuecomment-646479747). Therefore, to make it permanent we can do the following:
 
-   ```ps
-   > sudo rm /etc/resolv.conf
-   > sudo bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
-   > sudo bash -c 'echo "[network]" > /etc/wsl.conf'
-   > sudo bash -c 'echo "generateResolvConf = false" >> /etc/wsl.conf'
-   > sudo chattr +i /etc/resolv.conf
+   ```bash
+   sudo rm /etc/resolv.conf && \
+   sudo bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf' && \
+   sudo bash -c 'echo "[network]" > /etc/wsl.conf' && \
+   sudo bash -c 'echo "generateResolvConf = false" >> /etc/wsl.conf' && \
+   sudo chattr +i /etc/resolv.conf
    ```
 
-7. **Installing Windows Terminal (Optional)** - Although not required, but my personal preference is inclined towards using Windows Terminal, which can be installed via the App Store. It basically gives you the capability to work on multiple terminals in multiple tabs on a single application. Additionally, i can configure it to open Ubuntu as the default tab.
+8. **Installing Windows Terminal (Optional)** - Although not required, but my personal preference is inclined towards using Windows Terminal, which can be installed via the App Store. It basically gives you the capability to work on multiple terminals in multiple tabs on a single application. Additionally, i can configure it to open Ubuntu as the default tab.
 
    **Note:** When we open wsl, by default we login at our windows' user home location, whereas I prefer to use Linux users' home rather Windows user. Therefore, by making the following configuration in the settings section (Open by pressing `Ctrl+,` and selecting `Ubuntu` configuration) on the Windows Terminal, you can always open a new terminal directly at your Ubuntu Users's home. **Ex**: My user is `animesh` therefore the path i would be setting is `\\wsl$\Ubuntu\home\animesh`
 
    {% include figure image_path="/assets/images/posts/2022-04-06/Ubuntu_HomeSetup.jpg" alt="Ubuntu Home Setup" caption="Ubuntu Home Setup" %}
 
-*Now, we can enjoy all the goodness in the world of Linux in Windows itself...*
+   *Now, we can enjoy all the goodness in the world of Linux in Windows itself...*
 
 ## Uninstallation
 
@@ -137,17 +161,17 @@ If for some reason we need to uninstall/remove any os from the machine, we need 
 1. Find the exact name of the distro you wish to remove from the one's installed
   
    ```ps
-   > wsl -l -v
+   wsl -l -v
    ```
 
 2. Terminate the distro, this will shut-down the OS in WSL. Please note, we need to give the name as in the list above
   
    ```ps
-   > wsl --terminate Ubuntu
+   wsl --terminate Ubuntu
    ```
 
 3. Unregister the distro, this will remove any associated filesystem and remove the WSL entry. Please note, we need to give the name as in the list above
   
    ```ps
-   > wsl --unregister Ubuntu
+   wsl --unregister Ubuntu
    ```

@@ -176,14 +176,17 @@ With two different projects for migrations the main case I am trying to cater to
 Run the following command from the root folder, and it now creates the migrations in the project specified with the -p flag.
 
 ```bash
-> dotnet ef migrations add dev.1.0.0 -p src/Infrastructure.Data.DataSetup.Development
-> dotnet ef migrations add dev.1.0.1 -p src/Infrastructure.Data.DataSetup.Development
+# Initial Migration
+dotnet ef migrations add dev.1.0.0 -p src/Infrastructure.Data.DataSetup.Development
+
+# Subsequent Migration
+dotnet ef migrations add dev.1.0.1 -p src/Infrastructure.Data.DataSetup.Development
 ```
 
 In the very similar way when we have to generate the migrations for release then we can run the following command, from the root folder:
 
 ```bash
-> dotnet ef migrations add v1.0.0 -p src/Infrastructure.Data.DataSetup.Release
+dotnet ef migrations add v1.0.0 -p src/Infrastructure.Data.DataSetup.Release
 ```
 
 #### Scripts
@@ -201,13 +204,15 @@ Because of this, the scripts shouldn't just be generated on the fly on the pipel
 To generate the first `Up` script we would use the following command, which generates the script in the output directory specified in the command with the `-o` flag.
 
 ```bash
-> dotnet ef migrations script -i -p src/Infrastructure.Data.DataSetup.Development -o src/Infrastructure.Data.DataSetup.Development/Scripts/Up/dev.0.0.0-dev.1.0.0.sql
+# Initial Scripts
+dotnet ef migrations script -i -p src/Infrastructure.Data.DataSetup.Development -o src/Infrastructure.Data.DataSetup.Development/Scripts/Up/dev.0.0.0-dev.1.0.0.sql
 ```
 
 Thereafter, to generate the following scripts, we can specify the version from which we wish to generate the scripts `from` and `to` and use the following command.
 
 ```bash
-> dotnet ef migrations script dev.1.0.0 dev.1.0.1 -i -p src/Infrastructure.Data.DataSetup.Development -o src/Infrastructure.Data.DataSetup.Development/Scripts/Up/dev.1.0.0-dev.1.0.1.sql
+# Subsequent Scripts
+dotnet ef migrations script dev.1.0.0 dev.1.0.1 -i -p src/Infrastructure.Data.DataSetup.Development -o src/Infrastructure.Data.DataSetup.Development/Scripts/Up/dev.1.0.0-dev.1.0.1.sql
 ```
 
 ##### Down
@@ -215,8 +220,11 @@ Thereafter, to generate the following scripts, we can specify the version from w
 Just like we generated the `Up` scripts, we can generate the `Down` scripts specifying the `from` and `to` in the reverse order.
 
 ```bash
-> dotnet ef migrations script dev.1.0.0 0 -i -p src/Infrastructure.Data.DataSetup.Development -o src/Infrastructure.Data.DataSetup.Development/Scripts/Down/dev.1.0.0-dev.0.0.0.sql
-> dotnet ef migrations script dev.1.0.1 dev.1.0.0 -i -p src/Infrastructure.Data.DataSetup.Development -o src/Infrastructure.Data.DataSetup.Development/Scripts/Down/dev.1.0.1-dev.1.0.0.sql
+# Initial Scripts
+dotnet ef migrations script dev.1.0.0 0 -i -p src/Infrastructure.Data.DataSetup.Development -o src/Infrastructure.Data.DataSetup.Development/Scripts/Down/dev.1.0.0-dev.0.0.0.sql
+
+# Subsequent Scripts
+dotnet ef migrations script dev.1.0.1 dev.1.0.0 -i -p src/Infrastructure.Data.DataSetup.Development -o src/Infrastructure.Data.DataSetup.Development/Scripts/Down/dev.1.0.1-dev.1.0.0.sql
 ```
 
 The final structure for the and the application would look something like this:
