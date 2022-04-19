@@ -20,7 +20,7 @@ search: true
 analytics:
   provider               : "google-universal"
   google:
-    tracking_id          : "G-JGX0WKMKE0"
+    tracking_id          : "G-KKSHQVHDHY"
     anonymize_ip         : true
     
 # Build settings
