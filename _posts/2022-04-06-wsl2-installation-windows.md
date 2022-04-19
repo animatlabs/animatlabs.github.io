@@ -150,7 +150,7 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
 
    {% include figure image_path="/assets/images/posts/2022-04-06/Ubuntu_HomeSetup.jpg" alt="Ubuntu Home Setup" caption="Ubuntu Home Setup" %}
 
-   *Now, we can enjoy all the goodness in the world of Linux in Windows itself...*
+   _Now, we can enjoy all the goodness in the world of Linux in Windows itself..._
 
 ## Uninstallation
 
