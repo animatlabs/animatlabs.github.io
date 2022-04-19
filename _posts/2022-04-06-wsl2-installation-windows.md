@@ -52,7 +52,8 @@ As of right now, Microsoft has already launched WSL2 which a major overhaul of t
 
 For my setup, I would be using Windows 11 and setting the WSL2, you may choose to go with WSL based on your requirements and available environments.
 
-1. **Enable Windows Features** - We can enable the windows features in 2 ways, either via CLI or GUI.
+1. **Enable Windows Features** - We can enable the windows features in 2 ways, either via CLI or GUI. You _**may have to restart you system**_ after installing these for all configurations to be in place.
+
    - *Option 1* - Via Powershell CLI as Administrator
 
       ```ps
@@ -61,10 +62,7 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
       ```
 
    - *Option 2* - Via GUI - Windows Features
-
-      {% include figure image_path="/assets/images/posts/2022-04-06/WindowsFeatures.jpg" alt="Windows Features" caption="Windows Features" %}
-      
-      You _**may have to restart you system**_ after installing these for all configurations to be in place.
+   {% include figure image_path="/assets/images/posts/2022-04-06/WindowsFeatures.jpg" alt="Windows Features" caption="Windows Features" %}
 
 2. **Set WSL2 as default** - To enable WSL2 we need to open Powershell as Administrator and execute the following command.
    
