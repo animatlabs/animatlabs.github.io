@@ -21,9 +21,9 @@ comments: true
 
 ## Introduction
 
-With the advent of containerization, Docker and Docker Desktop came in and provided GUI based simple solutions for most of the problems that a developer would face for setting up a local development environment. But with the news that broke out last year (2021) that Docker Desktop will no longer be free for an Enterprise setup, although it is still free for personal use.
+With the advent of containerization, Docker and Docker Desktop came in and provided GUI-based simple solutions for most of the problems that a developer would face in setting up a local development environment. But with the news that broke out last year (2021) that Docker Desktop will no longer be free for an Enterprise setup, although it is still free for personal use.
 
-Therefore, looking out for alternate strategies as of right now, this article we would be looking forward to setup Visual Studio with WSL2. So, that we could leverage the same without Docker Desktop in Visual Studio 2022 on a Windows machine.
+Therefore, looking out for alternate strategies as of right now, in this article we would be looking forward to setup Visual Studio with WSL2. So, that we could leverage the same without Docker Desktop in Visual Studio 2022 on a Windows machine.
 
 **Note:** If you have not set up WSL, you can [refer to this article](../wsl2-installation-windows/) for setting it up before we continue.
 
@@ -116,7 +116,7 @@ To be able to run and build the services on docker, we need to install dotnet on
 
 ### Configuring Visual Studio 2022
 
-1. Now, let's setup Visual Studio 2022 and build our sample Hello-World Console App With Visual Studio. It is the template console app as created by Visual Studio.
+1. Now, let's set up Visual Studio 2022 and build our sample Hello-World Console App With Visual Studio. It is the template console app created by Visual Studio.
 
     {% include figure image_path="/assets/images/posts/2022-04-07/ProjectSetup.jpg" alt="Console App Setup" caption="Console App Setup" %}
 
@@ -155,4 +155,4 @@ To be able to run and build the services on docker, we need to install dotnet on
   
     {% include figure image_path="/assets/images/posts/2022-04-07/SuccessfulRun.jpg" alt="Successful Run" caption="Successful Run" %}
 
-Now, we have successfully setup WSL2 and can run containerized solutions via visual studio directly over there. _**Happy containerizing without Docker Desktop on Windows!!**_
+Now, we have successfully set up WSL2 and can run containerized solutions via visual studio directly over there. _**Happy containerizing without Docker Desktop on Windows!!**_

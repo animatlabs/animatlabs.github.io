@@ -18,15 +18,15 @@ comments: true
 
 ## Introduction
 
-Being associated with software development, we all have worked with a terminal at some in time. And what better than Linux when it comes to the that, be it developer and community support, be it the speed or simplicity! But, if we work in a personal/commercial setup, we might just have access to a machine with Microsoft Windows on it. Thereby limiting the options, either install Ubuntu on dual-boot or setup a VM within the windows machine, but both have quite a few pros and cons and might or might not be feasible for everyone.
+Being associated with software development, we all have worked with a terminal at some point in time. And what better than Linux when it comes to that, be it developer and community support, be it the speed or simplicity? But, if we work in a personal/commercial setup, we might just have access to a machine with Microsoft Windows on it. Thereby limiting the options, either installing Ubuntu on dual-boot or setup a VM within the windows machine, but both have quite a few pros and cons and might or might not be feasible for everyone.
 
-In the past, Microsoft brought in the support for Linux within Windows OS with Windows Subsystem for Linux (WSL). With this, a dual-boot where we lose access to elements of Windows environment or a VM that potentially uses way too many resources of your machine. In this article, we will be talking about setting up WSL with Windows 10/11 and setup a basic environment.
+In the past, Microsoft brought in support for Linux within Windows OS with Windows Subsystem for Linux (WSL). With this, a dual-boot where we lose access to elements of Windows environment or a VM that potentially uses way too many resources of your machine. In this article, we will be talking about setting up WSL with Windows 10/11 and setting up a basic environment.
 
 ## Configuration
 
 ### WSL vs WSL2
 
-As of right now, Microsoft has already launched WSL2 which a major overhaul of the underlying architecture and uses virtualization technology and a Linux kernel to enable new features. The primary goals of this update are to increase file system performance and add full system call compatibility. For more details, refer to this [documentation](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
+As of right now, Microsoft has already launched WSL2 which is a major overhaul of the underlying architecture and uses virtualization technology and a Linux kernel to enable new features. The primary goals of this update are to increase file system performance and add full system call compatibility. For more details, refer to this [documentation](https://docs.microsoft.com/en-us/windows/wsl/compare-versions).
 
 #### WSL
 
@@ -52,7 +52,7 @@ As of right now, Microsoft has already launched WSL2 which a major overhaul of t
 
 For my setup, I would be using Windows 11 and setting the WSL2, you may choose to go with WSL based on your requirements and available environments.
 
-1. **Enable Windows Features** - We can enable the windows features in 2 ways, either via CLI or GUI. You _**may have to restart you system**_ after installing these for all configurations to be in place.
+1. **Enable Windows Features** - We can enable the windows features in 2 ways, either via CLI or GUI. You _**may have to restart your system**_ after installing these for all configurations to be in place.
 
    - *Option 1* - Via Powershell CLI as Administrator
 
@@ -78,7 +78,7 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
    
    {% include figure image_path="/assets/images/posts/2022-04-06/WSL_FreshInstall.jpg" alt="WSL Fresh Installation" caption="WSL Fresh Installation" %}
 
-4. **List Available Versions (Optional)** - WSL provides the user to install from the various flavours supported, if you wish to see the same you can list the same with the following command.
+4. **List Available Versions (Optional)** - WSL provides the user to install from the various flavors supported, if you wish to see the same you can list the same with the following command.
 
    ```ps
    wsl --list --online
@@ -86,7 +86,7 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
   
    {% include figure image_path="/assets/images/posts/2022-04-06/WSL_AvailableDistros.jpg" alt="WSL Available Distros" caption="WSL Available Distros" %}
 
-5. **Installing Ubuntu** - For the purpose of the demo, I would be setting up the latest version of Ubuntu, and am yet again going to use powershell for the same. We could also do this operation via GUI installing the Ubuntu app from the Windows App Store.
+5. **Installing Ubuntu** - For the demo, I would be setting up the latest version of Ubuntu, and am yet again going to use PowerShell for the same. We could also do this operation via GUI installing the Ubuntu app from the Windows App Store.
 
    ```ps
    wsl --install -d Ubuntu
@@ -94,7 +94,7 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
 
    {% include figure image_path="/assets/images/posts/2022-04-06/WSL_Install.jpg" alt="WSL Installing Ubuntu" caption="WSL Installing Ubuntu" %}   
    
-   After this, we see another screen pop-up which is the actual Ubuntu machine asking for the required  configurations such as username and password. You basically get added to the list of sudoers by default and can run sudo commands using these credentials as well. Once you setup these, you would get the `$` prompt and _**Voila!! You are all setup and ready!!**_  
+   After this, we see another screen pop-up which is the actual Ubuntu machine asking for the required configurations such as username and password. You get added to the list of sudoers by default and can run Sudo commands using these credentials as well. Once you set up these, you would get the `$` prompt and _**Voila!! You are all set up and ready!!**_  
    
    {% include figure image_path="/assets/images/posts/2022-04-06/Ubuntu_SetupComplete.jpg" alt="Ubuntu Setup Completed" caption="Ubuntu Setup Completed" %}
 
@@ -104,20 +104,20 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
    wsl -l -v
    ```
 
-   If the version of the OS is **not 2**, you can change the same using the following command:
+   If the version of the OS is, **not 2**, you can change the same using the following command:
 
    ```ps
    wsl set-version Ubutnu 2
    ```
 
-   You might face the following issue when trying to update the WSL version in windows 10, _**WSL 2 requires an update to its kernel component. For information please visit https://aka.ms/wsl2kernel**_. If so hppens, you need to do the following:
-   - In the powershell, we need to run the following:
+   You might face the following issue when trying to update the WSL version in windows 10, _**WSL 2 requires an update to its kernel component. For information please visit https://aka.ms/wsl2kernel**_. If so happens, you need to do the following:
+   - In PowerShell, we need to run the following:
       ```ps
       wsl --shutdown
       ```
-   - Download the latest repective arm/x64 kernel from [here](https://www.catalog.update.microsoft.com/Search.aspx?q=wsl)
+   - Download the latest respective arm/x64 kernel from [here](https://www.catalog.update.microsoft.com/Search.aspx?q=wsl)
    - Extract the content cab file and install the package
-   - Go back to the powershell and start wsl again
+   - Go back to the PowerShell and start wsl again
       ```ps
       wsl
       ```
@@ -129,7 +129,7 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
    sudo apt-get update && sudo apt-get upgrade -y
    ```
 
-   Although not generally, but we might face an issue with WSL2 that we are not able to connect to the internet to download the packages when we do so, to fix the issue we add the following to the `/etc/resolv.conf`
+   Although not generally, we might face an issue with WSL2 that we are not able to connect to the internet to download the packages when we do so, to fix the issue we add the following to the `/etc/resolv.conf`
 
    ```bash
    sudo echo nameserver 8.8.8.8 > /etc/resolv.conf
@@ -144,9 +144,9 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
    sudo chattr +i /etc/resolv.conf
    ```
 
-8. **Installing Windows Terminal (Optional)** - Although not required, but my personal preference is inclined towards using Windows Terminal, which can be installed via the App Store. It basically gives you the capability to work on multiple terminals in multiple tabs on a single application. Additionally, i can configure it to open Ubuntu as the default tab.
+8. **Installing Windows Terminal (Optional)** - Although not required, my personal preference is inclined towards using Windows Terminal, which can be installed via the App Store. It gives you the capability to work on multiple terminals in multiple tabs on a single application. Additionally, i can configure it to open Ubuntu as the default tab.
 
-   **Note:** When we open wsl, by default we login at our windows' user home location, whereas I prefer to use Linux users' home rather Windows user. Therefore, by making the following configuration in the settings section (Open by pressing `Ctrl+,` and selecting `Ubuntu` configuration) on the Windows Terminal, you can always open a new terminal directly at your Ubuntu Users's home. **Ex**: My user is `animesh` therefore the path i would be setting is `\\wsl$\Ubuntu\home\animesh`
+   **Note:** When we open wsl, by default we log in at our windows' user home location, whereas I prefer to use Linux users' home rather than Windows user. Therefore, by making the following configuration in the settings section (Open by pressing `Ctrl+,` and selecting `Ubuntu` configuration) on the Windows Terminal, you can always open a new terminal directly at your Ubuntu Users' home. **Ex**: My user is `animesh` therefore the path I would be setting is `\\wsl$\Ubuntu\home\animesh`
 
    {% include figure image_path="/assets/images/posts/2022-04-06/Ubuntu_HomeSetup.jpg" alt="Ubuntu Home Setup" caption="Ubuntu Home Setup" %}
 
@@ -156,13 +156,13 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
 
 If for some reason we need to uninstall/remove any os from the machine, we need to do the following steps:
 
-1. Find the exact name of the distro you wish to remove from the one's installed
+1. Find the exact name of the distro you wish to remove from the ones installed
   
    ```ps
    wsl -l -v
    ```
 
-2. Terminate the distro, this will shut-down the OS in WSL. Please note, we need to give the name as in the list above
+2. Terminate the distro, this will shut down the OS in WSL. Please note, we need to give the name as in the list above
   
    ```ps
    wsl --terminate Ubuntu
