@@ -59,7 +59,9 @@ Therefore, setting up a simple code to demonstrate how the scripts would be adde
 dotnet ef migrations add dev.1.0.2 -p src/Infrastructure.Data.DataSetup.Development
 ```
 
-The above command creates an empty migration file with 1.0.2 followed by which we are trying to add a very simple custom SQL to the migration with the `Sql` method on the `migrationBuilder` object. Additionally, we could move the script to an SQL file as well. To keep things simple, we prefer keeping the name of the script and the migration this makes the scripts easy to track and manage. For that purpose, we include a file as well here, which has the content as follows:
+The above command creates an empty migration file with 1.0.2 followed by which we are trying to add a very simple custom SQL to the migration with the `Sql` method on the `migrationBuilder` object. Additionally, we could move the script to an SQL file as well therefore, to keep things simple, we prefer keeping the name of the script and the migration this makes the scripts easy to track and manage. For that purpose, we include a file as well here, which has the content as follows:
+
+> Although the scripts could all be placed in a single location where we could load those while running the migrations but We prefer to keep the files maintained closer to the migrations. First, The scripts might be tightly coupled with the changes made in the migrations rather than a general change and secondly, reverting and tracking the changes might get very difficult if we go the other way round.
 
 ```sql
 SELECT @@LANGUAGE as 'DefaultLanguage'
@@ -306,4 +308,4 @@ using var dbContext = new HogwartsDbContext(contextOptions);
 
 ## Conclusion
 
-We have tried to look into how we include scripts, generate migrations and then execute those within the bounds of EF Core. In commercial projects, since as there are many cases where any of these conditions might be un-avoidable. Hope this helps... :)
+We have tried to look into how we include scripts, generate migrations and then execute those within the bounds of EF Core. In commercial projects, since as there are many cases where any of these conditions might be unavoidable. Hope this helps... :)
