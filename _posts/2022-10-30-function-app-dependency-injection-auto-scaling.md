@@ -40,7 +40,7 @@ For the demo, we are going to set up a function app with `.net 6.0` and a servic
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/function-app-dependency-injections){: .btn .btn--primary}
 
-{% include figure image_path="/assets/images/posts/2022-10-31/ProjectStructure.jpg" alt="Project Structure for Function App" caption="Project Structure for Function App" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/ProjectStructure.jpg" alt="Project Structure for Function App" caption="Project Structure for Function App" %}
 
 ### Setting Lifetime-based Services
 
@@ -87,7 +87,7 @@ public interface IConsolidatedService
 
 Great! Now, since all the interfaces are set up let's set up the classes and associated tests. Although I have written tests and completed this with TDD (Test Driven Development) in this article I will not be jumping into the unit tests aspect of it but rather just the application. Therefore, let's look into setting up the `BaseService`.
 
-```C#
+```c#
 internal abstract class BaseService : IBaseService
 {
     protected Guid Identifier { get; }
@@ -228,7 +228,7 @@ internal class Startup : FunctionsStartup
 
 Now, since the project is all set up, it should look something like this finally with all the classes, interfaces and projects.
 
-{% include figure image_path="/assets/images/posts/2022-10-31/ProjectFiles.jpg" alt="All project files for the Function App" caption="All project files for the Function App" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/ProjectFiles.jpg" alt="All project files for the Function App" caption="All project files for the Function App" %}
 
 ## Observations
 
@@ -236,13 +236,13 @@ Now, since the project is all set up, it should look something like this finally
 
 Running the function app locally and checking the logs for the same. Sent 2 messages one after the other manually to the service bus and we see the execution logs in the following manner:
 
-{% include figure image_path="/assets/images/posts/2022-10-31/FunctionExecution.jpg" alt="Function App Execution" caption="Function App Execution" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/FunctionExecution.jpg" alt="Function App Execution" caption="Function App Execution" %}
 
 From the executions above, we observe that there was only 1 singleton instance created and for each execution, there was 1 scoped instance created and a transient instance created for every request at the end of each scope we can see the message content being published, we can see that with the colour coding and the GUIDs associated with those. Therefore, what we learn from this is that function apps behave in the very same way that we work with any application respecting the dependencies.
 
 ### Auto Scaling with Azure
 
-#### MMessage Blaster
+#### Message Blaster
 
 Now, hosting the function app in Azure on a Linux-based pay-as-you-go (Consumption) plan and utilizing the message blaster function to push 2000 messages to the service bus quickly.
 
@@ -293,29 +293,29 @@ public static void Main()
 
 Once the messages got pushed into the queue, now analyzing the logs for the executions via application insights.
 
-{% include figure image_path="/assets/images/posts/2022-10-31/ScalingSingleton.jpg" alt="Scaling singleton services per instance" caption="Scaling singleton services per instance" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/ScalingSingleton.jpg" alt="Scaling singleton services per instance" caption="Scaling singleton services per instance" %}
 
-{% include figure image_path="/assets/images/posts/2022-10-31/ScalingScoped.jpg" alt="Scaling scoped services per instance" caption="Scaling scoped services per instance" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/ScalingScoped.jpg" alt="Scaling scoped services per instance" caption="Scaling scoped services per instance" %}
 
-{% include figure image_path="/assets/images/posts/2022-10-31/ScalingTransient.jpg" alt="Scaling transient services per instance" caption="Scaling transient services per instance" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/ScalingTransient.jpg" alt="Scaling transient services per instance" caption="Scaling transient services per instance" %}
 
 We observe that the function app scaled up to 7 instances to share the load on the service bus. We also observe that we see only 1 singleton service per instance; further since we sent 2000 messages in total, we see scoped service was created 2000 times and transient 4000 times as expected with the code overall.
 
 #### Executions Per Second
 
-{% include figure image_path="/assets/images/posts/2022-10-31/ExecutionsInstancePerSecond.jpg" alt="Executions per second on a single instance" caption="Executions per second on a single instance" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/ExecutionsInstancePerSecond.jpg" alt="Executions per second on a single instance" caption="Executions per second on a single instance" %}
 
 With the executions scaling with instances, let's observe how many executions happened per second on one of the instances. Along with this where we see the executions per a single instance, looking at the max number of executions in any instance.
 
-{% include figure image_path="/assets/images/posts/2022-10-31/ScopedMaxPerSecond.jpg" alt="Max executions per second on all instance" caption="Max executions per second on all instance" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/ScopedMaxPerSecond.jpg" alt="Max executions per second on all instance" caption="Max executions per second on all instance" %}
 
 Graphically, the functions scaled up in the following manner (graphically):
 
-{% include figure image_path="/assets/images/posts/2022-10-31/InstanceBasedConsumptionPerSecond.jpg" alt="Instance based consumption per second" caption="Instance based consumption per second" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/InstanceBasedConsumptionPerSecond.jpg" alt="Instance based consumption per second" caption="Instance based consumption per second" %}
 
 The other way to look at it is the overall executions that happened irrespective of the  instances:
 
-{% include figure image_path="/assets/images/posts/2022-10-31/OverallConsumptionPerSecond.jpg" alt="Overall executions per second" caption="Overall executions per second" %}
+{% include figure image_path="/assets/images/posts/2022-10-30/OverallConsumptionPerSecond.jpg" alt="Overall executions per second" caption="Overall executions per second" %}
 
 ## References
 
