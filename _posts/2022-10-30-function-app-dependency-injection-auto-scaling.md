@@ -32,7 +32,7 @@ The objectives of this article are setting up the following:
 
 - Sample function app
 - Startup class and object lifetimes
-- Analyzing the runs
+- Observations after hosting in Azure
 
 ## Implementation
 
@@ -316,6 +316,10 @@ Graphically, the functions scaled up in the following manner (graphically):
 The other way to look at it is the overall executions that happened irrespective of the  instances:
 
 {% include figure image_path="/assets/images/posts/2022-10-30/OverallConsumptionPerSecond.jpg" alt="Overall executions per second" caption="Overall executions per second" %}
+
+## Conclusions
+
+We observed what we set out to do, basically setup a function app with dependency injections and then it auto-scaling when hosted on azure thereby adding another dimension on how we could create and host applications, based on our needs.
 
 ## References
 
