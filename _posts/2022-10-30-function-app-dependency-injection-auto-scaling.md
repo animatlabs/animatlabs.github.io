@@ -204,7 +204,7 @@ public class SampleFunctionApp
 
 ### Setting up `Startup.cs`
 
-Let's create a class called `Startup.cs` to begin with. For this class to work as the startup we would need to inherit this by either `IWebJobStartup` or `FunctionStartup`. The former provides the core functionality but the latter gives us a little more and makes things simpler, therefore we would be going with the latter rather than the former.
+Let's create a class called `Startup.cs` to begin with. For this class to work as the startup we would need to inherit this by either `IWebJobStartup` or `FunctionStartup`. For this, we need to work with a extension class over the services which comes from the namespace `Microsoft.Extensions.DependencyInjection;`.
 
 In addition to any of them, we would also need to decorate the class with the `assembly` attribute and pass it the startup class' type. This is what does the magic and makes the startup class functional.
 
