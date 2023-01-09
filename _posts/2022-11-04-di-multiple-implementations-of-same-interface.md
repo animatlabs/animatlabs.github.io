@@ -1,5 +1,5 @@
 ---
-title: ".NET Apps: Dependency Injections with multiple implementations of same interface"
+title: ".NET Apps: DIs with multiple implementations of the same interface"
 excerpt: >-
   "Enabling dependency injections of multiple implementations of the same interface in .NET Apps. 2 ways to implement multiple implementations of the same interface."
 categories:
@@ -18,7 +18,7 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
-Many a times, during our application development we come across a situation where we wish to reuse a single interface to define multiple classes and for even different purposes. The issue with using that with .NET Core and the in-built dependency injection is the trouble when we face to write code which has to use the above cases. Therefore, in this article, we are going to discuss two ways in which i think we can overcome the same in the present time.
+Many times, during our application development we come across a situation where we wish to reuse a single interface to define multiple classes and for even different purposes. The issue with using that with .NET Core and the in-built dependency injection is the trouble when we face writing code which has to use the above cases. Therefore, in this article, we are going to discuss two ways in which I think we can overcome the same in the present time.
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/app-multiple-instances-same-interface){: .btn .btn--primary}
 
@@ -33,7 +33,7 @@ public interface IService
 }
 ```
 
-Following this, lets set up a base service that helps us define the actual classes that are going to be used.
+Following this, let's set up a base service that helps us define the actual classes that are going to be used.
 
 ```c#
 public abstract class BaseService : IService
@@ -53,7 +53,7 @@ public abstract class BaseService : IService
 }
 ```
 
-Now, it is time to setup actual services with the help of a `BaseService`. Here, in this case we are trying to setup the different services based on their lifetimes. Therefore, lets create the service classes representing singleton, scoped and transient lifetimes.
+Now, it is time to set up actual services with the help of a `BaseService`. Here, in this case, we are trying to set up the different services based on their lifetimes. Therefore, let's create the service classes representing singleton, scoped and transient lifetimes.
 
 ```c#
 public class SingletonService : BaseService, IService
@@ -81,7 +81,7 @@ public class TransientService : BaseService, IService
 }
 ```
 
-Since all the required services along with the interfaces are setup, let's setup the base function/application that we are going to use for the demo.
+Since all the required services along with the interfaces are set up, let's set up the base function/application that we are going to use for the demo.
 
 ```c#
 public abstract class FunctionBase
@@ -104,7 +104,7 @@ public abstract class FunctionBase
 
 ## Problem
 
-As we can notice on the code snippet above, we have used the same interface `IService` to reference all the dependencies. In general, whenever we talk about DIs, in the `Configure` method of the `Startup.cs` we generally register those with the help of interfaces to classes, but lets see the problem here...
+As we can notice in the code snippet above, we have used the same interface `IService` to reference all the dependencies. In general, whenever we talk about DIs, in the `Configure` method of the `Startup.cs` we generally register those with the help of interfaces to classes, but let's see the problem here...
 
 ```c#
 internal class Startup : FunctionsStartup
@@ -118,7 +118,7 @@ internal class Startup : FunctionsStartup
 }
 ```
 
-The thing that we see here is that all the type of services have been registered with the same interface. But let's try and use it in the way we are generally used to and see what happens.
+The thing that we see here is that all the types of services have been registered with the same interface. But let's try and use it in the way we are generally used to and see what happens.
 
 ```c#
 public Function_0_Problem(IService singletonService, IService scopedService, IService transientService)
@@ -131,13 +131,13 @@ public Function_0_Problem(IService singletonService, IService scopedService, ISe
 
 Now, trying to debug the same...
 
-{% include figure image_path="/assets/images/posts/2022-12-01/DI_Problem.png" alt="Problem with direct DI" caption="Problem with direct DI" %}
+{% include figure image_path="/assets/images/posts/2022-11-04/DI_Problem.png" alt="Problem with direct DI" caption="Problem with direct DI" %}
 
 As we can see in the image, the dependencies get loaded but we get a random, and not the desired, service resolved from the interface. And hence, we are unable to resolve the required dependencies and end up not fulfilling what we wished for.
 
 ## Solution
 
-So, this problem is not something we need a hack for but is already available within the constructs of .NET Core. So, we could possible do it in the following ways.
+So, this problem is not something we need a hack for but is already available within the constructs of .NET Core. So, we could possibly do it in the following ways.
 
 ### Using a List Type/ServiceProvider
 
@@ -163,11 +163,11 @@ public Function_A_DI_List(IServiceProvider serviceProvider)
 
 As we can see above, the code remains almost the same. Although I prefer using the former approach rather than the latter as it weeds out unnecessary instantiation of the `services` again from the service provider. With this using an IEnumerable instance, we get all the required instances registered for a type and hence we can sort those out.
 
-The problem with this solution, although it does solve the initial issue of not getting all the desired types, is that it is not testable as we will have troubles mocking either the `GetServices` method on `IServiceProvider` or the `First` method and getting the required matching service.
+The problem with this solution, although it does solve the initial issue of not getting all the desired types, is that it is not testable as we will have trouble mocking either the `GetServices` method on `IServiceProvider` or the `First` method and getting the required matching service.
 
 ### Using a custom resolver
 
-To solve above problems, we are building another wrapper that can resolve it in a testable and extensible way. The first thing we would do is preferable setup an `enum`, although we could work with strings as well but my personal preference is to use and `enum` over a string.
+To solve the above problems, we are building another wrapper that can resolve it in a testable and extensible way. The first thing we would do is preferably set up an `enum`, although we could work with strings as well my personal preference is to use an `enum` over a string.
 
 ```c#
 public enum ServiceType
@@ -240,8 +240,8 @@ public Function_B_DI_Resolver(IServiceResolver serviceResolver)
 }
 ```
 
-As we can see from the code, it is cleaner, extensible and furthermore testable, with which we get almost all that we could have hoped for.
+As we can see from the code, it is cleaner, extensible and testable, with which we get almost all that we could have hoped for.
 
 ## Conclusion
 
-There could be other possible ways to achieve the same, there are the ways that I generally see and use as of right now given the time and complexity required to implement the solutions. The latter solution gives me the option of unit testing, therefore it is my preferred way of coding for the commercial apps and setups.
+There could be other possible ways to achieve the same, there are the ways that I generally see and use as of right now given the time and complexity required to implement the solutions. The latter solution gives me the option of unit testing, therefore it is my preferred way of coding for commercial apps and setups.

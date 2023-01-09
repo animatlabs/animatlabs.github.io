@@ -68,7 +68,7 @@ SELECT @@LANGUAGE as 'DefaultLanguage'
 SELECT @@MAX_CONNECTIONS as 'MaxConnections'
 ```
 
-{% include figure image_path="/assets/images/posts/2022-10-05/Migration_Scripts.png" alt="Sql files for migrations" caption="Sql File Naming for Migrations" %}
+{% include figure image_path="/assets/images/posts/2022-09-03/Migration_Scripts.png" alt="Sql files for migrations" caption="Sql File Naming for Migrations" %}
 
 > On a general thing, we would be executing any script we read from a file via an `EXEC` command, this allows us the flexibility and additionally, we are going to replace the `'` in the application with the `''` to be able to run the queries via C#.
 
