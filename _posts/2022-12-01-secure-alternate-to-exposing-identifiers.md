@@ -35,7 +35,7 @@ In the commercial setups, the databases and the ID setup system could be based o
 
 ## Solution
 
-We will be looking into an approach which masks the IDs, basically a type of 2-way encryption technique with hashing which has been around for a very long time, theoretically. A similar approach is being used in today's date on huge platforms like youtube, Instagram, etc. for example = `https://www.youtube.com/watch?v=**tSuwe7FowzE**`, the value to the parameter `v` is the hash, hiding the actual Id which could be either numeric or GUID/UUID-based.
+We will be looking into an approach which masks the IDs, basically a type of 2-way encryption technique with hashing which has been around for a very long time, theoretically. A similar approach is being used in today's date on huge platforms like youtube, Instagram, etc. for example, a URL like --> `https://www.youtube.com/watch?v=tSuwe7FowzE`, the value to the parameter `v` is the hash, hiding the actual Id which could be either numeric or GUID/UUID-based.
 
 In this discussion, we will specifically be discussing masking/hashing the numeric-based systems and doing that with the help of an open-source project - [HashIds.NET](https://hashids.org/net/). This project has been around for quite some time and has a significant amount of downloads per day overall to bring it about.
 
@@ -184,7 +184,7 @@ public sealed class UserService : IUserService
         return users.Select(x => MapEntityToView(x));
     }
 
-    private Models.View.User MapEntityToView(Models.Entity.User? user)
+    private Models.View.User MapEntityToView(Models.Entity.User user)
     {
         if (user == null)
             return null;
