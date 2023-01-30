@@ -25,7 +25,7 @@ Therefore, in this article, we are going to discuss distributed locking, which i
 
 ## Idea and Theory
 
-There could be multiple ways we work with our redis servers to obtain the result.
+There could be multiple ways we work with our Redis servers to obtain the result, based on the servers, architecture and requirements.
 
 ### Single Master Setup - SETNX and DEL
 
@@ -36,7 +36,7 @@ In this case, we have only a single master setup for Redis with backing over fai
 - The replica gets promoted to master.
 - Client B acquires the lock to the same resource A already holds a lock for. SAFETY VIOLATION!
 
-Therefore, to achieve locking in such a case, when the resources need to write/update any key onto the system, it needs to take a lock over the resource and then perform the action.
+Therefore, to achieve locking in such a case, when the resources need to write/update any key onto the system, it needs to not only take a lock over the resource but also perform an additional task before performing any action.
   
 ```bash
 SET resource_name my_random_value NX PX 30000
@@ -116,7 +116,7 @@ public class DistributedLock_MultipleMasters
 
 In the above example, we are using a package called `RedLock.Net`, which accepts the list of connection multiplexers to the redis servers and creates a redlock instance over all those servers.
 
-There are two variations of the acquire lock functionality, which we could think of, one which accepts the resource to lock as well as the expiry time of the lock and another which apart from the two earlier als0 accepts the wait and retry times; which essentially means that in case of failure to acquire the lock, the system will keep retrying after every `retry` TimeSpan until `wait` TimeSpan. Unlocking again here is fairly simple that releases the lock over the resource without any hassles.
+There are two variations of the acquire lock functionality, which we could think of, one which accepts the resource to lock as well as the expiry time of the lock and another which apart from the two earlier also accepts the wait and retry times; which essentially means that in case of failure to acquire the lock, the system will keep retrying after every `retry` TimeSpan until `wait` TimeSpan is over. Unlocking again here is fairly simple that releases the lock over the resource without any hassles.
 
 ## Conclusion
 

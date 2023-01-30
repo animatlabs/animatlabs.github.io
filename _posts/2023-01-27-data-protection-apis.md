@@ -34,7 +34,7 @@ The real danger comes if the data-protection keys get deleted for some reason. T
 
 ## Implementations
 
-Here, let's set up a small sample console app and see how it basically works! But before that let's install and NuGet Package `Microsoft.AspNetCore.DataProtection` and does the following:
+Here, let's set up a small sample console app and see how it basically works! But before that let's install and NuGet Package `Microsoft.AspNetCore.DataProtection` and do the following:
 
 ```c#
 using Microsoft.AspNetCore.DataProtection;
@@ -76,7 +76,7 @@ The time-limited format of the data protector exposes certain other methods in t
 
 Similar methods are available with `byte[]` as input as well. The Unprotect methods return the original unprotected data. If the payload hasn't yet expired, the absolute expiration is returned as an optional out parameter along with the original unprotected data. If the payload is expired, all overloads of the Unprotect method will throw `CryptographicException`.
 
-### Configuration
+### Configurations
 
 #### Key Store
 
