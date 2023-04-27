@@ -1,5 +1,5 @@
 ---
-title: "Reactive Programming"
+title: ".NET Apps: Reactive Programming"
 excerpt: >-
   "Reactive programming in .NET - Efficiently using the Rx library"
 categories:
