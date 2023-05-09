@@ -73,8 +73,8 @@ Over here we are going to leverage the caveat that only Docker Desktop needs a l
     ```
 
     The above command would list the list of iptables available, select `1` and hit enter to continue. Repeat step 5 of starting the service and move further.
-    
-    {% include figure image_path="/assets/images/posts/2022-04-07/Ubuntu22-04-issue.jpg" alt="Console App Setup" caption="Console App Setup" %}
+
+    {% include figure image_path="/assets/images/posts/2022-04-07/Ubuntu22-04-issue.jpg" alt="Selecting iptables" caption="Selecting iptables" %}
 
 6. Verify that Docker is installed correctly
   
