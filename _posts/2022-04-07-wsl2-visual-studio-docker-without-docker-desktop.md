@@ -65,6 +65,16 @@ Over here we are going to leverage the caveat that only Docker Desktop needs a l
     ```bash
     sudo service docker start
     ```
+    
+    If by any chance you are happen to install `Ubuntu 22.04` or above, you will notice that even after running the above command the service would not start, the reason being the OS uses `iptables-nft` by default. Therefore, to fix it you would have to switch to `iptables-legacy` and to do so follow the following:
+
+    ```bash
+    sudo update-alternatives --config iptables
+    ```
+
+    The above command would list the list of iptables available, select `1` and hit enter to continue. Repeat step 5 of starting the service and move further.
+    
+    {% include figure image_path="/assets/images/posts/2022-04-07/Ubuntu22-04-issue.jpg" alt="Console App Setup" caption="Console App Setup" %}
 
 6. Verify that Docker is installed correctly
   
