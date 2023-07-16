@@ -23,7 +23,6 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
- 
 ## Introduction
 
 In the  C# and .NET world, unique identifiers play an important role in various applications and systems. The two most commonly used types of unique identifiers are Globally Unique Identifiers (GUIDs) and Universally Unique Identifiers (UUIDs). They serve the same purpose of creating unique identifiers, but there are some important differences between them. This blog looks at the differences between GUIDs and UUIDs, explains whether  GUIDs can solve potential problems, and explores how these identifiers are created.
@@ -51,13 +50,13 @@ In the  C# and .NET world, unique identifiers play an important role in various 
 
 ### Representation
 
-- A GUID is usually represented as a sequence of 32 hexadecimal digits grouped into five parts, each separated by a dash (eg {21EC2020-3AEA-1069-A2DD-08002B30309D}).
+- A GUID is usually represented as a sequence of 32 hexadecimal digits grouped into five parts, each separated by a dash (e.g. 21EC2020-3AEA-1069-A2DD-08002B30309D).
 - UUIDs are also represented as a string of 32 hexadecimal digits, but this uses a special structure defined by the IETF (e.g. 550e800-e29b-1d-a716-66551) to represent five grouped into sections separated by a line.
 
 ### Platform compatibility
 
 - GUIDs are primarily used in Windows-based systems and are widely supported by the .NET Framework.
-- UUID is a universally unique identifier that can be used across platforms and programming languages. 
+- UUID is a universally unique identifier that can be used across platforms and programming languages.
 
 ## Potential problems with GUIDs role of incremental GUIDs
 
