@@ -1,7 +1,7 @@
 ---
-title: "Unleashing the Power of Clean Architecture: Guide to Building Future-Proof Software Systems"
+title: "Power of Clean Architecture: Guide to Building Future-Proof Software Systems"
 excerpt: >-
-  "Discover the essence of Clean Architecture. In this comprehensive guide, a senior team member explains the purpose, implementation guidelines, and benefits of Clean Architecture. With a focus on .NET Core and MediatR, learn how to build scalable, maintainable, and testable applications. Explore code structure best practices and unleash the power of Clean Architecture for future-proof software systems."
+  "Discover the essence of Clean Architecture. In this comprehensive guide, with a focus on .NET Core and MediatR, we will learn how to build scalable, maintainable, and testable applications. Explore code structure best practices and unleash the power of Clean Architecture for future-proof software systems."
 categories:
   - Technical
   - .NET
