@@ -62,7 +62,7 @@ In any of the comparison block, we can clearly see that iterations over an array
 
 So, to begin it off lets look into how we generated a sample set data, we used a random value generator and generated an enumerable that gets the defines size of enumerable returned form the method. Apart from that, there is an extension for the ForEach on the Enumerable itself for uses later.
 
-```C#
+```c#
 internal static class ListGenerator
 {
     private static readonly Random random = new Random(10_00_000);
@@ -88,7 +88,7 @@ Now, given we have setup the sample set generator, let's look into setting up th
 
 The `GlobalSetupAttribute` is used over the method that sets up the data for the performance benchmarking in the library that we are referencing to. Along with the same, we use the `ParamsAttribute` for defining the set of values for which the globalSetup and the test cases need to run for:
 
-```C#
+```c#
 private int[] sampleSetArray;
 private List<int> sampleSetList;
 private IEnumerable<int> sampleSetEnumerable;
@@ -113,7 +113,7 @@ Now, let's look into all the code written for the loops with Arrays
 
 - **For**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Array_For()
     {
@@ -127,7 +127,7 @@ Now, let's look into all the code written for the loops with Arrays
 
 - **ForEach**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Array_ForEach()
     {
@@ -140,7 +140,7 @@ Now, let's look into all the code written for the loops with Arrays
 
 - **ForEachLinq**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Array_ForEachLinq()
     {
@@ -150,7 +150,7 @@ Now, let's look into all the code written for the loops with Arrays
 
 - **ParallelForEach**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Array_ParallelForEach()
     {
@@ -160,7 +160,7 @@ Now, let's look into all the code written for the loops with Arrays
 
 - **ParallelForAll**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Array_ParallelForAll()
     {
@@ -170,7 +170,7 @@ Now, let's look into all the code written for the loops with Arrays
 
 - **ForEachAsSpan**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Array_ForEachAsSpan()
     {
@@ -184,7 +184,7 @@ Now, let's look into all the code written for the loops with Arrays
 - **ForMemoryMarshalSpanUnsafe**
     > Note: This method only exists for arrays and nothing else
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Array_ForMemoryMarshalSpanUnsafe()
     {
@@ -204,7 +204,7 @@ Now, let's look into all the code written for the loops with Lists
 
 - **For**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void List_For()
     {
@@ -218,7 +218,7 @@ Now, let's look into all the code written for the loops with Lists
 
 - **ForEach**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void List_Foreach()
     {
@@ -231,7 +231,7 @@ Now, let's look into all the code written for the loops with Lists
 
 - **ForEachLinq**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void List_ForEachLinq()
     {
@@ -241,7 +241,7 @@ Now, let's look into all the code written for the loops with Lists
 
 - **ParallelForEach**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void List_ParallelForEach()
     {
@@ -251,7 +251,7 @@ Now, let's look into all the code written for the loops with Lists
 
 - **ParallelForAll**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void List_ParallelForAll()
     {
@@ -262,7 +262,7 @@ Now, let's look into all the code written for the loops with Lists
 - **ForEachAsSpanUnsafe**
     > Point to note here, unlike in the case fo arrays, this charters into the unsafe code territory!
 
-    ```C#
+    ```c#
     [Benchmark]
     public void List_ForEachAsSpanUnsafe()
     {
@@ -279,7 +279,7 @@ Now, let's look into all the code written for the loops with Enumerables
 
 - **For**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Enumerable_For()
     {
@@ -293,7 +293,7 @@ Now, let's look into all the code written for the loops with Enumerables
 
 - **ForEach**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Enumerable_Foreach()
     {
@@ -306,7 +306,7 @@ Now, let's look into all the code written for the loops with Enumerables
 
 - **ForEachLinq**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Enumerable_ForEachLinq()
     {
@@ -316,7 +316,7 @@ Now, let's look into all the code written for the loops with Enumerables
 
 - **ParallelForEach**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Enumerable_ParallelForEach()
     {
@@ -326,7 +326,7 @@ Now, let's look into all the code written for the loops with Enumerables
 
 - **ParallelForAll**
 
-    ```C#
+    ```c#
     [Benchmark]
     public void Enumerable_ParallelForAll()
     {
