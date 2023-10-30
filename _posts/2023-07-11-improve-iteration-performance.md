@@ -1,5 +1,5 @@
 ---
-title: ".NET/C#: Faster ways to iterate through collections"
+title: ".NET/C#: Faster ways to iterate collections"
 excerpt: >-
   "Exploring the different ways to achieve optimization in performance on iterations in .NET"
 categories:
@@ -36,13 +36,13 @@ In terms of loops that we are going to use, we are going to be fairly simple:
 
 1. For
 2. ForEach
-3. ForEach over **Span** [Read More](https://www.codemag.com/Article/2207031/Writing-High-Performance-Code-Using-SpanT-and-MemoryT-in-C) (think of pointers references in C/C++)
+3. ForEach over [Span](https://learn.microsoft.com/en-us/archive/msdn-magazine/2018/january/csharp-all-about-span-exploring-a-new-net-mainstay) (think of pointers references in C/C++)
 4. Linq based Foreach
 5. For over reference via MemoryMarshal (think of pointers references in C/C++)
 6. Parallel.ForAll()
 7. Parallel.ForEach()
 
-## Results First - Let's Blow your mind...
+## Results First - Let's blow your mind...
 
 To set the context, we have performed the said benchmarking over the collections of 10, 1_000, and 100_000 size of elements all generated in random and some methods are specific to a certain type therefore missing items in the block!
 
