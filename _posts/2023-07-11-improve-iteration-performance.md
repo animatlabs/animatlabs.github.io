@@ -20,6 +20,8 @@ comments: true
 
 When we discuss about any programming language, perhaps the first thing we look into after variables is iterations. Although there are many types of iterations available over several types, lets explore a few available with .NET 6 and also explore the code for the same. For benchmarking, we will be using a third-party library called `BechmarkDotNet`.
 
+**You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/Benchmarking/Iterations){: .btn .btn--primary}
+
 ## Exploring Various Types
 
 When we discuss about collections, we generally think about quite a few type of collections and sometimes even implement those without even the proper understanding on why to use a specific one... In the study here, we are going to explore the performance in .NET 6.0 for the types as follows:
