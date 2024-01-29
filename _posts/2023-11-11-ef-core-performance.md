@@ -83,7 +83,7 @@ var users = context.Users
                    .ToList();
 ```
 
-## 5. Database-Level Filtering and Sorting
+## Database-Level Filtering and Sorting
 
 ### Explanation
 
