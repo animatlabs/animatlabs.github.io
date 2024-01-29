@@ -1,7 +1,7 @@
 ---
 title: "Optimizing Entity Framework Core: A Guide to Enhancing Performance"
 excerpt: >-
-  "Here we explore four C# object mapping strategies: AutoMapper for complex mappings, Mapster for performance, Implicit Operators for native support, and Manual Mapping for full control. Each method offers unique benefits and drawbacks, making the choice dependent on project needs, performance requirements, and team expertise."
+  "In optimizing Entity Framework Core, managing concurrency with [ConcurrencyCheck] ensures data integrity during simultaneous edits. Effective connection management, achieved via consistent connection strings and per-request DbContext lifecycle, is crucial for resource efficiency. These strategies are key to enhancing EF Core's performance in .NET applications, ensuring robust and responsive data operations."
 categories:
   - Technical
   - .NET
@@ -23,52 +23,63 @@ comments: true
 
 Entity Framework Core (EF Core) is a powerful and flexible ORM widely used in .NET applications for data access. However, as with any technology, understanding how to optimize its use is crucial for building high-performance applications. This blog post delves into practical strategies for enhancing EF Core's performance, complete with examples for each technique.
 
-## 1. Utilizing AsNoTracking for Read-Only Scenarios
+## Utilizing AsNoTracking for Read-Only Scenarios
 
-### Explanation:
+### Explanation
+
 When EF Core tracks changes in entities, it adds overhead. For read-only operations, disabling this tracking can improve performance.
 
-### Example:
+### Example
+
 ```csharp
 var customers = context.Customers
                        .AsNoTracking()
                        .ToList();
 ```
 
-## 2. Projecting Only Required Data
+## Projecting Only Required Data
 
-### Explanation:
+### Explanation
+
 Fetching only the necessary fields from the database reduces data transfer and processing overhead.
 
-### Example:
+### Example
+
 ```csharp
 var productInfo = context.Products
                          .Select(p => new { p.Name, p.Price })
                          .ToList();
 ```
 
-## 3. Writing Efficient LINQ Queries
+## Writing Efficient LINQ Queries
 
-### Explanation:
+### Explanation
+
 The way LINQ queries are composed impacts the SQL generated. Avoid inefficient patterns that can lead to poor performance.
 
-### Example:
+### Example
+
 Avoid:
+
 ```csharp
 var list = context.Products.ToList();
 var filteredList = list.Where(p => p.Price > 100).ToList();
 ```
+
 Prefer:
+
 ```csharp
 var filteredList = context.Products.Where(p => p.Price > 100).ToList();
 ```
 
-## 4. Leveraging Raw SQL for Complex Queries
+## Leveraging Raw SQL for Complex Queries
 
-### Explanation:
+### Explanation
+
 In scenarios where LINQ may not generate optimal SQL, using raw SQL queries can be more efficient.
 
-### Example:
+### Example
+
 ```csharp
 var users = context.Users
                    .FromSqlRaw("SELECT * FROM Users WHERE Name = 'John'")
@@ -77,10 +88,12 @@ var users = context.Users
 
 ## 5. Database-Level Filtering and Sorting
 
-### Explanation:
+### Explanation
+
 Applying filters and sorting in the database query itself is more efficient than processing data in memory.
 
-### Example:
+### Example
+
 ```csharp
 var filteredUsers = context.Users
                            .Where(u => u.IsActive)
@@ -88,108 +101,131 @@ var filteredUsers = context.Users
                            .ToList();
 ```
 
-## 6. Employing Eager Loading for Related Data
+## Employing Eager Loading for Related Data
 
-### Explanation:
+### Explanation
+
 Eager loading fetches related entities in a single query, reducing the number of database calls.
 
-### Example:
+### Example
+
 ```csharp
 var orders = context.Orders
                     .Include(o => o.Customer)
                     .ToList();
 ```
 
-## 7. Exploring Explicit and Lazy Loading
+## Exploring Explicit and Lazy Loading
 
-### Explanation:
+### Explanation
+
 Explicit and lazy loading can be alternatives to eager loading, especially when dealing with complex data structures.
 
-### Example:
+### Example
+
 Lazy Loading:
+
 ```csharp
 var order = context.Orders.Find(1);
 // Customer is loaded when accessed
 var customerName = order.Customer.Name;
 ```
 
-## 8. Model Optimization
+## Model Optimization
 
-### Explanation:
+### Explanation
+
 Properly configuring indexes, relationships, and query filters in the EF Core model can lead to significant performance gains.
 
-### Example:
+### Example
+
 ```csharp
 modelBuilder.Entity<Order>()
             .HasIndex(o => o.OrderDate);
 ```
 
-## 9. Batching Operations
+## Batching Operations
 
-### Explanation:
+### Explanation
+
 Batching multiple updates or inserts into a single operation reduces the number of database round trips.
 
-### Example:
+### Example
+
 Using third-party libraries like EF Core Plus:
+
 ```csharp
 context.BulkInsert(listOfEntities);
 ```
 
-## 10. Implementing Caching Strategies
+## Implementing Caching Strategies
 
-### Explanation:
+### Explanation
+
 Caching frequently accessed data reduces database load but requires careful management to avoid stale data.
 
-### Example:
+### Example
+
 Implementing memory caching:
+
 ```csharp
 var categories = memoryCache.GetOrCreate("categories", entry => {
     return context.Categories.ToList();
 });
 ```
 
-## 11. Utilizing Compiled Queries
+## Utilizing Compiled Queries
 
-### Explanation:
+### Explanation
+
 Compiled queries in EF Core are beneficial for queries executed repeatedly, as they are compiled once and reused.
 
-### Example:
+### Example
+
 ```csharp
 private static readonly Func<MyDbContext, int, List<Customer>> _compiledQuery =
     EF.CompileQuery((MyDbContext context, int id) => 
         context.Customers.Where(c => c.Id == id).ToList());
 ```
 
-## 12. Profiling and Monitoring SQL Queries
-
-### Explanation:
-Using tools like SQL Server Profiler helps understand the SQL generated by EF Core, aiding in identifying and optimizing inefficient queries.
-
-### Example:
-Analyzing the SQL output in the profiler to identify bottlenecks.
-
-## 13. Keeping EF Core Updated
-
-### Explanation:
-Each new version of EF Core brings enhancements and performance improvements.
-
-### Example:
-Regularly updating the EF Core NuGet package to the latest version.
-
-## 14. Database Optimization
-
-### Explanation:
-Optimizing the underlying database, such as creating appropriate indexes, is crucial for overall performance.
-
-### Example:
-Creating indexes based on query analysis in the database.
-
-## 15. Managing Concurrency Efficiently
+## Profiling and Monitoring SQL Queries
 
 ### Explanation
+
+Using tools like SQL Server Profiler helps understand the SQL generated by EF Core, aiding in identifying and optimizing inefficient queries.
+
+### Example
+
+Analyzing the SQL output in the profiler to identify bottlenecks.
+
+## Keeping EF Core Updated
+
+### Explanation
+
+Each new version of EF Core brings enhancements and performance improvements.
+
+### Example
+
+Regularly updating the EF Core NuGet package to the latest version.
+
+## Database Optimization
+
+### Explanation
+
+Optimizing the underlying database, such as creating appropriate indexes, is crucial for overall performance.
+
+### Example
+
+Creating indexes based on query analysis in the database.
+
+## Managing Concurrency Efficiently
+
+### Explanation
+
 Concurrency control is vital in applications where multiple users or processes might attempt to modify the same data concurrently. Without proper handling, this can lead to data conflicts or loss. Entity Framework Core supports Optimistic Concurrency Control, which assumes that multiple transactions can complete without affecting each other and checks for conflicts only when data is saved.
 
 ### Example
+
 Suppose you have a `Product` entity with a `Price` field. You want to ensure that when two users attempt to update the price of the same product concurrently, the application detects and handles the conflict.
 
 First, decorate the `Price` property with the `[ConcurrencyCheck]` attribute in your entity class:
@@ -218,28 +254,34 @@ catch (DbUpdateConcurrencyException ex)
 }
 ```
 
-## 16. Reducing SaveChanges() Calls
-
-### Explanation:
-Minimizing the number of `SaveChanges()` calls in a transaction can improve performance.
-
-### Example:
-Batching multiple changes and calling `SaveChanges()` once.
-
-## 17. Careful Use of LINQ Methods
-
-### Explanation:
-Certain LINQ methods, if used improperly, can lead to performance issues.
-
-### Example:
-Using `Any()` instead of `Count()` to check for existence.
-
-## 18. Effective Connection Management
+## Reducing SaveChanges() Calls
 
 ### Explanation
+
+Minimizing the number of `SaveChanges()` calls in a transaction can improve performance.
+
+### Example
+
+Batching multiple changes and calling `SaveChanges()` once.
+
+## Careful Use of LINQ Methods
+
+### Explanation
+
+Certain LINQ methods, if used improperly, can lead to performance issues.
+
+### Example
+
+Using `Any()` instead of `Count()` to check for existence.
+
+## Effective Connection Management
+
+### Explanation
+
 Effective management of database connections is crucial for performance, especially in web applications that handle numerous concurrent requests. Connection pooling is a technique used to maintain a cache of database connections that can be reused, rather than opening a new connection for each request.
 
 ### Example
+
 In .NET Core and EF Core, connection pooling is handled by the database provider, such as SQL Server, and is enabled by default. However, it's essential to ensure that your connection strings are consistent, as connection pools are segregated based on the connection string.
 
 Here's an example of how you might configure a SQL Server connection in your `DbContext`:
