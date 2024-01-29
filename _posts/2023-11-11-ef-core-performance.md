@@ -10,11 +10,8 @@ tags:
   - C#
   - .NET
   - .NET-Core
-  - object Mapping
-  - AutoMapper
-  - Mapster
-  - implicit Operaton
-  - DTOs
+  - EntityFrameworkCore
+  - EFCorePerformance
 author: animat089
 toc: true
 toc_label: "Table of Contents"
