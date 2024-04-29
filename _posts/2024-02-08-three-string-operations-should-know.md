@@ -110,4 +110,4 @@ Incorporating these techniques into your .NET applications can significantly imp
 
 ## References
 
-- [Stefan's Thought around the same](https://stefandjokic.tech/posts/3-things-you-should-know-about-strings)
+- [Stefan's Blog talking about the same](https://stefandjokic.tech/posts/3-things-you-should-know-about-strings)
