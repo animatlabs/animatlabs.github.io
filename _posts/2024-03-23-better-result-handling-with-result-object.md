@@ -1,7 +1,7 @@
 ---
 title: "Better result handling with Result<T>"
 excerpt: >-
-  ""
+  "Exceptions shouldn't be used to control normal program flow. It can be challenging to follow the logic of a program that jumps from one exception handler to another, as opposed to one that follows a more straightforward, linear flow."
 categories:
   - Technical
   - .NET
@@ -154,7 +154,3 @@ Embracing the Result class in your code allows you to:
 - Offer a streamlined, functional approach to managing errors.
 
 What's more, you can systematically catalog all the errors in your application using the Error class. This is incredibly useful, providing a clear guide on which errors to anticipate and handle.
-
-## References
-
-- [Stefan's Blog talking about the same](https://stefandjokic.tech/posts/better-error-handling-with-result-object)
