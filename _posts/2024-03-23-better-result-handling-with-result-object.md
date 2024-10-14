@@ -16,7 +16,7 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
-### Introduction
+## Introduction
 
 Exceptions should be rare...**Why?**...Throwing and catching exceptions **is slow** relative to other code flow patterns. Because of this, exceptions shouldn't be used to control normal program flow.**Also**...Code that relies heavily on exceptions for control flow can become **difficult to read and maintain** . It can be challenging to follow the logic of a program that jumps from one exception handler to another, as opposed to one that follows a more straightforward, linear flow.
 
@@ -32,7 +32,7 @@ In this article, we explain how you can minimize using exceptions, and change th
 
 ## Result Error Handling
 
-### Handling errors with regular Exceptions 
+### Handling errors with regular Exceptions
 
 Let's consider a common business logic scenario: validating user input for a registration form. Initially, let's see how this might be done using exceptions:
 
