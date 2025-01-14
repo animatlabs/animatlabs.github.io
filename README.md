@@ -2,7 +2,7 @@
 
 <img src="https://hrcdn.net/s3_pub/hr-avatars/6653c93b-0af9-4571-b9c4-28a75bbbc239/150x150.png" alt="avatar" style="float:left; height:180px; width:180px; border-radius:25%; margin: 30px 20px 0px 0px"/>
 
-Hello, Ola, Ciao! I am _Animesh Agarwal_, a technologist, currently associated with GlobalLogic as a Technical Architect. I hail from the city of Nawabs and Kababs (speaking out loud, I am a foodophile), Lucknow, India. In my leisure time, I can be found either exploring some new tech, device, listening/creating music or strolling out with my camera.
+Hello, Ola, Ciao! I am _Animesh Agarwal_, a technologist, currently associated with Autodesk as a Principal Software Engineer. I hail from the city of Nawabs and Kababs (speaking out loud, I am a foodophile), Lucknow, India. In my leisure time, I can be found either exploring some new tech, device, listening/creating music or strolling out with my camera.
 
 I strongly believe that we learn better, when we share. Therefore, this initiative is an effort in the direction of sharing my learnings and ever-evolving playground with the larger community. With this, I am looking forward to explore new tech and perhaps collaborate to develop better solutions.
 
