@@ -6,7 +6,6 @@ categories:
   - Technical
   - .NET  
   - Workflow
-  - Performance
 tags:
   - .NET
   - Workflow
