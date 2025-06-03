@@ -1,5 +1,5 @@
 ---
-title: "🔥 WorkflowForge: Zero-Dependency Workflow Orchestration That Actually Performs"
+title: "WorkflowForge: Zero-Dependency Workflow Orchestration That Actually Performs"
 excerpt: >-
   "Tired of workflow frameworks that eat your memory and slow down your apps? WorkflowForge delivers sub-microsecond operations with zero core dependencies, 15x concurrency scaling, and a developer experience that just makes sense. Now available on NuGet with production-ready extensions."
 categories:
