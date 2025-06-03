@@ -1,5 +1,5 @@
 ---
-title: "Introducing WorkflowForge: A Forge for Workflows 🔨"
+title: "Introducing WorkflowForge: A Forge for Workflows"
 excerpt: >-
   "After quite a bit of time working with various .NET workflow orchestration frameworks available in the market, I found myself constantly battling the same issues: heavy dependencies, complex configurations, performance bottlenecks, and steep learning curves. WorkflowForge is a modern workflow orchestration framework built with a simple philosophy: zero dependencies in the core, maximum power through optional extensions. Discover how WorkflowForge can simplify your workflow orchestration in .NET."
 categories:
@@ -20,8 +20,6 @@ toc: true
 toc_label: "Table of Contents"
 comments: true
 ---
-
-# Introducing WorkflowForge: A Forge for Workflows 🔨
 
 After quite a bit of time working with various .NET workflow orchestration frameworks available inthe market, I found myself constantly battling the same issues: heavy dependencies, complex configurations, performance bottlenecks, and steep learning curves. Each project seemed to require extensive setup just to get a simple workflow running.
 
@@ -155,7 +153,7 @@ public class ProcessPaymentOperation : IWorkflowOperation
         }
     }
 }
-
+```
 Notice the built-in **compensation pattern**? When `SupportsRestore = true`, WorkflowForge automatically calls `RestoreAsync` on completed operations if something goes wrong downstream. No manual saga orchestration needed - just implement the rollback logic and WorkflowForge handles the rest!
 
 ## Performance That Matters
