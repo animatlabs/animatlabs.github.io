@@ -1,0 +1,196 @@
+/* Typography and layout refinements for consistent scale */
+
+/* Base */
+html, body {
+  font-size: 17px;
+}
+
+body {
+  line-height: 1.8;
+}
+
+.page__content p,
+.page__content li {
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+/* Headings: fluid, slightly tighter than theme defaults */
+h1, .page__title {
+  font-size: clamp(1.6rem, 1.2rem + 1.2vw, 2rem);
+  line-height: 1.25;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: clamp(1.35rem, 1.1rem + 0.9vw, 1.6rem);
+  line-height: 1.35;
+  margin-top: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+
+h3 {
+  font-size: clamp(1.2rem, 1.0rem + 0.6vw, 1.3rem);
+  line-height: 1.4;
+  margin-top: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+h4 { font-size: 1.05rem; line-height: 1.4; }
+h5 { font-size: 1rem; line-height: 1.4; }
+h6 { font-size: 0.95rem; line-height: 1.4; }
+
+/* Lists spacing */
+.page__content ul, .page__content ol {
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+}
+.page__content li + li { margin-top: 0.15rem; }
+
+/* Code & pre blocks */
+.page__content pre,
+.highlighter-rouge pre {
+  font-size: 0.92rem; /* slightly smaller for compact look */
+  line-height: 1.55;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.page__content code,
+code {
+  font-size: 0.95rem;
+}
+
+/* Tables, blockquotes, captions */
+.page__content table { font-size: 0.98rem; }
+.page__content blockquote { font-size: 1rem; }
+.page__content figcaption { font-size: 0.9rem; color: #666; }
+
+/* Responsive tables: avoid horizontal overflow clipping */
+.page__content table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Anchor offset so in-page links don't hide headings under masthead */
+.page__content h1,
+.page__content h2,
+.page__content h3,
+.page__content h4,
+.page__content h5,
+.page__content h6 {
+  scroll-margin-top: 80px;
+}
+
+/* Code colors: accessible, higher contrast on light background */
+.highlight pre, pre.highlight {
+  background: #0d1117; /* dark background like GitHub dark */
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+}
+.highlight .c { color: #8b949e; font-style: italic; }
+.highlight .k, .highlight .o { color: #ff7b72; }
+.highlight .nt { color: #7ee787; }
+.highlight .na { color: #d2a8ff; }
+.highlight .s { color: #a5d6ff; }
+.highlight .mi, .highlight .mf { color: #79c0ff; }
+.highlight .nb { color: #ffa657; }
+.highlight .nf { color: #d2a8ff; }
+.highlight .err { color: #ff7b72; background: transparent; }
+
+/* Limit content width for ideal measure */
+.page { max-width: 100%; }
+
+/* Fluid images and lazyload */
+.page__content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Back-to-top button */
+#backToTop {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  border: none;
+  opacity: 0;
+  transition: opacity .2s ease-in-out, transform .1s;
+  cursor: pointer;
+  z-index: 9999;
+}
+#backToTop:hover { transform: translateY(-2px); }
+
+/* Reading progress */
+#readingProgress {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, #2ea043, #238636);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  z-index: 9998;
+}
+
+/* Code language badge */
+.code-badge {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 11px;
+  background: #eaeef2;
+  color: #444;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+/* TOC adjustments: match body size and avoid inner scrolling */
+.toc { max-height: none; overflow: visible; }
+.toc .nav__title { font-size: 0.95rem; }
+.toc .toc__menu a { font-size: 0.95rem; line-height: 1.5; }
+
+/* Header balance: larger site title/social, slightly smaller nav */
+.masthead__title, .site-title {
+  font-size: 1.25rem;
+}
+.masthead__menu .site-nav .page-link {
+  font-size: 0.95rem;
+}
+.masthead__social a { font-size: 1.2rem; }
+
+/* Compact masthead and logo sizing */
+.masthead { padding-top: 0.2rem; padding-bottom: 0.2rem; }
+.greedy-nav { padding-top: 0.1rem; padding-bottom: 0.1rem; margin-bottom: 0; }
+.site-logo img { height: 64px; width: auto; }
+.greedy-nav { align-items: center; column-gap: 12px; }
+.site-logo { margin-right: 10px; }
+.masthead__title { display: flex; flex-direction: column; justify-content: center; gap: 0; }
+/* Fixed line box heights: title row 50px, 2px gap, subtitle row 10px */
+.site-title { display: block; margin: 0; font-size: 32px; line-height: 1; white-space: nowrap; }
+.site-subtitle { display: block; margin: 0; font-size: 10px; line-height: 1; color: #555; white-space: nowrap; }
+.greedy-nav .site-nav { align-self: center; }
+
+/* Responsive scaling removed for logo; keep title responsive via clamp */
+.masthead__menu .site-nav { margin: 0; }
+.masthead + .initial-content { margin-top: 0.2rem; }
+
+/* Tighten nav link vertical padding */
+.masthead__menu .site-nav a.page-link {
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+
+/* Ensure no extra margin on masthead inner container */
+.masthead__inner { margin-bottom: 0 !important; }

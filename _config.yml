@@ -5,7 +5,9 @@
 locale: "en-US"
 title: AnimatLabs
 title_separator: "-"
-subtitle: My playground shared 
+subtitle: My shared playground for community!
+url: "https://animatlabs.com"
+baseurl: ""
 logo: "/assets/images/logo_300x300.png"
 og_image: "/assets/images/logo_300x300.png"
 incremental: true
@@ -15,10 +17,11 @@ description: >-
   I believe we learn better when we share, therefore, looking forward to explore, learn and collaborate to develop better solutions. 
 minimal_mistakes_skin: default
 search: true
+repository: animatlabs/animatlabs.github.io
 
 # Analytics
 analytics:
-  provider               : "google-universal"
+  provider               : "google-gtag"
   google:
     tracking_id          : "G-KKSHQVHDHY"
     anonymize_ip         : true
@@ -32,7 +35,7 @@ breadcrumbs: true
 permalink: /:categories/:title/
 paginate: 5
 paginate_path: /page:num/
-timezone: IN
+timezone: Asia/Kolkata
 
 comments:
   provider: "disqus"
@@ -62,6 +65,8 @@ plugins:
   - jekyll-feed
   - jemoji
   - jekyll-include-cache
+  - jekyll-redirect-from
+  - jekyll-seo-tag
 
 footer:
   links:
@@ -74,7 +79,8 @@ footer:
 
 after_footer_scripts:
   - https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js
-  - assets/scripts/clipboardrouge.js
+  - /assets/scripts/clipboardrouge.js
+  - /assets/scripts/enhancements.js
 
 defaults:
   # _posts
@@ -88,6 +94,8 @@ defaults:
       comments: true
       share: true
       related: true
+      toc: true
+      toc_sticky: true
   # _pages
   - scope:
       path: "_pages"

@@ -1,0 +1,37 @@
+name: Link Check
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '**/*.html'
+      - '_config.yml'
+
+jobs:
+  htmlproofer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+      - name: Install html-proofer
+        run: gem install html-proofer
+      - name: Build site
+        run: |
+          gem install bundler
+          bundle config set path vendor/bundle
+          bundle install
+          bundle exec jekyll build
+      - name: Check links
+        run: |
+          npx --yes html-proofer ./_site \
+            --assume-extension \
+            --check-favicon \
+            --check-html \
+            --enforce-https \
+            --http-status-ignore 429 \
+            --url-ignore ".*localhost.*" \
+            --disable_external
+

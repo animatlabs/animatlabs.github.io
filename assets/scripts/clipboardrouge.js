@@ -66,15 +66,25 @@ var clipboard = new ClipboardJS("[data-clipboard-copy]", {
 clipboard.on("success", function (e) {
   e.clearSelection();
   buttonBlink(e.trigger, "btn--success");
-  console.info("Action:", e.action);
-  console.info("Text:", e.text);
-  console.info("Trigger:", e.trigger);
+  // Tooltip
+  var tip = document.createElement("span");
+  tip.textContent = "Copied!";
+  tip.style.position = "absolute";
+  tip.style.right = "3.2em";
+  tip.style.top = "0.6em";
+  tip.style.background = "#28a745";
+  tip.style.color = "#fff";
+  tip.style.padding = "2px 6px";
+  tip.style.borderRadius = "4px";
+  tip.style.fontSize = "12px";
+  tip.style.pointerEvents = "none";
+  tip.style.opacity = "0.95";
+  e.trigger.parentElement.appendChild(tip);
+  setTimeout(function(){ if(tip && tip.parentElement){ tip.parentElement.removeChild(tip);} }, 800);
 });
 
 clipboard.on("error", function (e) {
   e.clearSelection();
   buttonBlink(e.trigger, "btn--danger");
-  console.info("Action:", e.action);
-  console.info("Trigger:", e.trigger);
 });
 // Finish

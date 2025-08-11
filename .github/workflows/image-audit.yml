@@ -1,0 +1,23 @@
+name: Image audit (size)
+
+on:
+  pull_request:
+    paths:
+      - 'assets/images/**'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find large images (>500KB)
+        run: |
+          set -e
+          LARGE=$(find assets/images -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) -size +500k || true)
+          if [ -n "$LARGE" ]; then
+            echo "The following images exceed 500KB:" >&2
+            echo "$LARGE" | sed 's/^/ - /' >&2
+            exit 1
+          fi
+          echo "No images over 500KB found."
+
