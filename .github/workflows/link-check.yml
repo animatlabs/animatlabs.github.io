@@ -16,22 +16,22 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
-      - name: Install html-proofer
-        run: gem install html-proofer
-      - name: Build site
+          bundler-cache: true
+      - name: Install dependencies
         run: |
           gem install bundler
           bundle config set path vendor/bundle
           bundle install
-          bundle exec jekyll build
+          gem install html-proofer
+      - name: Build site
+        run: bundle exec jekyll build
       - name: Check links
         run: |
-          npx --yes html-proofer ./_site \
-            --assume-extension \
+          htmlproofer ./_site \
+            --assume-extension=.html \
             --check-favicon \
-            --check-html \
             --enforce-https \
-            --http-status-ignore 429 \
-            --url-ignore ".*localhost.*" \
-            --disable_external
-
+            --ignore-status-codes=429 \
+            --ignore-urls="/localhost/,/127.0.0.1/" \
+            --no-check-external-hash \
+            --disable-external

@@ -5,7 +5,7 @@ excerpt: >-
 categories:
   - Technical
   - .NET
-  - Apps
+  - .NET-Core
 tags:
   - C#
   - .NET

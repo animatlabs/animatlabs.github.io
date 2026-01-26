@@ -5,7 +5,7 @@ author_profile: true
 author: animat089
 ---
 
-<img src="https://hrcdn.net/s3_pub/hr-avatars/6653c93b-0af9-4571-b9c4-28a75bbbc239/150x150.png" alt="avatar" style="float:left; height:180px; width:180px; border-radius:25%; margin: 30px 20px 0px 0px"/>
+<img src="/assets/images/bio-photo.jpg" alt="Animesh Agarwal - Principal Software Engineer" style="float:left; height:180px; width:180px; border-radius:25%; margin: 30px 20px 0px 0px"/>
 
 Hello, Ola, Ciao! I am _Animesh Agarwal_, a technologist, currently associated with Autodesk as a Principal Software Engineer. I hail from the city of Nawabs and Kababs (speaking out loud, I am a food-o-phile), Lucknow, India. In my leisure time, I can be found either exploring some new tech, device, listening/creating music or strolling out with my camera.
 
@@ -16,16 +16,6 @@ I strongly believe that we learn better, when we share. Therefore, this initiati
 I started my career with `Java` (read `.NET`, hope you got the irony) for developing background services and desktop apps and then transitioned into web and cloud in the recent past. I have been fortunate to have worked in software on multiple domains including power distribution, Scada, virtual construction, image processing, exam and document management, waste management, background verification, real-estate, oil and gas to name a few.
 
 In my general work day, I can be seen working on solutions for the software components, PoCs for driving decisions, framework development for teams to extend, (re)structuring and optimizing code. So, you would majorly find me talking about C#, .NET, algorithms, patterns, coding guidelines, etc.
-
-<a href="https://stackoverflow.com/users/2822615/animat089" target="_blank">
-    <img src="https://stackoverflow.com/users/flair/2822615.png" width="208" height="58" alt="StackOverflow profile for animat089" title="StackOverflow profile for animat089">
-</a>
-<a href="https://www.hackerrank.com/animat089" target="_blank">
-    <span style="width:fit-content;white-space:nowrap" alt="HackerRank profile for animat089" title="HackerRank profile for animat089">
-        <img src="https://hrcdn.net/s3_pub/hr-avatars/6653c93b-0af9-4571-b9c4-28a75bbbc239/150x150.png" height="58" width="58">
-        <img src="https://hrcdn.net/community-frontend/assets/brand/logo-new-white-green-a5cb16e0ae.svg" height="58" width="148" style="filter:invert(1)">
-    </span>
-</a>
 
 ## About the logo
 

@@ -2,10 +2,12 @@
 title: ".NET Apps: Redis Distributed Locking"
 excerpt: >-
   "Distributed locking in centralized cache management system like redis which helps maintain integrity and consistency throughout all microservices."
+redirect_from:
+  - /technical/.net/apps/redis-distribulted-locking/
 categories:
   - Technical
   - .NET
-  - Apps
+  - .NET-Core
 tags:
   - C#
   - .NET
@@ -42,7 +44,7 @@ Therefore, to achieve locking in such a case, when the resources need to write/u
 SET resource_name my_random_value NX PX 30000
 ```
 
-The command will set the key only if it does not already exist (NX option), with an expiration of 30000 milliseconds (PX option). The key is set to a value “my_random_value” which must be unique across all clients and all lock requests.
+The command will set the key only if it does not already exist (NX option), with an expiration of 30000 milliseconds (PX option). The key is set to a value "my_random_value" which must be unique across all clients and all lock requests.
 
 Basically, the random value is used in order to release the lock in a safe way, with a script that tells Redis: remove the key only if it exists and the value stored at the key is exactly the one I expect to be.
 

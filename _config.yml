@@ -68,14 +68,28 @@ plugins:
   - jekyll-redirect-from
   - jekyll-seo-tag
 
+# Feed settings (jekyll-feed)
+feed:
+  path: feed.xml
+  posts_limit: 20
+
+# Sitemap settings (jekyll-sitemap)
+# Sitemap is auto-generated at /sitemap.xml
+
 footer:
   links:
+    - label: "RSS Feed"
+      icon: "fas fa-fw fa-rss-square"
+      url: "/feed.xml"
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: "https://linkedin.com/in/089ani"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/animat089"
+    - label: "Privacy"
+      icon: "fas fa-fw fa-shield-alt"
+      url: "/privacy/"
 
 after_footer_scripts:
   - https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js

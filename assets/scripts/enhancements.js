@@ -34,11 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch {}
   });
 
-  // Back-to-top button
+  // Back-to-top button with accessibility
   const backBtn = document.createElement('button');
   backBtn.id = 'backToTop';
   backBtn.title = 'Back to top';
-  backBtn.innerHTML = '▲';
+  backBtn.setAttribute('aria-label', 'Back to top');
+  backBtn.innerHTML = '<span aria-hidden="true">▲</span>';
   backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   document.body.appendChild(backBtn);
 
@@ -48,9 +49,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('scroll', onScrollUI, { passive: true });
   onScrollUI();
 
-  // Reading progress bar
+  // Reading progress bar with accessibility
   const progress = document.createElement('div');
   progress.id = 'readingProgress';
+  progress.setAttribute('role', 'progressbar');
+  progress.setAttribute('aria-label', 'Reading progress');
+  progress.setAttribute('aria-valuemin', '0');
+  progress.setAttribute('aria-valuemax', '100');
+  progress.setAttribute('aria-valuenow', '0');
   document.body.appendChild(progress);
   const content = document.querySelector('.page__content') || document.body;
   const updateProgress = () => {
@@ -62,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrolled = Math.min(Math.max(window.scrollY - contentTop, 0), max);
     const pct = Math.round((scrolled / max) * 100);
     progress.style.transform = `scaleX(${pct / 100})`;
+    progress.setAttribute('aria-valuenow', pct);
   };
   document.addEventListener('scroll', updateProgress, { passive: true });
   window.addEventListener('resize', updateProgress);
@@ -94,5 +101,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     last = level;
   });
+
+  // Email Subscribe CTA at end of blog posts
+  const pageContent = document.querySelector('.page__content');
+  const isPost = document.querySelector('.page__meta') && document.querySelector('.page__date');
+  if (pageContent && isPost) {
+    const cta = document.createElement('div');
+    cta.id = 'subscribe-cta';
+    cta.innerHTML = `
+      <div style="background:linear-gradient(135deg,#f8f9fa 0%,#e9ecef 100%);padding:1.5em 2em;border-radius:12px;margin:2.5em 0 1em;text-align:center;border:1px solid #dee2e6;">
+        <p style="margin:0 0 0.5em;font-size:1.1em;font-weight:600;color:#212529;">Enjoyed this post?</p>
+        <p style="margin:0 0 1em;color:#6c757d;font-size:0.95em;">Get new articles delivered to your inbox. No spam, unsubscribe anytime.</p>
+        <form action="https://api.follow.it/subscription-form/eXRoSmNlOEdxTjZ5aFBLaW5lYjZzR3pnb1BQTks5MElIQVdTY2hZSEw5REYzbERXckJQKzREUDRBblhsbEtyUnpMV09ONlhNbDR6azRnRVh2NmdlZXdFWGVGQlhocm1GeW96UXpUN0RaTG91d3hVS2hjUjNkOG8xUk96UElBZzh8T2hrVEtkaU1iQjJiR0IxWi95czFXYjJMWWcwSWprU21GVk4xVXkwS3NjWT0=/8" method="post" style="display:flex;gap:0.5rem;max-width:400px;margin:0 auto;flex-wrap:wrap;justify-content:center;">
+          <input type="email" name="email" placeholder="Enter your email" required style="flex:1;min-width:180px;padding:0.6rem 1rem;border:1px solid #ced4da;border-radius:6px;font-size:0.95rem;text-align:center;outline:none;">
+          <button type="submit" style="padding:0.6rem 1.25rem;background:#212529;color:#fff;border:none;border-radius:6px;font-size:0.95rem;font-weight:600;cursor:pointer;">Subscribe</button>
+        </form>
+      </div>
+    `;
+    pageContent.appendChild(cta);
+  }
 });
 

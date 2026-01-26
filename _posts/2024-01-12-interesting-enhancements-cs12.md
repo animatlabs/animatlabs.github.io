@@ -2,6 +2,8 @@
 title: "Exciting enhancements in C# 12"
 excerpt: >-
   "In November 2023, C# 12 arrived with a bang, bundled with .NET 8, bringing with it a bunch of cool new features that have made developers sit up and take notice."
+redirect_from:
+  - /technical/.net/.net-core/intersting-enhancements-cs12/
 categories:
   - Technical
   - .NET
@@ -48,7 +50,7 @@ This feature boosts coding efficiency by cutting down on boilerplate and potenti
 
 C# 12 introduces a streamlined approach to class and struct construction with the advent of primary constructors, significantly reducing the verbosity traditionally associated with object initialization.
 
-This new feature **allows constructors to be declared directly within the type's declaration line**, making it applicable to classes, structs, record classes, and record structs. It’s particularly effective for initializing fields or properties directly with constructor parameters, thereby facilitating a more straightforward dependency injection.
+This new feature **allows constructors to be declared directly within the type's declaration line**, making it applicable to classes, structs, record classes, and record structs. It's particularly effective for initializing fields or properties directly with constructor parameters, thereby facilitating a more straightforward dependency injection.
 
 ```c#
 public class User(string firstName, string lastName, int age, List<Role> roles)

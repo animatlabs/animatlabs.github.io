@@ -1,5 +1,18 @@
 User-agent: *
 Allow: /
 
+# Disallow pagination and archive duplicates
+Disallow: /page/
+Disallow: /page2/
+Disallow: /page3/
+Disallow: /page4/
+Disallow: /page5/
+
+# Crawl delay for politeness
+Crawl-delay: 1
+
+# Sitemap location
 Sitemap: https://animatlabs.com/sitemap.xml
 
+# RSS Feed
+# Feed: https://animatlabs.com/feed.xml

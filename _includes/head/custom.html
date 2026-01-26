@@ -1,3 +1,4 @@
+<!-- Favicon and PWA -->
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
@@ -5,4 +6,29 @@
 <link rel="mask-icon" href="/assets/favicon/safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
+
+<!-- follow.it verification -->
+<meta name="follow.it-verification-code" content="VPQG34lwcA057Anu2Mmy"/>
+
+<!-- Preconnect hints for performance -->
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+<link rel="dns-prefetch" href="https://www.google-analytics.com">
+
+<!-- Preload critical resources -->
+<link rel="preload" href="/assets/images/logo_300x300.png" as="image">
+
+<!-- DNS prefetch for Disqus comments -->
+<link rel="dns-prefetch" href="https://disqus.com">
+<link rel="dns-prefetch" href="https://c.disquscdn.com">
+<link rel="dns-prefetch" href="https://animatlabs.disqus.com">
+
+<!-- RSS Feed autodiscovery -->
+<link rel="alternate" type="application/rss+xml" title="{{ site.title }} RSS Feed" href="{{ '/feed.xml' | absolute_url }}">
+
+<!-- Custom styles -->
 <link rel="stylesheet" href="{{ '/assets/styles.css' | relative_url }}">
+
+<!-- JSON-LD Structured Data for SEO -->
+{% include seo/structured-data.html %}
