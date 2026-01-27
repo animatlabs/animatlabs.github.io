@@ -14,6 +14,8 @@ tags:
   - .NET-Core
   - C#12
 author: animat089
+last_modified_at: 2024-01-12
+sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true

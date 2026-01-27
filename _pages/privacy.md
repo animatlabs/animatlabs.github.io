@@ -114,7 +114,7 @@ If you have questions about this Privacy Policy, you can reach us at:
 You can change your cookie consent preference at any time:
 
 <div style="margin: 1.5rem 0;">
-  <button onclick="resetAnalyticsConsent()" style="background:#007bff;color:#fff;padding:0.6rem 1.5rem;border:none;border-radius:6px;font-size:1rem;cursor:pointer;font-weight:500;">
+  <button onclick="resetAnalyticsConsent()" style="background:#212529;color:#fff;padding:0.6rem 1.5rem;border:none;border-radius:6px;font-size:1rem;cursor:pointer;font-weight:500;">
     Reset Cookie Preferences
   </button>
   <p style="margin-top:0.5rem;color:#666;font-size:0.9rem;">This will show the consent banner again on your next page load.</p>

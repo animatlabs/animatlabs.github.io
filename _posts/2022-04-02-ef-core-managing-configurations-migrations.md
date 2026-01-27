@@ -12,6 +12,8 @@ tags:
   - EF Core
   - Code First Migrations
 author: animat089
+last_modified_at: 2022-04-02
+sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true

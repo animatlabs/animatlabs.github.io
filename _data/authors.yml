@@ -4,7 +4,6 @@ animat089:
   bio     : >-
    Principal Software Engineer @ Autodesk
   email   : animesh@animatlabs.com
-  location: India
   links:
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
@@ -12,7 +11,4 @@ animat089:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/animat089"
-    - label: "StackOverflow"
-      icon: "fab fa-fw fa-stack-overflow"
-      url: "https://stackoverflow.com/users/2822615/animat089"
       

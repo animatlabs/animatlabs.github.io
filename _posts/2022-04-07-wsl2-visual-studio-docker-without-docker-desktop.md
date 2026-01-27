@@ -14,6 +14,8 @@ tags:
   - Docker Integration
   - Docker Desktop
 author: animat089
+last_modified_at: 2022-04-07
+sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true

@@ -14,6 +14,8 @@ tags:
   - Hashing
   - Alternate to GUID
 author: animat089
+last_modified_at: 2022-12-01
+sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true

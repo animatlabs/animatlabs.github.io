@@ -3,6 +3,7 @@ title: "WorkflowForge 2.0: 540x Faster, New Extensions, and a Documentation Site
 excerpt: >-
   "We benchmarked WorkflowForge against Workflow Core and Elsa Workflows. The results? Up to 540x faster execution and 573x less memory. Here's the data."
 last_modified_at: 2026-01-26
+sitemap: true
 categories:
   - Technical
   - .NET  

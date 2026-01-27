@@ -13,6 +13,8 @@ tags:
   - Function-Apps
   - Dependency-Injections
 author: animat089
+last_modified_at: 2022-11-04
+sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true

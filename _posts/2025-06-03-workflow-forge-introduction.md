@@ -16,6 +16,8 @@ tags:
   - Enterprise Architecture
   - Developer Experience
 author: animat089
+last_modified_at: 2025-06-03
+sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true

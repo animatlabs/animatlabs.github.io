@@ -137,7 +137,7 @@ code {
   top: 0;
   height: 3px;
   width: 100%;
-  background: linear-gradient(90deg, #2ea043, #238636);
+  background: linear-gradient(90deg, #495057, #212529);
   transform-origin: 0 50%;
   transform: scaleX(0);
   z-index: 9998;
@@ -194,3 +194,53 @@ code {
 
 /* Ensure no extra margin on masthead inner container */
 .masthead__inner { margin-bottom: 0 !important; }
+
+/* ===== MOBILE RESPONSIVE FIXES ===== */
+@media (max-width: 768px) {
+  /* Fix logo aspect ratio on mobile */
+  .site-logo img {
+    height: 48px;
+    width: 48px;
+    object-fit: contain;
+  }
+  
+  /* Reduce masthead padding on mobile */
+  .masthead {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Smaller title on mobile */
+  .site-title {
+    font-size: 22px;
+  }
+  
+  .site-subtitle {
+    font-size: 9px;
+  }
+  
+  /* Fix greedy nav spacing */
+  .greedy-nav {
+    column-gap: 8px;
+  }
+  
+  .site-logo {
+    margin-right: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Even smaller on very small screens */
+  .site-logo img {
+    height: 40px;
+    width: 40px;
+  }
+  
+  .site-title {
+    font-size: 18px;
+  }
+  
+  .site-subtitle {
+    font-size: 8px;
+  }
+}
