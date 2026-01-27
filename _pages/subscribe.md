@@ -9,6 +9,37 @@ Stay updated with the latest posts from AnimatLabs! Choose your preferred method
 
 ---
 
+## Subscribe via RSS
+
+RSS (Really Simple Syndication) lets you follow blogs and websites without checking them manually. New posts appear automatically in your feed reader.
+
+<a href="{{ '/feed.xml' | absolute_url }}" class="btn btn--primary btn--large"><i class="fas fa-rss"></i> Subscribe to RSS Feed</a>
+
+
+### Get Email Notifications (via RSS-to-Email)
+
+Prefer email over RSS? Use these free services to convert the RSS feed to email notifications:
+
+| Service | How to Use |
+|---------|------------|
+| [Blogtrottr](https://blogtrottr.com) | Enter your email and the feed URL below |
+| [FeedRabbit](https://feedrabbit.com) | Simple RSS-to-email service |
+
+**Feed URL to use:**
+```
+{{ '/feed.xml' | absolute_url }}
+```
+
+### Why RSS?
+
+- **No algorithms** - You see every post, in order
+- **No tracking** - Your reading habits stay private
+- **No distractions** - Clean reading experience
+- **One place** - Follow all your favorite sites together
+- **Never miss a post** - Updates come to you automatically
+
+---
+
 ## Subscribe via Email
 
 Get new posts delivered directly to your inbox - no RSS reader needed!
@@ -83,74 +114,6 @@ Get new posts delivered directly to your inbox - no RSS reader needed!
 }
 </style>
 
-
----
-
-## Subscribe via RSS
-
-RSS (Really Simple Syndication) lets you follow blogs and websites without checking them manually. New posts appear automatically in your feed reader.
-
-<a href="{{ '/feed.xml' | absolute_url }}" class="btn btn--primary btn--large"><i class="fas fa-rss"></i> Subscribe to RSS Feed</a>
-
----
-
-## Popular RSS Readers
-
-Choose any of these free RSS readers to get started:
-
-### Web-Based Readers
-
-| Reader | Description |
-|--------|-------------|
-| [Feedly](https://feedly.com) | Popular, clean interface, free tier available |
-| [Inoreader](https://www.inoreader.com) | Powerful features, great for power users |
-| [NewsBlur](https://newsblur.com) | Open source, simple and effective |
-| [The Old Reader](https://theoldreader.com) | Social features, Google Reader-inspired |
-
-### Desktop & Mobile Apps
-
-| Platform | Apps |
-|----------|------|
-| **Windows** | [QuiteRSS](https://quiterss.org), [RSSOwl](https://www.rssowl.org) |
-| **macOS** | [NetNewsWire](https://netnewswire.com) (free), [Reeder](https://reederapp.com) |
-| **iOS** | [NetNewsWire](https://apps.apple.com/app/netnewswire-rss-reader/id1480640210), [Reeder](https://apps.apple.com/app/reeder-5/id1529445840) |
-| **Android** | [Feeder](https://play.google.com/store/apps/details?id=com.nononsenseapps.feeder.play), [Read You](https://github.com/Ashinch/ReadYou) |
-
----
-
-## Get Email Notifications (via RSS-to-Email)
-
-Prefer email over RSS? Use these free services to convert the RSS feed to email notifications:
-
-| Service | How to Use |
-|---------|------------|
-| [Blogtrottr](https://blogtrottr.com) | Enter your email and the feed URL below |
-| [FeedRabbit](https://feedrabbit.com) | Simple RSS-to-email service |
-| [IFTTT](https://ifttt.com) | Create an applet: "If new feed item, then send email" |
-
-**Feed URL to use:**
-```
-{{ '/feed.xml' | absolute_url }}
-```
-
----
-
-## Quick Start Guide
-
-1. **Copy the feed URL**: `{{ '/feed.xml' | absolute_url }}`
-2. **Open your RSS reader** (or sign up for one above)
-3. **Add new subscription** and paste the URL
-4. **Done!** New posts will appear automatically
-
----
-
-## Why RSS?
-
-- **No algorithms** - You see every post, in order
-- **No tracking** - Your reading habits stay private
-- **No distractions** - Clean reading experience
-- **One place** - Follow all your favorite sites together
-- **Never miss a post** - Updates come to you automatically
 
 ---
 
