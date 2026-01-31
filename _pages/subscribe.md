@@ -5,44 +5,11 @@ author_profile: true
 author: animat089
 ---
 
-Stay updated with the latest posts from AnimatLabs! Choose your preferred method below.
-
----
-
-## Subscribe via RSS
-
-RSS (Really Simple Syndication) lets you follow blogs and websites without checking them manually. New posts appear automatically in your feed reader.
-
-<a href="{{ '/feed.xml' | absolute_url }}" class="btn btn--primary btn--large"><i class="fas fa-rss"></i> Subscribe to RSS Feed</a>
-
-
-### Get Email Notifications (via RSS-to-Email)
-
-Prefer email over RSS? Use these free services to convert the RSS feed to email notifications:
-
-| Service | How to Use |
-|---------|------------|
-| [Blogtrottr](https://blogtrottr.com) | Enter your email and the feed URL below |
-| [FeedRabbit](https://feedrabbit.com) | Simple RSS-to-email service |
-
-**Feed URL to use:**
-```
-{{ '/feed.xml' | absolute_url }}
-```
-
-### Why RSS?
-
-- **No algorithms** - You see every post, in order
-- **No tracking** - Your reading habits stay private
-- **No distractions** - Clean reading experience
-- **One place** - Follow all your favorite sites together
-- **Never miss a post** - Updates come to you automatically
+Stay updated with the latest posts from AnimatLabs!
 
 ---
 
 ## Subscribe via Email
-
-Get new posts delivered directly to your inbox - no RSS reader needed!
 
 <div class="email-subscribe-box">
   <form action="https://api.follow.it/subscription-form/eXRoSmNlOEdxTjZ5aFBLaW5lYjZzR3pnb1BQTks5MElIQVdTY2hZSEw5REYzbERXckJQKzREUDRBblhsbEtyUnpMV09ONlhNbDR6azRnRVh2NmdlZXdFWGVGQlhocm1GeW96UXpUN0RaTG91d3hVS2hjUjNkOG8xUk96UElBZzh8T2hrVEtkaU1iQjJiR0IxWi95czFXYjJMWWcwSWprU21GVk4xVXkwS3NjWT0=/8" method="post">
@@ -114,9 +81,14 @@ Get new posts delivered directly to your inbox - no RSS reader needed!
 }
 </style>
 
+---
+
+## Prefer RSS?
+
+<a href="{{ '/feed.xml' | absolute_url }}" class="btn btn--primary"><i class="fas fa-rss"></i> Subscribe via RSS</a>
 
 ---
 
 ## Questions?
 
-Have questions or suggestions? Feel free to reach out via [LinkedIn](https://linkedin.com/in/089ani) or [GitHub](https://github.com/animat089).
+Feel free to reach out via [LinkedIn](https://linkedin.com/in/089ani) or [GitHub](https://github.com/animat089).
