@@ -1,12 +1,8 @@
 User-agent: *
 Allow: /
 
-# Disallow pagination duplicates (pattern covers all pages)
-Disallow: /page*/
-
 # Crawl delay for politeness
 Crawl-delay: 1
 
 # Sitemap location
 Sitemap: https://animatlabs.com/sitemap.xml
-

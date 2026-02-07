@@ -10,6 +10,7 @@ url: "https://animatlabs.com"
 baseurl: ""
 logo: "/assets/images/logo_300x300.png"
 og_image: "/assets/images/logo_300x300.png"
+# Note: incremental builds may cause stale content; restart server after config changes
 incremental: true
 
 description: >- 
@@ -45,17 +46,18 @@ comments:
 include:
   - _pages
 
-# Exclude from processing.
-# The following items will not be processed, by default. Create a custom list
-# to override the default setting.
-# exclude:
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - docker-compose.azure-local.yml
+  - README.md
+  - LICENSE
 
 # Plugins (previously gems:)
 plugins:
@@ -89,6 +91,7 @@ after_footer_scripts:
   - https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js
   - /assets/scripts/clipboardrouge.js
   - /assets/scripts/enhancements.js
+  - /assets/scripts/darkmode.js
 
 defaults:
   # _posts
@@ -111,6 +114,12 @@ defaults:
     values:
       layout: single
       author_profile: true
+
+  # Exclude pagination pages from sitemap (prevents "indexed though blocked" in Google)
+  - scope:
+      path: "page"
+    values:
+      sitemap: false
 
 category_archive:
   type: liquid

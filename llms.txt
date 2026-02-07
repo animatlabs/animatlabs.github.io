@@ -1,0 +1,35 @@
+# AnimatLabs
+
+> A .NET engineering blog by Animesh Agarwal (Principal Software Engineer at Autodesk). Covers C#, .NET architecture, performance optimization, DevOps, AI integration, and open-source library development.
+
+## About
+
+AnimatLabs is a technical blog focused on practical .NET development, software architecture patterns, and developer productivity. The author maintains WorkflowForge, an open-source .NET workflow orchestration library.
+
+- Author: Animesh Agarwal
+- Site: https://animatlabs.com
+- GitHub: https://github.com/animat089
+- WorkflowForge: https://github.com/animatlabs/workflow-forge
+
+## Topics Covered
+
+- .NET / C# development (performance, patterns, new features)
+- Software architecture (Clean Architecture, Modular Monolith, Vertical Slice, Event Sourcing)
+- DevOps and infrastructure (Docker, Traefik, Podman, CI/CD)
+- AI/ML with .NET (Semantic Kernel, Ollama, Microsoft.Extensions.AI)
+- Real-time data pipelines (CDC, Debezium, Kafka, SignalR)
+- Open-source library reviews and comparisons
+- Developer experience and productivity
+
+## Key Posts
+
+- [WorkflowForge Introduction](https://animatlabs.com/technical/.net/.net-core/workflow-forge-introduction/): Building a .NET workflow orchestration library
+- [WorkflowForge 2.0 Performance](https://animatlabs.com/technical/.net/.net-core/workflow-forge-2-performance-unleashed/): Performance improvements and benchmarks
+- [EF Core Performance](https://animatlabs.com/technical/.net/.net-core/ef-core-performance/): Entity Framework Core optimization techniques
+- [Clean Architecture](https://animatlabs.com/technical/.net/.net-core/clean-architecture/): Implementing Clean Architecture in .NET
+- [Mapping Performance](https://animatlabs.com/technical/.net/.net-core/mapping-performance/): Object mapping benchmarks in .NET
+- [Security in .NET](https://animatlabs.com/technical/.net/.net-core/security-dotnet/): Security best practices for .NET applications
+
+## RSS Feed
+
+- https://animatlabs.com/feed.xml

@@ -58,13 +58,13 @@ Stay updated with the latest posts from AnimatLabs!
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .subscribe-input:focus {
-  border-color: #495057;
-  box-shadow: 0 0 0 3px rgba(73, 80, 87, 0.15);
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
 }
 .subscribe-btn {
   padding: 0.75rem 1.5rem;
-  background: #212529;
-  color: white;
+  background: #0ea5e9;
+  color: #fff;
   border: none;
   border-radius: 6px;
   font-size: 1rem;
@@ -73,7 +73,7 @@ Stay updated with the latest posts from AnimatLabs!
   transition: background 0.2s, transform 0.1s;
 }
 .subscribe-btn:hover {
-  background: #343a40;
+  background: #0284c7;
   transform: translateY(-1px);
 }
 @media (max-width: 480px) {

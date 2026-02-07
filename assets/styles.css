@@ -112,15 +112,15 @@ code {
   height: auto;
 }
 
-/* Back-to-top button */
+/* Back-to-top button -- top of stack, appears on scroll */
 #backToTop {
   position: fixed;
   right: 18px;
-  bottom: 18px;
+  bottom: 110px;
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #111;
+  background: #0ea5e9;
   color: #fff;
   border: none;
   opacity: 0;
@@ -137,7 +137,7 @@ code {
   top: 0;
   height: 3px;
   width: 100%;
-  background: linear-gradient(90deg, #495057, #212529);
+  background: linear-gradient(90deg, #0ea5e9, #0284c7);
   transform-origin: 0 50%;
   transform: scaleX(0);
   z-index: 9998;
@@ -243,4 +243,53 @@ code {
   .site-subtitle {
     font-size: 8px;
   }
+}
+
+/* ===== FLOATING SUBSCRIBE BUTTON -- bottom of stack, always visible ===== */
+#subscribeFloat {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #0ea5e9;
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 9999;
+  opacity: 0.85;
+  transition: opacity 0.2s ease-in-out, transform 0.1s;
+}
+#subscribeFloat:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  background: #0284c7;
+}
+
+/* ===== DARK MODE TOGGLE -- middle of stack, always visible ===== */
+#darkModeToggle {
+  position: fixed;
+  right: 18px;
+  bottom: 64px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #0ea5e9;
+  color: #fff;
+  border: none;
+  font-size: 18px;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 9999;
+  opacity: 0.85;
+  transition: opacity 0.2s ease-in-out, transform 0.1s;
+}
+#darkModeToggle:hover {
+  opacity: 1;
+  transform: translateY(-2px);
 }
