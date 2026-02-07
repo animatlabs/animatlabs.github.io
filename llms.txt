@@ -11,6 +11,15 @@ AnimatLabs is a technical blog focused on practical .NET development, software a
 - GitHub: https://github.com/animat089
 - WorkflowForge: https://github.com/animatlabs/workflow-forge
 
+## Content Structure
+
+This site consists of two main sections:
+
+1. **Blog** (https://animatlabs.com/): Technical articles, tutorials, and insights
+2. **WorkflowForge Documentation** (https://animatlabs.com/workflow-forge/): Product documentation, API reference, architecture guides
+
+Both sections are allowed for AI/LLM indexing and training. The WorkflowForge section has its own detailed llms.txt at https://animatlabs.com/workflow-forge/llms.txt
+
 ## Topics Covered
 
 - .NET / C# development (performance, patterns, new features)
