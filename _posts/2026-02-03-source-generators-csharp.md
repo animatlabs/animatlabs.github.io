@@ -57,32 +57,43 @@ The generated code is real C# - visible in your IDE, navigable with "Go to Defin
 
 Here's how they fit into the build pipeline:
 
-```
-Your Code → Roslyn Parser → Syntax Trees → SOURCE GENERATORS → Additional Code → Compilation → IL
+```mermaid
+flowchart TD
+    A[Your Code] --> B[Roslyn Parser]
+    B --> C[Syntax Trees]
+    C --> D[Source Generators]
+    D --> E[Additional Code]
+    E --> F[Compilation]
+    F --> G[IL]
 ```
 
 The key difference from reflection: by the time your app runs, the generated code is already compiled. No `Type.GetProperties()`, no `Activator.CreateInstance()`, no JIT compilation of dynamic methods.
 
-## Real-World Example #1: Strongly-Typed Configuration
+## The Code: A Complete Playground Repo
 
-**The Problem:** You have `appsettings.json` with nested configuration. Every time you access it, you're dealing with magic strings:
+I’ve put all the samples for this post into a runnable playground solution:
 
-{% raw %}
+- https://github.com/animat089/playground/tree/main/SourceGenerators
+
+It includes both Roslyn **source generators** and the equivalent **T4-generated output** (checked in) so you can compare the two approaches.
+
+## What Gets Generated (In This Repo)
+
+The playground focuses on four patterns that show up constantly in real .NET codebases.
+
+### 1) Strongly-Typed Configuration Binding
+
+Define a POCO and mark it:
+
 ```csharp
-// Fragile - typos compile but fail at runtime
-var connectionString = configuration["Database:ConnectionString"];
-var timeout = int.Parse(configuration["Database:Timeout"] ?? "30");
-```
+using AnimatLabs.SourceGenerators.Attributes;
 
-**The Solution:** Generate a strongly-typed wrapper from your settings classes.
+namespace AnimatLabs.SourceGenerators.Demo.Models;
 
-First, define your configuration shape:
-
-```csharp
-[GenerateConfiguration]
+[GenerateConfiguration(SectionName = "Database")]
 public partial class DatabaseSettings
 {
-    public string ConnectionString { get; set; } = "";
+    public string ConnectionString { get; set; } = string.Empty;
     public int Timeout { get; set; } = 30;
     public RetrySettings Retry { get; set; } = new();
 }
@@ -94,210 +105,53 @@ public class RetrySettings
 }
 ```
 
-The generator creates the binding code:
+The generator emits `Bind(IConfiguration)` plus nested binders for complex properties.
 
 ```csharp
-// Generated: DatabaseSettings.g.cs
-public partial class DatabaseSettings
+// Generated (shape): DatabaseSettings.Configuration.g.cs
+public static global::AnimatLabs.SourceGenerators.Demo.Models.DatabaseSettings Bind(
+    global::Microsoft.Extensions.Configuration.IConfiguration configuration)
 {
-    public static DatabaseSettings Bind(IConfiguration configuration)
-    {
-        var section = configuration.GetSection("Database");
-        return new DatabaseSettings
-        {
-            ConnectionString = section["ConnectionString"] ?? "",
-            Timeout = int.TryParse(section["Timeout"], out var t) ? t : 30,
-            Retry = new RetrySettings
-            {
-                MaxAttempts = int.TryParse(section.GetSection("Retry")["MaxAttempts"], out var m) ? m : 3,
-                DelayMs = int.TryParse(section.GetSection("Retry")["DelayMs"], out var d) ? d : 1000
-            }
-        };
-    }
+    var section = configuration.GetSection("Database");
+    return BindSection_AnimatLabs_SourceGenerators_Demo_Models_DatabaseSettings(section);
 }
 ```
 
-Now your code is type-safe:
+Supported property types: `string`, `int`, `bool`, `double`, `decimal`, enums, and nested classes. Unsupported types are skipped.
+
+### 2) Enum Extensions (Display Names + Parsing)
 
 ```csharp
-var settings = DatabaseSettings.Bind(configuration);
-var timeout = settings.Timeout; // int, not string
-var maxRetries = settings.Retry.MaxAttempts; // Compile-time checked
-```
+using System.ComponentModel.DataAnnotations;
+using AnimatLabs.SourceGenerators.Attributes;
 
-Rename a property? The compiler catches every usage. Change a type? Same thing. No more runtime `ConfigurationBindingException` in production.
+namespace AnimatLabs.SourceGenerators.Demo.Models;
 
-## Real-World Example #2: API Client Generation
-
-**The Problem:** You're calling an internal API. You write `HttpClient` code for every endpoint:
-
-```csharp
-public async Task<User?> GetUserAsync(int id)
-{
-    var response = await _client.GetAsync($"/api/users/{id}");
-    response.EnsureSuccessStatusCode();
-    return await response.Content.ReadFromJsonAsync<User>();
-}
-
-public async Task<User> CreateUserAsync(CreateUserRequest request)
-{
-    var response = await _client.PostAsJsonAsync("/api/users", request);
-    response.EnsureSuccessStatusCode();
-    return await response.Content.ReadFromJsonAsync<User>()!;
-}
-
-// 47 more methods...
-```
-
-**The Solution:** Define your API as an interface, let a generator implement it:
-
-```csharp
-[GenerateApiClient("https://api.example.com")]
-public partial interface IUserApi
-{
-    [Get("/users/{id}")]
-    Task<User?> GetUserAsync(int id);
-    
-    [Post("/users")]
-    Task<User> CreateUserAsync([Body] CreateUserRequest request);
-    
-    [Put("/users/{id}")]
-    Task<User> UpdateUserAsync(int id, [Body] UpdateUserRequest request);
-    
-    [Delete("/users/{id}")]
-    Task DeleteUserAsync(int id);
-    
-    [Get("/users")]
-    Task<PagedResult<User>> SearchUsersAsync([Query] string? name, [Query] int page = 1);
-}
-```
-
-The generator produces a complete implementation:
-
-```csharp
-// Generated: UserApi.g.cs
-public partial class UserApi : IUserApi
-{
-    private readonly HttpClient _client;
-    
-    public UserApi(HttpClient client)
-    {
-        _client = client;
-        _client.BaseAddress = new Uri("https://api.example.com");
-    }
-    
-    public async Task<User?> GetUserAsync(int id)
-    {
-        var response = await _client.GetAsync($"/users/{id}");
-        if (response.StatusCode == HttpStatusCode.NotFound)
-            return null;
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<User>();
-    }
-    
-    public async Task<PagedResult<User>> SearchUsersAsync(string? name, int page = 1)
-    {
-        var queryParams = new List<string>();
-        if (name != null) queryParams.Add($"name={Uri.EscapeDataString(name)}");
-        queryParams.Add($"page={page}");
-        var query = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
-        
-        var response = await _client.GetAsync($"/users{query}");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<PagedResult<User>>()!;
-    }
-    
-    // ... other methods
-}
-```
-
-This is exactly what [Refit](https://github.com/reactiveui/refit) does - but now you understand the magic behind it.
-
-## Real-World Example #3: Enum Extensions
-
-**The Problem:** Working with enums means lots of `switch` statements and `ToString()` calls:
-
-```csharp
+[GenerateEnumExtensions]
 public enum OrderStatus
 {
-    [Display(Name = "Pending Approval")]
-    Pending,
-    [Display(Name = "In Progress")]
-    Processing,
+    [Display(Name = "Pending Approval")] Pending,
+    [Display(Name = "In Progress")] Processing,
     Shipped,
     Delivered,
     Cancelled
 }
-
-// Every time you need the display name:
-public static string GetDisplayName(OrderStatus status)
-{
-    return status switch
-    {
-        OrderStatus.Pending => "Pending Approval",
-        OrderStatus.Processing => "In Progress",
-        _ => status.ToString()
-    };
-}
 ```
 
-**The Solution:** Generate extension methods for all enums automatically:
+The generator emits:
+
+- `ToDisplayName()` (uses `DisplayAttribute.Name` when present)
+- `TryParse(string, out OrderStatus)` (accepts both member name and display name)
+- `GetAll()`
+
+### 3) DTO Mapping Without Reflection
 
 ```csharp
-// You write:
-[GenerateEnumExtensions]
-public enum OrderStatus { /* ... */ }
+using AnimatLabs.SourceGenerators.Attributes;
+using AnimatLabs.SourceGenerators.Demo.Models;
 
-// Generator produces:
-public static class OrderStatusExtensions
-{
-    public static string ToDisplayName(this OrderStatus value) => value switch
-    {
-        OrderStatus.Pending => "Pending Approval",
-        OrderStatus.Processing => "In Progress",
-        OrderStatus.Shipped => "Shipped",
-        OrderStatus.Delivered => "Delivered",
-        OrderStatus.Cancelled => "Cancelled",
-        _ => value.ToString()
-    };
-    
-    public static bool IsFinal(this OrderStatus value) => 
-        value is OrderStatus.Delivered or OrderStatus.Cancelled;
-    
-    public static OrderStatus? TryParse(string value) => value switch
-    {
-        "Pending" or "Pending Approval" => OrderStatus.Pending,
-        "Processing" or "In Progress" => OrderStatus.Processing,
-        "Shipped" => OrderStatus.Shipped,
-        "Delivered" => OrderStatus.Delivered,
-        "Cancelled" => OrderStatus.Cancelled,
-        _ => null
-    };
-    
-    public static IReadOnlyList<OrderStatus> GetAll() => new[]
-    {
-        OrderStatus.Pending,
-        OrderStatus.Processing,
-        OrderStatus.Shipped,
-        OrderStatus.Delivered,
-        OrderStatus.Cancelled
-    };
-}
-```
+namespace AnimatLabs.SourceGenerators.Demo.Mappers;
 
-No reflection. Compile-time generation. Blazing fast at runtime.
-
-## Real-World Example #4: DTO Mapping Without AutoMapper
-
-**The Problem:** AutoMapper is convenient but:
-- Runtime reflection overhead
-- Easy to misconfigure
-- Errors surface at runtime, not compile time
-- "Magic" that's hard to debug
-
-**The Solution:** Generate explicit mappers:
-
-```csharp
 [GenerateMapper]
 public partial class UserMapper
 {
@@ -306,293 +160,63 @@ public partial class UserMapper
 }
 ```
 
-The generator inspects both types and creates the mapping:
+The generator implements each method by assigning properties where **name and type match**.
+
+### 4) Auto-Generated `ToString()`
 
 ```csharp
-// Generated: UserMapper.g.cs
-public partial class UserMapper
+using AnimatLabs.SourceGenerators.Attributes;
+
+namespace AnimatLabs.SourceGenerators.Demo.Models;
+
+[AutoToString]
+public partial class Person
 {
-    public partial UserDto ToDto(User entity)
-    {
-        if (entity == null) return null!;
-        
-        return new UserDto
-        {
-            Id = entity.Id,
-            FullName = entity.FirstName + " " + entity.LastName,
-            Email = entity.Email,
-            CreatedAt = entity.CreatedAt,
-            Address = entity.Address == null ? null : new AddressDto
-            {
-                Street = entity.Address.Street,
-                City = entity.Address.City,
-                PostalCode = entity.Address.PostalCode
-            }
-        };
-    }
-    
-    public partial User ToEntity(UserDto dto)
-    {
-        if (dto == null) return null!;
-        
-        var nameParts = dto.FullName?.Split(' ', 2) ?? Array.Empty<string>();
-        return new User
-        {
-            Id = dto.Id,
-            FirstName = nameParts.Length > 0 ? nameParts[0] : "",
-            LastName = nameParts.Length > 1 ? nameParts[1] : "",
-            Email = dto.Email,
-            CreatedAt = dto.CreatedAt,
-            Address = dto.Address == null ? null : new Address
-            {
-                Street = dto.Address.Street,
-                City = dto.Address.City,
-                PostalCode = dto.Address.PostalCode
-            }
-        };
-    }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public int Age { get; set; }
 }
 ```
 
-This is what [Mapperly](https://github.com/riok/mapperly) does - a source-generated alternative to AutoMapper with zero runtime overhead.
+The generator emits an override using `StringBuilder` (and supports `Exclude` + `IncludePrivate` options).
 
-## Real-World Example #5: High-Performance Logging
+## How The Playground Generator Is Structured
 
-**The Problem:** String interpolation in logging has hidden costs:
+The repo uses a single incremental generator (`AnimatLabsSourceGenerators`) that registers four independent pipelines using `ForAttributeWithMetadataName(...)`.
 
-```csharp
-// This allocates strings even if Debug level is disabled!
-_logger.LogDebug($"Processing order {order.Id} for customer {order.CustomerId}");
-```
+### How It’s Wired Into A Consumer Project
 
-**The Solution:** Use `LoggerMessage` source generator (built into .NET):
+The demo project shows the standard setup:
 
-```csharp
-public static partial class LogMessages
-{
-    [LoggerMessage(Level = LogLevel.Debug, Message = "Processing order {OrderId} for customer {CustomerId}")]
-    public static partial void ProcessingOrder(ILogger logger, int orderId, int customerId);
-    
-    [LoggerMessage(Level = LogLevel.Warning, Message = "Order {OrderId} exceeded timeout of {TimeoutMs}ms")]
-    public static partial void OrderTimeout(ILogger logger, int orderId, int timeoutMs);
-    
-    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to process order {OrderId}")]
-    public static partial void OrderProcessingFailed(ILogger logger, int orderId, Exception ex);
-}
-```
-
-Generated code checks the log level before doing any work:
-
-```csharp
-// Generated - no allocations if Debug is disabled
-public static partial void ProcessingOrder(ILogger logger, int orderId, int customerId)
-{
-    if (logger.IsEnabled(LogLevel.Debug))
-    {
-        __ProcessingOrderCallback(logger, orderId, customerId, null);
-    }
-}
-```
-
-**Benchmarks show 5-10x performance improvement** for high-volume logging scenarios.
-
-## Building Your Own Generator: Complete Walkthrough
-
-Let's build a generator that creates `ToString()` methods automatically.
-
-### Step 1: Project Structure
-
-```
-MyProject/
-├── MyProject.Generators/          # netstandard2.0
-│   ├── ToStringGenerator.cs
-│   └── MyProject.Generators.csproj
-├── MyProject.Attributes/          # netstandard2.0 (shared)
-│   ├── AutoToStringAttribute.cs
-│   └── MyProject.Attributes.csproj
-└── MyProject.App/                 # net8.0 (consumer)
-    ├── Models/
-    └── MyProject.App.csproj
-```
-
-### Step 2: The Marker Attribute
-
-```csharp
-// MyProject.Attributes/AutoToStringAttribute.cs
-namespace MyProject.Attributes;
-
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class AutoToStringAttribute : Attribute
-{
-    public bool IncludePrivate { get; set; } = false;
-    public string[]? Exclude { get; set; }
-}
-```
-
-### Step 3: The Generator
-
-```csharp
-// MyProject.Generators/ToStringGenerator.cs
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using System.Collections.Immutable;
-using System.Text;
-
-namespace MyProject.Generators;
-
-[Generator]
-public class ToStringGenerator : IIncrementalGenerator
-{
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        // Step 1: Find all types with [AutoToString]
-        var typeDeclarations = context.SyntaxProvider
-            .ForAttributeWithMetadataName(
-                "MyProject.Attributes.AutoToStringAttribute",
-                predicate: static (node, _) => node is TypeDeclarationSyntax,
-                transform: static (ctx, _) => GetTypeInfo(ctx))
-            .Where(static info => info is not null);
-
-        // Step 2: Generate code for each
-        context.RegisterSourceOutput(typeDeclarations, 
-            static (spc, typeInfo) => GenerateCode(spc, typeInfo!));
-    }
-
-    private static TypeInfo? GetTypeInfo(GeneratorAttributeSyntaxContext context)
-    {
-        if (context.TargetSymbol is not INamedTypeSymbol typeSymbol)
-            return null;
-
-        var attribute = context.Attributes.First();
-        
-        var includePrivate = attribute.NamedArguments
-            .FirstOrDefault(a => a.Key == "IncludePrivate").Value.Value as bool? ?? false;
-        
-        var exclude = attribute.NamedArguments
-            .FirstOrDefault(a => a.Key == "Exclude").Value.Values
-            .Select(v => v.Value?.ToString())
-            .Where(v => v != null)
-            .ToArray();
-
-        var properties = typeSymbol.GetMembers()
-            .OfType<IPropertySymbol>()
-            .Where(p => p.DeclaredAccessibility == Accessibility.Public || includePrivate)
-            .Where(p => !exclude!.Contains(p.Name))
-            .Where(p => !p.IsStatic && p.GetMethod != null)
-            .Select(p => new PropertyInfo(p.Name, p.Type.ToDisplayString()))
-            .ToList();
-
-        return new TypeInfo(
-            typeSymbol.ContainingNamespace.ToDisplayString(),
-            typeSymbol.Name,
-            typeSymbol.IsValueType,
-            properties);
-    }
-
-    private static void GenerateCode(SourceProductionContext context, TypeInfo typeInfo)
-    {
-        var sb = new StringBuilder();
-        
-        sb.AppendLine($"namespace {typeInfo.Namespace};");
-        sb.AppendLine();
-        sb.AppendLine($"partial {(typeInfo.IsStruct ? "struct" : "class")} {typeInfo.Name}");
-        sb.AppendLine("{");
-        sb.AppendLine("    public override string ToString()");
-        sb.AppendLine("    {");
-        sb.AppendLine($"        return $\"{typeInfo.Name} {{ \" +");
-        
-        for (int i = 0; i < typeInfo.Properties.Count; i++)
-        {
-            var prop = typeInfo.Properties[i];
-            var separator = i < typeInfo.Properties.Count - 1 ? ", " : "";
-            sb.AppendLine($"            $\"{prop.Name} = {{{prop.Name}}}{separator}\" +");
-        }
-        
-        sb.AppendLine("            \"}\";");
-        sb.AppendLine("    }");
-        sb.AppendLine("}");
-
-        context.AddSource($"{typeInfo.Name}.ToString.g.cs", 
-            SourceText.From(sb.ToString(), Encoding.UTF8));
-    }
-}
-
-record TypeInfo(string Namespace, string Name, bool IsStruct, List<PropertyInfo> Properties);
-record PropertyInfo(string Name, string Type);
-```
-{% endraw %}
-
-### Step 4: Project References
+- reference the attributes project normally
+- reference the generator project as an analyzer (so it runs at compile time)
 
 ```xml
-<!-- MyProject.Generators.csproj -->
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\MyProject.Attributes\MyProject.Attributes.csproj" />
-  </ItemGroup>
-</Project>
+<ItemGroup>
+    <ProjectReference Include="..\AnimatLabs.SourceGenerators.Attributes\AnimatLabs.SourceGenerators.Attributes.csproj" />
+    <ProjectReference Include="..\AnimatLabs.SourceGenerators\AnimatLabs.SourceGenerators.csproj"
+                                        OutputItemType="Analyzer"
+                                        ReferenceOutputAssembly="false" />
+</ItemGroup>
 
-<!-- MyProject.App.csproj -->
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+<PropertyGroup>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\MyProject.Attributes\MyProject.Attributes.csproj" />
-    <ProjectReference Include="..\MyProject.Generators\MyProject.Generators.csproj" 
-                      OutputItemType="Analyzer" 
-                      ReferenceOutputAssembly="false" />
-  </ItemGroup>
-</Project>
-```
-
-### Step 5: Usage
-
-```csharp
-using MyProject.Attributes;
-
-[AutoToString(Exclude = new[] { "Password" })]
-public partial class User
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public string Email { get; set; } = "";
-    public string Password { get; set; } = ""; // Excluded from ToString
-}
-
-// Usage:
-var user = new User { Id = 1, Name = "John", Email = "john@example.com" };
-Console.WriteLine(user); // Output: User { Id = 1, Name = John, Email = john@example.com }
+</PropertyGroup>
 ```
 
 ## Debugging and Testing Generators
 
 ### View Generated Files
 
-Always enable this in consumer projects:
+Enable compiler-generated files in the consuming project (the playground demo already does this):
 
 ```xml
 <PropertyGroup>
-  <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-  <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 </PropertyGroup>
 ```
 
-Check `obj/Debug/net8.0/Generated/` for output.
+Then inspect `obj/Debug/net8.0/` for the emitted `.g.cs` files.
 
 ### Attach Debugger During Build
 
@@ -613,86 +237,62 @@ public void Initialize(IncrementalGeneratorInitializationContext context)
 ### Unit Test Generators Properly
 
 ```csharp
+using System;
+using System.Linq;
+using AnimatLabs.SourceGenerators;
+using AnimatLabs.SourceGenerators.Attributes;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Xunit;
 
-public class ToStringGeneratorTests
+public class GeneratorTests
 {
     [Fact]
-    public void GeneratesToString_ForSimpleClass()
+    public void AutoToString_GeneratesOverride()
     {
         var source = """
-            using MyProject.Attributes;
-            
-            namespace TestNamespace;
-            
+            using AnimatLabs.SourceGenerators.Attributes;
+            namespace Demo;
+
             [AutoToString]
             public partial class Person
             {
-                public int Id { get; set; }
-                public string Name { get; set; }
+                public string Name { get; set; } = string.Empty;
             }
             """;
 
-        var (diagnostics, output) = RunGenerator(source);
-        
-        Assert.Empty(diagnostics);
-        Assert.Contains("public override string ToString()", output);
-        Assert.Contains("Id = {Id}", output);
-        Assert.Contains("Name = {Name}", output);
+        var output = RunGenerator(source);
+
+        Assert.Contains("public override string ToString()", output, StringComparison.Ordinal);
+        Assert.Contains("Name =", output, StringComparison.Ordinal);
     }
 
-    [Fact]
-    public void ExcludesPropertiesFromToString()
+    private static string RunGenerator(string source)
     {
-        var source = """
-            using MyProject.Attributes;
-            
-            namespace TestNamespace;
-            
-            [AutoToString(Exclude = new[] { "Secret" })]
-            public partial class Config
-            {
-                public string Name { get; set; }
-                public string Secret { get; set; }
-            }
-            """;
+        var syntaxTree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest));
 
-        var (_, output) = RunGenerator(source);
-        
-        Assert.Contains("Name = {Name}", output);
-        Assert.DoesNotContain("Secret", output);
-    }
-
-    private static (ImmutableArray<Diagnostic>, string) RunGenerator(string source)
-    {
-        var syntaxTree = CSharpSyntaxTree.ParseText(source);
-        
         var references = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => !a.IsDynamic && !string.IsNullOrEmpty(a.Location))
-            .Select(a => MetadataReference.CreateFromFile(a.Location))
+            .Where(assembly => !assembly.IsDynamic)
+            .Select(assembly => assembly.Location)
+            .Where(location => !string.IsNullOrWhiteSpace(location))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Select(location => MetadataReference.CreateFromFile(location))
             .ToList();
 
-        var compilation = CSharpCompilation.Create("TestAssembly",
-            new[] { syntaxTree },
-            references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        references.Add(MetadataReference.CreateFromFile(typeof(AutoToStringAttribute).Assembly.Location));
 
-        var generator = new ToStringGenerator();
-        var driver = CSharpGeneratorDriver.Create(generator);
-        
-        driver.RunGeneratorsAndUpdateCompilation(
-            compilation, 
-            out var outputCompilation, 
-            out var diagnostics);
+        var compilation = CSharpCompilation.Create(
+            assemblyName: "Tests",
+            syntaxTrees: new[] { syntaxTree },
+            references: references,
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-        var generatedOutput = outputCompilation.SyntaxTrees
-            .Where(t => t.FilePath.EndsWith(".g.cs"))
-            .Select(t => t.ToString())
-            .FirstOrDefault() ?? "";
+        var driver = CSharpGeneratorDriver.Create(new AnimatLabsSourceGenerators());
+        driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out _);
 
-        return (diagnostics, generatedOutput);
+        return string.Join("\n", outputCompilation.SyntaxTrees
+            .Where(tree => tree.FilePath.EndsWith(".g.cs", StringComparison.OrdinalIgnoreCase))
+            .Select(tree => tree.ToString()));
     }
 }
 ```
@@ -773,17 +373,16 @@ These production libraries prove the pattern works at scale:
 Source generators aren't just a cool compiler trick - they're a practical tool for eliminating the boilerplate that makes codebases harder to maintain. The examples above show real patterns you can implement today:
 
 - **Configuration binding** without magic strings
-- **API clients** without repetitive HttpClient code
-- **Enum extensions** without reflection
-- **DTO mapping** without AutoMapper overhead
-- **Logging** without allocation
+- **Enum helpers** that respect `DisplayAttribute`
+- **DTO mapping** with compile-time safety
+- **ToString()** overrides without repetitive boilerplate
 
 The investment in building a generator pays off every time it saves someone from writing (and debugging) boilerplate. Start with a simple pattern, test thoroughly, and scale from there.
 
 **Next steps:**
-1. Try [Mapperly](https://github.com/riok/mapperly) or [StronglyTypedId](https://github.com/andrewlock/StronglyTypedId) in a project
-2. Enable `EmitCompilerGeneratedFiles` to see what they produce
-3. Build a simple generator for your own repeated patterns
+1. Clone the playground repo: https://github.com/animat089/playground/tree/main/SourceGenerators
+2. Run `dotnet test` and inspect generated `.g.cs` output under `obj/`
+3. Compare source-generator output with the checked-in T4 output under `tools/`
 
 ---
 
