@@ -91,6 +91,8 @@ footer:
 after_footer_scripts:
   - https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js
   - /assets/scripts/clipboardrouge.js
+  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
+  - /assets/scripts/mermaid-init.js
   - /assets/scripts/enhancements.js
   - /assets/scripts/darkmode.js
 
