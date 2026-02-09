@@ -73,7 +73,7 @@ The key difference from reflection: by the time your app runs, the generated cod
 
 I’ve put all the samples for this post into a runnable playground solution:
 
-- https://github.com/animat089/playground/tree/main/SourceGenerators
+**You can access the full sample code here:** [GitHub Repo](https://github.com/animat089/playground/tree/main/SourceGenerators){: .btn .btn--primary}
 
 It includes both Roslyn **source generators** and the equivalent **T4-generated output** (checked in) so you can compare the two approaches.
 
