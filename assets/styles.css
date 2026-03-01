@@ -347,9 +347,9 @@ code {
 }
 
 .wf-cta__btn--github {
-  background: #24292e;
+  background: #0ea5e9;
   color: #ffffff !important;
-  border: 1px solid #1b1f23;
+  border: 1px solid #0284c7;
 }
 
 .wf-cta__icon {
@@ -359,15 +359,15 @@ code {
   vertical-align: middle;
 }
 
-.wf-cta__btn--coffee {
-  background: #FFDD00;
-  color: #000000 !important;
-  border: 1px solid #e6c800;
+.wf-cta__btn--kofi {
+  background: #FF5F5F;
+  color: #ffffff !important;
+  border: 1px solid #e04f4f;
 }
 
-.wf-cta__coffee-icon {
-  width: 18px;
-  height: 18px;
+.wf-cta__kofi-icon {
+  width: 20px;
+  height: 20px;
   object-fit: contain;
   flex-shrink: 0;
 }

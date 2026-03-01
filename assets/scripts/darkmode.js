@@ -61,7 +61,9 @@
       '#darkModeToggle { background: #0ea5e9 !important; color: #fff !important; }' +
       '#subscribeFloat { background: #0ea5e9 !important; color: #fff !important; }' +
       '#subscribe-cta button[type="submit"] { background: #0ea5e9 !important; color: #fff !important; }' +
-      '.consent-btn.accept { background: #0ea5e9 !important; color: #fff !important; }';
+      '.consent-btn.accept { background: #0ea5e9 !important; color: #fff !important; }' +
+      '.wf-cta__btn--github { background: #0ea5e9 !important; color: #fff !important; border-color: #0284c7 !important; }' +
+      '.wf-cta__btn--kofi { background: #FF5F5F !important; color: #fff !important; border-color: #e04f4f !important; }';
   }
 
   function disableDarkMode() {
