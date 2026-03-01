@@ -319,3 +319,5 @@ dotnet add package WorkflowForge
 **Questions or contributions?** → [Open an Issue](https://github.com/animatlabs/workflow-forge/issues)
 
 **WorkflowForge** - *Industrial strength workflows for modern .NET*
+
+{% include cta-workflowforge.html %}

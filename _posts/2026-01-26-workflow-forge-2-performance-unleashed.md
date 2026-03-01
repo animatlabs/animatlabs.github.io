@@ -233,3 +233,5 @@ If workflow performance matters for your .NET application—high-throughput proc
 **Questions?** → [Open an Issue](https://github.com/animatlabs/workflow-forge/issues)
 
 Happy forging.
+
+{% include cta-workflowforge.html %}
