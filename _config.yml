@@ -45,6 +45,7 @@ comments:
 
 include:
   - _pages
+  - .well-known
   - sitemap-index.xml  # Optional: sitemap index aggregating all sitemaps
 
 # Exclude from processing
