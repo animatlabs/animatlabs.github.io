@@ -426,35 +426,3 @@ None of this is individually complex. The complexity is in getting all of it wor
 *What does your .NET OSS release checklist look like? Anything I missed? Let me know in the comments.*
 
 {% include cta-workflowforge.html %}
-
-<!-- 
-=============================================================
-LINKEDIN CROSS-POST (~800 chars)
-=============================================================
-
-WorkflowForge 2.0 shipped from my laptop -- dotnet pack, dotnet push, done.
-
-For 2.1, I built the release pipeline I wish I had from the start: SonarCloud analysis (free for public repos), multi-TFM testing across net48/net8.0/net10.0, Sigstore build attestation, CycloneDX SBOM, environment-gated NuGet publish with manual approval, SHA-pinned GitHub Actions with Dependabot, and NuGet vulnerability auditing on every restore.
-
-Sixty issues resolved. 88.9% coverage on new code. And I still managed to break the publish -- one MSBuild property conflict silently generated empty symbol packages, and a single-character SHA typo killed the attestation step.
-
-Wrote up everything that went into the transition -- the full checklist, the config, and the gotchas:
-
-https://animatlabs.com/technical/.net/open%20source/shipping-quality-dotnet-oss-release/
-
-What's in your .NET OSS release checklist?
-
-#dotnet #opensource #cicd
-
-=============================================================
-250-CHARACTER MICRO-POST
-=============================================================
-
-SonarCloud, Sigstore attestation, SBOM, multi-TFM testing, gated NuGet publish -- every piece of infrastructure for a .NET OSS release, plus the gotchas.
-
-https://animatlabs.com/technical/.net/open%20source/shipping-quality-dotnet-oss-release/
-
-#dotnet #opensource
-
-=============================================================
--->
