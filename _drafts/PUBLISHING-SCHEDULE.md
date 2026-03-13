@@ -13,6 +13,9 @@
 | Date | Post | Status |
 |------|------|--------|
 | Feb 3, 2026 | Source Generators: Eliminate Boilerplate, Boost Performance | **PUBLISHED** |
+| Feb 9, 2026 | WorkflowForge + Coravel: Scheduled Workflows | **PUBLISHED** |
+| Jan 26, 2026 | WorkflowForge 2.0: Performance Unleashed | **PUBLISHED** |
+| Mar 8, 2026 | What It Actually Takes to Ship a Quality .NET OSS Release | **PUBLISHED** |
 
 ---
 
@@ -30,19 +33,17 @@
 
 | Date | Post | Type |
 |------|------|------|
-| Mar 2 | **AI Agents with Semantic Kernel + Ollama (100% Local)** | NEW - AI Series |
-| Mar 9 | Modular Monolith: Why I'm Not Using Microservices (+ WF example) | Architecture |
-| Mar 16 | **Microsoft.Extensions.AI: One Interface for All LLMs** | NEW - AI Series |
-| Mar 23 | HTMX with .NET: SPAs Are Overrated | Counter-Culture |
+| Mar 16 | AI Agent Pipeline with Rollback: Semantic Kernel + WorkflowForge | WF + AI Promotion |
+| Mar 23 | Real-Time Workflow Dashboard: HTMX + WorkflowForge, Zero JavaScript | WF + Web Promotion |
 | Mar 30 | **Spectre.Console: Beautiful CLI Tools in C#** | NEW - Discovery |
 
 ### April 2026
 
 | Date | Post | Type |
 |------|------|------|
-| Apr 6 | CDC with Debezium: Real-Time Database Streaming (+ WF trigger) | CDC Pipeline |
-| Apr 13 | **RAG in C#: Code-Aware Assistant with Ollama** | NEW - AI Series |
-| Apr 20 | Transactional Outbox with CDC | CDC Pipeline |
+| Apr 6 | The Saga Pattern Done Right: MassTransit + WorkflowForge | WF + Messaging Promotion |
+| Apr 13 | **Microsoft.Extensions.AI: One Interface for All LLMs** | NEW - AI Series |
+| Apr 20 | CDC with Debezium: Real-Time Database Streaming (+ WF trigger) | CDC Pipeline |
 | Apr 27 | Kafka to Browser: SignalR Real-Time | Real-Time |
 
 ### May 2026
