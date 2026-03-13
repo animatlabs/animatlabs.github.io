@@ -416,3 +416,132 @@ body.dark-mode .wf-cta__btn--github,
     justify-content: center;
   }
 }
+
+/* ===== MODERNIZATION: Bold Monochrome + Gradient Accent ===== */
+
+/* Post list cards with neo-brutalist hard shadow hover */
+.list__item {
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+}
+.list__item:hover {
+  border-color: #111;
+  box-shadow: 4px 4px 0 #111;
+  transform: translate(-2px, -2px);
+}
+
+/* Masthead bold bottom border */
+.masthead {
+  border-bottom: 2px solid #111;
+}
+
+/* Navigation sliding gradient underline (replaces theme default) */
+.greedy-nav .visible-links a::before {
+  display: none;
+}
+.greedy-nav .visible-links a {
+  position: relative;
+  transition: color 0.2s ease;
+}
+.greedy-nav .visible-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #111, #0ea5e9);
+  transition: width 0.3s ease;
+}
+.greedy-nav .visible-links a:hover::after {
+  width: 100%;
+}
+
+/* Content link hover transitions */
+.page__content a:not(.btn):not(.wf-cta__btn) {
+  transition: color 0.2s ease;
+}
+.page__content a:not(.btn):not(.wf-cta__btn):hover {
+  color: #0ea5e9;
+}
+
+/* Reading progress bar: black-to-blue gradient accent */
+#readingProgress {
+  background: linear-gradient(90deg, #111 0%, #0ea5e9 100%);
+}
+
+/* Code block accent top border */
+.highlight pre, pre.highlight {
+  border-top: 3px solid #0ea5e9;
+}
+
+/* Blockquote modernization */
+.page__content blockquote {
+  border-left: 4px solid #111;
+  background: #fafafa;
+  padding: 0.85rem 1.25rem;
+  border-radius: 0 6px 6px 0;
+  margin: 1.5rem 0;
+  font-style: normal;
+}
+
+/* TOC active link accent */
+.toc .active a {
+  border-left: 3px solid #0ea5e9;
+  padding-left: 0.5rem;
+}
+
+/* Tag/category pills */
+.page__taxonomy-item {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: #374151;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+.page__taxonomy-item:hover {
+  border-color: #111;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 #0ea5e9;
+}
+
+/* FAB hard shadow depth */
+#backToTop, #darkModeToggle, #subscribeFloat {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+#backToTop:hover, #darkModeToggle:hover, #subscribeFloat:hover {
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Footer bold top border */
+.page__footer {
+  border-top: 2px solid #111;
+}
+
+/* Page entrance animation */
+.initial-content, .page {
+  animation: pageIn 0.35s ease-out;
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile: reduce hard shadow offset to save screen real estate */
+@media (max-width: 768px) {
+  .list__item:hover {
+    box-shadow: 2px 2px 0 #111;
+    transform: translate(-1px, -1px);
+  }
+  .page__taxonomy-item:hover {
+    box-shadow: 1px 1px 0 #0ea5e9;
+  }
+}

@@ -63,7 +63,13 @@
       '#subscribe-cta button[type="submit"] { background: #0ea5e9 !important; color: #fff !important; }' +
       '.consent-btn.accept { background: #0ea5e9 !important; color: #fff !important; }' +
       '.wf-cta__btn--github { background: #0ea5e9 !important; color: #fff !important; border-color: #0284c7 !important; }' +
-      '.wf-cta__btn--kofi { background: #FF5F5F !important; color: #fff !important; border-color: #e04f4f !important; }';
+      '.wf-cta__btn--kofi { background: #FF5F5F !important; color: #fff !important; border-color: #e04f4f !important; }' +
+      '.list__item:hover { border-color: #e5e7eb !important; box-shadow: 4px 4px 0 #0ea5e9 !important; }' +
+      '.highlight pre, pre.highlight { border-top-color: #0ea5e9 !important; }' +
+      '.page__footer { border-top-color: #e5e7eb !important; }' +
+      '.masthead { border-bottom-color: #e5e7eb !important; }' +
+      '.page__taxonomy-item:hover { background: #0ea5e9 !important; box-shadow: 2px 2px 0 #fff !important; }' +
+      '.page__content blockquote { border-left-color: #e5e7eb !important; background: rgba(255,255,255,0.05) !important; }';
   }
 
   function disableDarkMode() {
