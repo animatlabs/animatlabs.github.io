@@ -1,9 +1,10 @@
 name: Purge Cloudflare CDN
 
 on:
-  push:
-    branches: [main]
   page_build:
+
+concurrency:
+  group: purge-cdn
 
 jobs:
   purge:

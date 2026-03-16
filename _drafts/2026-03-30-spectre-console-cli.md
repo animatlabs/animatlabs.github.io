@@ -1,7 +1,7 @@
 ---
 title: "Spectre.Console: Build Beautiful CLI Tools in C#"
 excerpt: >-
-  "11k GitHub stars and you've probably never heard of it. Spectre.Console makes terminal apps gorgeous—tables, progress bars, trees, and more."
+  "11k GitHub stars and you've probably never heard of it. Spectre.Console makes terminal apps gorgeous -- tables, progress bars, trees, and more."
 categories:
   - Technical
   - .NET
@@ -22,11 +22,11 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
-`Console.WriteLine("Hello World")` is embarrassing. I've shipped CLI tools that looked like they were written in 1995—plain text, no colors, no structure. Users deserve better.
+`Console.WriteLine` is embarrassing. I shipped a CLI tool last year that looked like it was written in 1995. Plain text, no colors. Users hated it.
 
-Spectre.Console has 11.1k stars on GitHub and most .NET devs I talk to have never heard of it. That's a shame. It turns your terminal output into something you'd actually want to look at: tables, trees, progress bars, spinners, charts. All with a few lines of code.
+Spectre.Console (11.1k stars) turns terminal output into something you'd want to look at. Tables, trees, charts, spinners. I built a "Project Health Checker" demo to show what's possible.
 
-I built a "Project Health Checker" demo to showcase it. Simulated data, zero real analysis—just Spectre features in action. Here's how each piece works.
+**You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/SpectreConsole){: .btn .btn--primary}
 
 ## Install
 
@@ -34,7 +34,7 @@ I built a "Project Health Checker" demo to showcase it. Simulated data, zero rea
 dotnet add package Spectre.Console
 ```
 
-That's it. No CLI framework, no extra dependencies. Just Spectre.
+That's it. No CLI framework, no extra dependencies. One package.
 
 ## FigletText: ASCII Art Headers
 
@@ -45,7 +45,9 @@ AnsiConsole.Write(new FigletText("Project Health").Color(Color.Cyan1));
 AnsiConsole.MarkupLine("[grey]Spectre.Console Demo — Project Health Checker[/]");
 ```
 
-The `[grey]` and `[/]` are Spectre's markup—inline styling without escape codes. More on that later.
+The `[grey]` and `[/]` are Spectre markup -- inline styling without raw ANSI escape codes. You wrap text in `[color]...[/]` or `[bold]...[/]`. Spectre converts it to the right escape sequences for your terminal.
+
+If the terminal doesn't support ANSI, it strips the markup and falls back to plain text. No manual `\x1b[31m` nonsense.
 
 ## Status Spinner: Fake the Work
 
@@ -69,7 +71,7 @@ AnsiConsole.Status()
 
 ## Table: The Health Report
 
-Tables are where Spectre shines. Rounded borders, aligned columns, colored cells—no manual string padding.
+Tables are where Spectre shines. Rounded borders, aligned columns, colored cells -- no manual string padding.
 
 ```csharp
 var table = new Table()
@@ -152,7 +154,7 @@ foreach (var p in projects)
 AnsiConsole.Write(chart);
 ```
 
-`AddItem(label, value, color)`. Spectre scales the bars to fit. Green/yellow/red by threshold—same logic as the table, different presentation.
+`AddItem(label, value, color)`. Spectre scales the bars to fit. Green/yellow/red by threshold -- same logic as the table, different presentation.
 
 ## Rule: Section Dividers with Content
 
@@ -169,7 +171,7 @@ The rule color matches the status. Green line for "all good," red for "something
 
 ## The Full Picture
 
-The demo runs in one go: Figlet header, spinner, table, tree, chart, rule. No user input—just output. Run it and see the difference.
+The demo runs in one go: Figlet header, spinner, table, tree, chart, rule. No user input -- all output. Run it and see the difference.
 
 ```bash
 cd playground/SpectreConsole/AnimatLabs.SpectreConsole
@@ -178,30 +180,64 @@ dotnet run
 
 I didn't touch `Console.WriteLine` once. Everything goes through `AnsiConsole.Write` or `AnsiConsole.MarkupLine`. Spectre handles ANSI escape codes, terminal width, and fallbacks for unsupported environments.
 
-## What I Didn't Cover
+## Tradeoffs and Gotchas
 
-Spectre.Console does more: prompts, selections, multi-select, progress bars, panels, live display. There's also Spectre.Console.Cli for argument parsing if you want a full CLI framework. I kept this focused on the visual output.
+Spectre is great for output. It's not a CLI framework. That distinction matters.
 
-## The Bottom Line
+**Spectre.Console vs System.CommandLine**
 
-`Console.WriteLine` is fine for quick scripts. For tools people actually use—build helpers, health checkers, migration runners—Spectre is worth the extra package. It's one dependency, it's well-maintained, and it makes your output look like it belongs in 2026.
+Spectre renders. System.CommandLine parses. They solve different problems. Use System.CommandLine (or Spectre.Console.Cli) for argument parsing, validation, and help generation. Use Spectre for everything that goes to stdout.
 
-What's your go-to for pretty CLI output in .NET—or are you still shipping plain text?
+I've used both in the same tool -- System.CommandLine for `--verbose` and `--format json`, Spectre for the pretty table when format is default.
+
+Spectre.Console.Cli bundles Spectre with its own command model. If you want prompts, confirmations, and type converters built in, go that route. If you only want Spectre for output, pair plain Spectre.Console with System.CommandLine.
+
+**When not to use Spectre**
+
+Don't use it for scripts that run headless in CI/CD and pipe output to logs. Jenkins, Azure DevOps, GitHub Actions -- many of these strip or mangle ANSI. Your beautiful table becomes `[31m` and `[0m` garbage in the build log.
+
+Add a `--no-color` or `--plain` flag that bypasses Spectre for CI. I've seen teams branch on it: `if (plainOutput) Console.WriteLine(...) else AnsiConsole.Write(...)`. A bit of duplication, but it works.
+
+Same for old Windows cmd.exe. Pre-Windows 10, ANSI support was spotty. Windows Terminal and modern PowerShell handle it fine -- legacy cmd does not.
+
+If your users are on locked-down corporate desktops, test in cmd.exe before you ship.
+
+**Terminal compatibility gotchas**
+
+Spectre detects terminal capabilities and falls back to plain text. No colors, no box-drawing characters. The output still works -- it just looks flat.
+
+If your layout depends on Unicode (box-drawing, emoji), it can break in minimal environments. Stick to ASCII for critical paths. Figlet uses ASCII art -- safe. Tables use box-drawing by default but can fall back to ASCII borders.
+
+Don't assume every terminal is a 256-color TTY.
+
+## Beyond Output
+
+I only covered the output side. Spectre also does prompts, selections, multi-select, progress bars, and live display.
+
+For quick scripts, `Console.WriteLine` is fine. For anything people actually use -- build helpers, health checkers, migration runners -- Spectre earns the extra package. One dependency.
+
+**Playground:** [SpectreConsole](https://github.com/animat089/playground/tree/main/SpectreConsole)
+
+What's your go-to for CLI output in .NET?
 
 ---
 
-## LinkedIn Promo
+<!--
+## LinkedIn Promo (150-250 words)
 
-**Console.WriteLine is embarrassing.**
+Console.WriteLine is embarrassing.
 
 I shipped a CLI tool last year that looked like it was written in 1995. Plain text. No colors. No structure. Users hated it.
 
-Then I found Spectre.Console—11k GitHub stars, and most .NET devs I talk to have never heard of it. Tables, trees, charts, spinners, progress bars. All with a few lines of code. No more manual string padding or ANSI escape sequences.
+Then I found Spectre.Console -- 11k GitHub stars, and most .NET devs I talk to have never heard of it. Tables, trees, charts, spinners, progress bars. All with a few lines of code. No more manual string padding or ANSI escape sequences.
 
 I built a "Project Health Checker" demo to showcase it: Figlet header, status spinner, health report table, dependency tree with vulnerability annotations, test coverage bar chart. Simulated data. Full working code in the playground.
 
-If you're still using `Console.WriteLine` for anything beyond a quick script, Spectre is worth a look. One NuGet package. Zero regrets.
+One caveat: Spectre shines in interactive terminals. In CI/CD pipelines, ANSI often gets stripped -- your pretty table becomes escape-code garbage in the logs. Add a --plain flag for headless runs, or skip Spectre for that use case.
+
+If you're still using Console.WriteLine for anything beyond a quick script, Spectre deserves a try. One NuGet package. Zero regrets.
 
 What's your go-to for pretty CLI output in .NET?
 
 [Link to blog post]
+-->

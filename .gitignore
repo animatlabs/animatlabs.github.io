@@ -4,3 +4,10 @@ _site
 Gemfile.lock
 vendor
 .vs
+
+# Node/Playwright test artifacts
+node_modules/
+test-results/
+playwright-report/
+package.json
+package-lock.json

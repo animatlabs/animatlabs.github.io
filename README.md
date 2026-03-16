@@ -32,15 +32,20 @@ Stay updated with new posts:
 
 This site is built with [Jekyll](https://jekyllrb.com/) and the [Minimal Mistakes](https://mmistakes.github.io/minimal-mistakes/) theme.
 
+### Using Docker (no Ruby required)
+
 ```bash
-# Install dependencies
-bundle install
+docker run --rm -v "${PWD}:/srv/jekyll" -p 4000:4000 jekyll/jekyll:4 jekyll serve --host 0.0.0.0 --force_polling
+```
 
-# Run locally
-bundle exec jekyll serve
+Site will be available at `http://localhost:4000`. The container installs gems automatically on first run.
 
-# Build for production
-bundle exec jekyll build
+### Using Ruby
+
+```bash
+bundle install                 # install dependencies
+bundle exec jekyll serve       # http://localhost:4000
+bundle exec jekyll build       # production build
 ```
 
 ## Author
@@ -50,6 +55,7 @@ bundle exec jekyll build
 - [LinkedIn](https://linkedin.com/in/089ani)
 - [GitHub](https://github.com/animat089)
 - [StackOverflow](https://stackoverflow.com/users/2822615/animat089)
+- [Email](mailto:animesh@animatlabs.com)
 
 ## License
 

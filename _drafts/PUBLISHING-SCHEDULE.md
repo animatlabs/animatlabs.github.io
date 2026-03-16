@@ -1,10 +1,10 @@
 # Blog Publishing Schedule
 
-**65 drafts | Weekly on Mondays | Feb 2026 - May 2027**
+**65+ drafts | Weekly on Mondays | Feb 2026 - May 2027**
 
 > **Local-First Approach:** All posts can be developed and tested locally with Docker. No Azure, AWS, or cloud subscriptions required. See `docker-compose.azure-local.yml` for the complete local development stack.
 
-> **Content Strategy:** Every post has a unique angle - opinionated take, real benchmarks, library discovery, problem-solving narrative, or fun/visual content. No generic docs rewrites.
+> **Content Strategy:** Every post has a unique angle -- opinionated take, real benchmarks, library discovery, problem-solving narrative, or fun/visual content. No generic docs rewrites. Posts are organized in content chains where each post drives traffic to related posts.
 
 ---
 
@@ -12,48 +12,50 @@
 
 | Date | Post | Status |
 |------|------|--------|
+| Jan 26, 2026 | WorkflowForge 2.0: Performance Unleashed | **PUBLISHED** |
 | Feb 3, 2026 | Source Generators: Eliminate Boilerplate, Boost Performance | **PUBLISHED** |
 | Feb 9, 2026 | WorkflowForge + Coravel: Scheduled Workflows | **PUBLISHED** |
-| Jan 26, 2026 | WorkflowForge 2.0: Performance Unleashed | **PUBLISHED** |
+| Feb 23, 2026 | .NET Resilience: When the Defaults Aren't Enough | **PUBLISHED** |
 | Mar 8, 2026 | What It Actually Takes to Ship a Quality .NET OSS Release | **PUBLISHED** |
+| Mar 15, 2026 | Run .NET Behind Traefik: Fix Port Conflicts Forever | **PUBLISHED** |
+| Mar 16, 2026 | MassTransit Saga + WorkflowForge Compensation | **PUBLISHED** |
+| Mar 19, 2026 | Real-Time Events in C# with Server-Sent Events | **PUBLISHED** |
 
 ---
 
-## Core Schedule (Feb - Nov 2026) - 43 Posts
+## Ready to Publish (Mar - May 2026) - Content Chains
 
-### February 2026
-
-| Date | Post | Type |
-|------|------|------|
-| Feb 9 | WorkflowForge + Coravel: Scheduled Workflows | WF Promotion |
-| Feb 16 | .NET + Docker + Traefik: Production Setup | Production Guide |
-| Feb 23 | Polly v8: Resilience Patterns (+ WF integration) | Library Update |
+Posts are ordered by content chains: each post links to its neighbors. Alternates WF / non-WF.
 
 ### March 2026
 
-| Date | Post | Type |
-|------|------|------|
-| Mar 16 | AI Agent Pipeline with Rollback: Semantic Kernel + WorkflowForge | WF + AI Promotion |
-| Mar 23 | Real-Time Workflow Dashboard: HTMX + WorkflowForge, Zero JavaScript | WF + Web Promotion |
-| Mar 30 | **Spectre.Console: Beautiful CLI Tools in C#** | NEW - Discovery |
+| Date | Post | Type | Chain | Playground | Status |
+|------|------|------|-------|------------|--------|
+| ~~Mar 16~~ | ~~.NET + Docker + Traefik~~ | ~~PUBLISHED~~ | | | |
+| ~~Mar 19~~ | ~~Real-Time Events in C# with SSE~~ | ~~PUBLISHED~~ | | | |
+| Mar 23 | HTMX + WorkflowForge: Live Workflow Dashboard | WF + Web | Chain A (Real-Time) | `WorkflowForge/HtmxDashboard` (:5075) | READY |
+| ~~Mar 26~~ | ~~.NET Resilience: When the Defaults Aren't Enough~~ | ~~PUBLISHED~~ | | | |
+| Mar 30 | Spectre.Console: Beautiful CLI Tools in C# | Discovery | Standalone | `SpectreConsole/` (console app) | READY |
 
 ### April 2026
 
-| Date | Post | Type |
-|------|------|------|
-| Apr 6 | The Saga Pattern Done Right: MassTransit + WorkflowForge | WF + Messaging Promotion |
-| Apr 13 | **Microsoft.Extensions.AI: One Interface for All LLMs** | NEW - AI Series |
-| Apr 20 | CDC with Debezium: Real-Time Database Streaming (+ WF trigger) | CDC Pipeline |
-| Apr 27 | Kafka to Browser: SignalR Real-Time | Real-Time |
+| Date | Post | Type | Chain | Deps |
+|------|------|------|-------|------|
+| ~~Apr 3~~ | ~~MassTransit Saga + WorkflowForge Compensation~~ | ~~MOVED to Mar 16 -- PUBLISHED~~ | | |
+| Apr 6 | Structured Logging with Serilog: The Production Setup | Production | Chain B (Production Stack) | None |
+| Apr 10 | Why .NET Monitoring Is Not Optional in Production | Production | Chain B (Production Stack) | Docker (Prometheus, Grafana, PostgreSQL) |
+| Apr 13 | Goodbye Swagger: Scalar is the .NET Default | Discovery | Standalone | None |
+| Apr 20 | CDC with Debezium: Real-Time Database Streaming (+ WF trigger) | CDC Pipeline | -- | Docker (Kafka, Debezium) |
+| Apr 27 | Kafka to Browser: SignalR Real-Time | Real-Time | -- | Docker (Kafka) |
 
 ### May 2026
 
 | Date | Post | Type |
 |------|------|------|
-| May 4 | Goodbye Swagger: Scalar is Now Default | Discovery |
-| May 11 | **Marten: PostgreSQL as Doc DB + Event Store** | NEW - Discovery |
-| May 18 | Wolverine: Replace MediatR + MassTransit (+ migration guide) | Discovery |
-| May 25 | FastEndpoints: Why I Stopped Using Minimal APIs | Discovery |
+| May 4 | **Marten: PostgreSQL as Doc DB + Event Store** | NEW - Discovery |
+| May 11 | Wolverine: Replace MediatR + MassTransit (+ migration guide) | Discovery |
+| May 18 | FastEndpoints: Why I Stopped Using Minimal APIs | Discovery |
+| May 25 | AI Agent Pipeline with Rollback: Semantic Kernel + WorkflowForge | WF + AI (needs Ollama) |
 
 ### June 2026
 
@@ -90,7 +92,7 @@
 |------|------|------|
 | Sep 7 | **Supply Chain Security: SBOM & Package Signing** | NEW - Security |
 | Sep 14 | Chaos Engineering in .NET | SRE |
-| Sep 21 | **Real-Time Dashboard: .NET + HTMX + SSE** | NEW - Fun |
+| ~~Sep 21~~ | ~~Real-Time Dashboard: .NET + HTMX + SSE~~ | ~~CUT -- overlaps with Mar 23 HTMX+WF post~~ |
 | Sep 28 | BenchmarkDotNet Mastery | Performance |
 
 ### October 2026
@@ -123,9 +125,9 @@ These are Tier 2 posts for busy-week substitution or overflow scheduling.
 | Date | Post | Type |
 |------|------|------|
 | Dec 7 | Vertical Slice vs Clean Architecture: Hybrid Approach | Architecture |
-| Dec 14 | Minimal APIs Deep Dive | .NET Feature |
-| Dec 21 | Saga Pattern with Compensation | Pattern |
-| Dec 28 | EF Core vs Dapper: Benchmarks | Comparison |
+| Dec 14 | Minimal APIs vs FastEndpoints vs Controllers: When to Use Each | Comparison (replaces generic Minimal APIs) |
+| ~~Dec 21~~ | ~~Saga Pattern with Compensation~~ | ~~MERGED -- covered in MassTransit post~~ |
+| Dec 28 | EF Core 10 vs Dapper: Has the Gap Closed? | Comparison (fresh .NET 10 benchmarks) |
 
 ### January 2027
 
@@ -142,7 +144,7 @@ These are Tier 2 posts for busy-week substitution or overflow scheduling.
 |------|------|------|
 | Feb 1 | EF Core 10: What's New | Release Notes |
 | Feb 8 | .NET 10 Performance Improvements | Benchmarks |
-| Feb 15 | MassTransit in 2026 | Library |
+| ~~Feb 15~~ | ~~MassTransit in 2026~~ | ~~CUT -- covered in MassTransit+WF saga post~~ |
 | Feb 22 | Zero Trust for Developers | Security |
 
 ### March 2027
@@ -179,10 +181,29 @@ Geometry/CAD series and high-impact library discovery posts.
 
 ---
 
+## Content Chains (NEW)
+
+### Chain A: Real-Time
+SSE Foundations → HTMX+WF Dashboard
+- Post 1: Server-Sent Events in C# (concept-first, no frameworks)
+- Post 2: HTMX + WorkflowForge live dashboard (builds on SSE)
+
+### Chain B: Production Stack
+Serilog → Monitoring
+- Post 1: Structured Logging with Serilog (production config, correlation IDs)
+- Post 2: Production Monitoring (health checks + Prometheus + Grafana, references Serilog)
+
+### Chain C: Resilience
+.NET Resilience → MassTransit+WF Saga
+- Post 1: .NET Resilience: When the Defaults Aren't Enough (+ WF extension integration)
+- Post 2: MassTransit saga with WF compensation (uses resilience concepts)
+
+---
+
 ## Content Categories
 
-### AI Series (4 posts) - NEW
-- Semantic Kernel + Ollama (local agents)
+### AI Series (4 posts) - DEFERRED until Ollama setup documented
+- Semantic Kernel + Ollama (local agents) -- playground exists, needs Ollama running
 - Microsoft.Extensions.AI (unified abstraction)
 - RAG in C# (retrieval-augmented generation)
 - AI Code Review Bot (50 lines)
@@ -262,11 +283,14 @@ Geometry/CAD series and high-impact library discovery posts.
 
 See `docker-compose.azure-local.yml` for:
 - **Azure**: Azurite, Service Bus Emulator, SQL Server
+- **Data**: PostgreSQL (:5432)
 - **CDC**: Kafka, Zookeeper, Debezium, Kafka UI
-- **Messaging**: RabbitMQ, Redis
-- **Observability**: Jaeger, Prometheus, Grafana
+- **Messaging**: RabbitMQ (:5673 -- non-standard to avoid Service Bus conflict), Redis
+- **Observability**: Jaeger (:16686), Prometheus (:9090), Grafana (:3000)
 - **Security**: HashiCorp Vault
-- **AI**: Add Ollama container for local LLM development
+
+**Not in docker-compose (run separately):**
+- **AI**: Ollama (`docker run -d -p 11434:11434 ollama/ollama` then `ollama pull phi3`)
 
 ### Additional Tools (no Docker required)
 - **Geometry/CAD**: xBIM Toolkit, ACadSharp, NetTopologySuite, Math.NET Spatial, SkiaSharp (all NuGet packages)

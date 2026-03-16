@@ -1,3 +1,6 @@
+# Security headers -- not natively served by GitHub Pages.
+# Configure these as Cloudflare Transform Rules (Response Header Modification)
+# in the Cloudflare dashboard. Kept here as documentation of intent.
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff

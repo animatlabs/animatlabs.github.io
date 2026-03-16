@@ -30,6 +30,8 @@ This post covers every piece of infrastructure that went into that transition. N
 
 If you maintain a .NET open-source project and ship to NuGet, this is the checklist I wish I had before I started.
 
+**You can access the entire code from my** [GitHub Repo](https://github.com/animatlabs/workflow-forge){: .btn .btn--primary}
+
 ---
 
 ## Static Analysis: Free for Public Repos

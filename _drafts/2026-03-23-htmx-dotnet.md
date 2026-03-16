@@ -1,7 +1,7 @@
 ---
 title: "Real-Time Workflow Dashboard: HTMX + WorkflowForge, Zero JavaScript"
 excerpt: >-
-  "Submit an order. Watch 5 steps execute live. Flip a switch—watch it fail and roll back in real-time. HTMX + WorkflowForge. No React. No SignalR. Just SSE."
+  "Submit an order. Watch 5 steps execute live. Flip a switch -- watch it fail and roll back. HTMX + WorkflowForge. No React. No SignalR. Zero custom JavaScript."
 categories:
   - Technical
   - .NET
@@ -15,63 +15,103 @@ tags:
   - ASP.NET Core
   - Compensation
 author: animat089
-last_modified_at: 2026-03-23
+last_modified_at: 2026-03-14
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
 ---
 
-## Real-Time Dashboards Don't Need React
+## This Didn't Need React
 
-I've seen teams reach for SignalR, Blazor, or a full React stack just to show a workflow running step-by-step. The requirement is simple: click a button, stream status updates to the browser. The solution often balloons into WebSockets, state management, and a build pipeline.
+I needed a workflow status page. Click a button, watch steps execute, show success or rollback. That's it.
 
-HTMX has 38k GitHub stars because it solves this without the ceremony. Server-Sent Events stream data one way. The browser's native `EventSource` API consumes it. No framework. No npm install.
+My first instinct was a React frontend with WebSocket updates. Then I looked at the requirements again -- one-way data, server renders the UI, no client state.
 
-Pair that with WorkflowForge 2.1.1 — a .NET workflow orchestration library with inline compensation and automatic rollback — and you get a real-time workflow dashboard in under 200 lines of code. HTMX (or plain HTML + EventSource) renders the UI. WorkflowForge orchestrates the process.
+HTMX has an SSE extension. It opens an `EventSource` with attributes. The server sends HTML fragments, HTMX swaps them into the page.
 
-I built a playground to prove it. Here's how it works.
+I paired that with WorkflowForge 2.1.1 for a 5-step order workflow with automatic compensation. The result: a real-time dashboard with zero script tags.
 
----
+**You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/WorkflowForge/AnimatLabs.WorkflowForge.HtmxDashboard){: .btn .btn--primary}
 
-## The Architecture
+> If you're new to SSE in .NET, start with my [Server-Sent Events post](/2026/03/16/server-sent-events-dotnet/) -- it covers the three SSE patterns from scratch.
+
+## How It Works
+
+Two endpoints, one flow.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Browser                                                     │
-│  └─ EventSource('/workflow/start?fail=false')                │
-│       │                                                      │
-│       ▼ SSE stream                                           │
-├─────────────────────────────────────────────────────────────┤
-│  ASP.NET Core Minimal API                                    │
-│  └─ /workflow/start → text/event-stream                      │
-│       │                                                      │
-│       ├─ ChannelEventSink ← WorkflowForge operations report   │
-│       │                                                      │
-│       └─ OrderProcessingWorkflow (5 ops, each with restore)  │
-│            ValidateOrder → ReserveStock → ChargePayment      │
-│            → CreateShipment → SendNotification               │
-└─────────────────────────────────────────────────────────────┘
+Browser                                 Server
+  │                                        │
+  ├─ hx-get="/workflow/reset" ────────────>│ Returns HTML fragment
+  │                                        │   with sse-connect attribute
+  │<────── <div sse-connect="/stream"> ────┤
+  │                                        │
+  ├─ HTMX opens EventSource ─────────────>│ WorkflowForge runs 5 ops
+  │                                        │   Channel pipes events
+  │<──────── event: step ──────────────────┤
+  │<──────── event: step ──────────────────┤
+  │<──────── event: done ──────────────────┤
 ```
 
-Two buttons: "Run Order Workflow" and "Run with Failure". The second one fails at ChargePayment and triggers automatic compensation — ReserveStock releases inventory, ValidateOrder clears its record. All streamed to the browser in real time.
+Button click fetches an HTML fragment with SSE attributes. HTMX opens the stream and the server pushes step updates as HTML.
 
----
+Click "Run with Failure" -- ChargePayment throws, WorkflowForge compensates ReserveStock and ValidateOrder, all streamed live.
 
-## The SSE Endpoint
+## The Frontend
 
-The `/workflow/start` endpoint returns `text/event-stream` and keeps the connection open. A `ChannelEventSink` pipes events from WorkflowForge operations into the response:
+```html
+<div>
+    <button hx-get="/workflow/reset"
+            hx-target="#output"
+            hx-swap="innerHTML">Run Order Workflow</button>
+    <button hx-get="/workflow/reset?fail=true"
+            hx-target="#output"
+            hx-swap="innerHTML">Run with Failure</button>
+</div>
+
+<div id="output">
+    <p>Click a button to start a workflow.</p>
+</div>
+```
+
+That's the entire interactive UI. No `onclick`. No `EventSource`. The `<head>` loads HTMX and the SSE extension. Everything else is server-driven.
+
+## Two Endpoints
+
+**Reset** returns an HTML fragment pre-wired for SSE:
 
 ```csharp
-app.MapGet("/workflow/start", async (HttpContext ctx, bool fail = false) =>
+app.MapGet("/workflow/reset", (bool fail = false) =>
 {
+    var html = $"""
+        <div sse-connect="/workflow/stream?fail={fail.ToString().ToLowerInvariant()}" sse-close="close">
+            <div id="steps" sse-swap="step" hx-swap="beforeend"></div>
+            <div id="final-status" sse-swap="done" hx-swap="innerHTML"></div>
+        </div>
+        """;
+    return Results.Content(html, "text/html");
+});
+```
+
+`hx-ext="sse"` is set on the `<body>` tag. The reset endpoint returns a fragment with `sse-connect` -- HTMX opens an EventSource to that URL.
+
+`sse-swap="step"` means "when an SSE event named `step` arrives, swap this div." `hx-swap="beforeend"` appends each step. `sse-close="close"` shuts down the connection when the workflow finishes.
+
+**Stream** runs the workflow and pushes events:
+
+```csharp
+app.MapGet("/workflow/stream", async (HttpContext ctx, bool fail = false) =>
+{
+    var bufferingFeature = ctx.Features.Get<IHttpResponseBodyFeature>();
+    bufferingFeature?.DisableBuffering();
+
     ctx.Response.ContentType = "text/event-stream";
     ctx.Response.Headers.CacheControl = "no-cache";
     ctx.Response.Headers.Connection = "keep-alive";
 
     var sink = new ChannelEventSink();
     var ct = ctx.RequestAborted;
-
     var workflow = OrderProcessingWorkflow.Build(sink, fail);
 
     using var foundry = WF.CreateFoundry(
@@ -82,44 +122,49 @@ app.MapGet("/workflow/start", async (HttpContext ctx, bool fail = false) =>
         });
 
     using var smith = WF.CreateSmith(new ConsoleLogger("WF"));
+    string? finalHtml = null;
 
-    _ = Task.Run(async () =>
+    try
     {
-        try
+        _ = Task.Run(async () =>
         {
-            await smith.ForgeAsync(workflow, foundry, ct).ConfigureAwait(false);
-            await SendSseAsync(ctx, "done",
-                """<div id="final-status" class="status-success">All steps completed successfully</div>""",
-                ct).ConfigureAwait(false);
-        }
-        catch (OperationCanceledException) { }
-        catch
-        {
-            await SendSseAsync(ctx, "done",
-                """<div id="final-status" class="status-failed">Workflow failed &mdash; compensation complete</div>""",
-                ct).ConfigureAwait(false);
-        }
-        finally
-        {
-            sink.Complete();
-        }
-    }, ct);
+            try
+            {
+                await smith.ForgeAsync(workflow, foundry, ct).ConfigureAwait(false);
+                finalHtml = "<p><strong>All steps completed successfully.</strong></p>";
+            }
+            catch (OperationCanceledException) { }
+            catch
+            {
+                finalHtml = "<p><strong>Workflow failed -- compensation complete.</strong></p>";
+            }
+            finally
+            {
+                sink.Complete();
+            }
+        }, ct);
 
-    await foreach (var evt in sink.Reader.ReadAllAsync(ct))
-    {
-        var html = BuildStepHtml(evt);
-        await SendSseAsync(ctx, "step", html, ct).ConfigureAwait(false);
+        await foreach (var evt in sink.Reader.ReadAllAsync(ct))
+        {
+            var html = BuildStepHtml(evt);
+            await SendSseAsync(ctx, "step", html, ct).ConfigureAwait(false);
+        }
+
+        if (finalHtml is not null)
+        {
+            await SendSseAsync(ctx, "done", finalHtml, ct).ConfigureAwait(false);
+            await SendSseAsync(ctx, "close", "", ct).ConfigureAwait(false);
+        }
     }
+    catch (OperationCanceledException) { }
 });
 ```
 
-The workflow runs on a background task. The main loop reads from the channel and pushes HTML fragments to the client. Each event is a small `<div>` with the step name, status, and detail.
-
----
+Workflow runs on a background task. `ChannelEventSink` buffers step events. The main loop reads and pushes HTML fragments. When the channel completes, we send `done` then `close` -- the `close` event triggers `sse-close` on the client, which shuts down the EventSource connection.
 
 ## The Channel Bridge
 
-`System.Threading.Channels` connects WorkflowForge to the SSE stream. Operations call `sink.Report(name, status, detail)`; the channel buffers events until the response loop reads them:
+`System.Threading.Channels` connects WorkflowForge to SSE:
 
 ```csharp
 public sealed class ChannelEventSink : IWorkflowEventSink
@@ -147,221 +192,107 @@ public sealed class ChannelEventSink : IWorkflowEventSink
 }
 ```
 
-`SingleWriter = false` because multiple operations can report concurrently. The reader is the SSE loop.
+`SingleWriter = false` because multiple operations report concurrently. The reader is the SSE loop -- one consumer, serialized writes to the response.
 
----
+## The Workflow
 
-## The Workflow: Five Operations, Inline Compensation
-
-Each operation extends `WorkflowOperationBase` and implements `ForgeAsyncCore` (do the work) and `RestoreAsync` (undo it if something fails downstream). WorkflowForge 2.1.1 runs compensation automatically in reverse order.
+Five operations, each with inline compensation:
 
 ```csharp
-public static class OrderProcessingWorkflow
+public static IWorkflow Build(IWorkflowEventSink sink, bool shouldFail)
 {
-    public static IWorkflow Build(IWorkflowEventSink sink, bool shouldFail)
-    {
-        return WF
-            .CreateWorkflow("OrderProcessing")
-            .AddOperation(new ValidateOrderOperation(sink))
-            .AddOperation(new ReserveStockOperation(sink))
-            .AddOperation(new ChargePaymentOperation(sink, shouldFail))
-            .AddOperation(new CreateShipmentOperation(sink))
-            .AddOperation(new SendNotificationOperation(sink))
-            .Build();
-    }
+    return WF
+        .CreateWorkflow("OrderProcessing")
+        .AddOperation(new ValidateOrderOperation(sink))
+        .AddOperation(new ReserveStockOperation(sink))
+        .AddOperation(new ChargePaymentOperation(sink, shouldFail))
+        .AddOperation(new CreateShipmentOperation(sink))
+        .AddOperation(new SendNotificationOperation(sink))
+        .Build();
 }
 ```
 
-`ChargePaymentOperation` has a `shouldFail` flag for the demo. When it throws, WorkflowForge rolls back ReserveStock and ValidateOrder:
+Each operation implements `ForgeAsyncCore` (do the work) and `RestoreAsync` (undo it). WorkflowForge calls `RestoreAsync` in reverse on failure. `ChargePaymentOperation` has a `shouldFail` flag:
 
 ```csharp
-public sealed class ChargePaymentOperation(IWorkflowEventSink sink, bool shouldFail) : WorkflowOperationBase
+protected override async Task<object?> ForgeAsyncCore(
+    object? inputData, IWorkflowFoundry foundry, CancellationToken ct)
 {
-    public override string Name => "ChargePayment";
+    sink.Report(Name, "running", "Charging payment method...");
+    await Task.Delay(1200, ct).ConfigureAwait(false);
 
-    protected override async Task<object?> ForgeAsyncCore(
-        object? inputData, IWorkflowFoundry foundry, CancellationToken ct)
+    if (shouldFail)
     {
-        sink.Report(Name, "running", "Charging payment method...");
-        await Task.Delay(1200, ct).ConfigureAwait(false);
-
-        if (shouldFail)
-        {
-            sink.Report(Name, "failed", "Payment gateway timeout -- triggering compensation");
-            throw new InvalidOperationException("Payment gateway timeout");
-        }
-
-        foundry.SetProperty(OrderKeys.PaymentCharged, true);
-        sink.Report(Name, "completed", "$149.99 charged to card ending 4242");
-        return inputData;
+        sink.Report(Name, "failed", "Payment gateway timeout -- triggering compensation");
+        throw new InvalidOperationException("Payment gateway timeout");
     }
 
-    public override async Task RestoreAsync(
-        object? outputData, IWorkflowFoundry foundry, CancellationToken ct)
-    {
-        if (foundry.GetPropertyOrDefault<bool>(OrderKeys.PaymentCharged))
-        {
-            sink.Report(Name, "compensating", "Issuing refund...");
-            await Task.Delay(800, ct).ConfigureAwait(false);
-            sink.Report(Name, "compensated", "$149.99 refunded");
-        }
-        else
-        {
-            sink.Report(Name, "compensated", "No charge to reverse");
-        }
-    }
+    foundry.SetProperty(OrderKeys.PaymentCharged, true);
+    sink.Report(Name, "completed", "$149.99 charged to card ending 4242");
+    return inputData;
 }
 ```
 
-`GetPropertyOrDefault` lets compensation check whether a charge actually happened. No charge, no refund.
+`GetPropertyOrDefault` in `RestoreAsync` checks if a charge happened. No charge, no refund.
 
----
+## Server-Rendered HTML Over SSE
 
-## The Frontend
-
-The HTML loads HTMX (and the SSE extension) but the demo uses the native `EventSource` API directly — about 30 lines of script. Dark theme, step cards that animate in, and two buttons:
-
-```html
-<div class="controls">
-    <button class="btn-success" onclick="startWorkflow(false)">Run Order Workflow</button>
-    <button class="btn-danger" onclick="startWorkflow(true)">Run with Failure</button>
-    <button class="btn-reset" onclick="resetDashboard()">Reset</button>
-</div>
-
-<div id="workflow-panel">
-    <div id="steps">
-        <div class="empty-state">Click a button to start a workflow</div>
-    </div>
-    <div id="final-status"></div>
-</div>
-```
-
-```javascript
-function startWorkflow(fail) {
-    document.getElementById('steps').innerHTML = '';
-    document.getElementById('final-status').innerHTML = '';
-
-    const evtSource = new EventSource('/workflow/start?fail=' + fail);
-
-    evtSource.addEventListener('step', function(e) {
-        const steps = document.getElementById('steps');
-        const temp = document.createElement('div');
-        temp.innerHTML = e.data;
-        const newStep = temp.firstChild;
-        const existingStep = document.getElementById(newStep.id);
-        if (existingStep) {
-            existingStep.replaceWith(newStep);
-        } else {
-            steps.appendChild(newStep);
-        }
-    });
-
-    evtSource.addEventListener('done', function(e) {
-        document.getElementById('final-status').innerHTML = e.data;
-        evtSource.close();
-    });
-
-    evtSource.onerror = function() {
-        evtSource.close();
-    };
-}
-```
-
-Each `step` event carries server-rendered HTML. The script either appends a new step or replaces an existing one (for status updates: running → completed → compensating). No virtual DOM, no diffing.
-
----
-
-## Server-Rendered HTML Over the Wire
-
-The server builds each step as a `<div>` with status-specific classes:
+Each step becomes a `<div>` with a status label:
 
 ```csharp
 static string BuildStepHtml(WorkflowEvent evt)
 {
-    var icon = evt.Status switch
-    {
-        "running" => "&#9654;",
-        "completed" => "&#10004;",
-        "failed" => "&#10008;",
-        "compensating" => "&#8634;",
-        "compensated" => "&#8634;",
-        _ => "&#9679;"
-    };
-
-    return $"""<div class="step step-{evt.Status}" id="step-{evt.OperationName}"><span class="step-icon">{icon}</span><span class="step-name">{evt.OperationName}</span><span class="step-detail">{WebUtility.HtmlEncode(evt.Detail)}</span></div>""";
+    var label = evt.Status.ToUpperInvariant();
+    return $"""<div class="step">[{label}] <strong>{evt.OperationName}</strong> {WebUtility.HtmlEncode(evt.Detail)}</div>""";
 }
 ```
 
-CSS handles the colors: green for completed, red for failed, amber for compensating. The browser just inserts HTML. HTMX's SSE extension could do the same with `hx-sse` — the pattern is identical.
+Plain text, no client-side rendering. The browser inserts HTML fragments directly.
 
----
+## When This Fits
 
-## WorkflowForge 2.1.1: What You Get
+HTMX SSE works well for admin dashboards, status monitors, internal tools -- anything where the server owns the state and the client just displays it. Reconnection is handled by the browser. You don't manage WebSocket connections.
 
-| Feature | What it does |
-|---------|--------------|
-| **Inline compensation** | Each operation defines its own `RestoreAsync` — no separate saga handler |
-| **GetOperationOutput** | Downstream operations can read outputs from previous steps via the foundry |
-| **Automatic rollback** | On failure, WorkflowForge runs `RestoreAsync` in reverse order for all completed steps |
-
-No Durable Functions, no Azure Logic Apps. One NuGet package, in-process execution.
-
----
+Not the right pick for chat or collaborative editing. Use WebSockets or SignalR for bidirectional communication.
 
 ## Run It
 
 ```bash
-cd playground/HtmxWorkflowForge/AnimatLabs.HtmxWorkflowForge
+cd playground/WorkflowForge/AnimatLabs.WorkflowForge.HtmxDashboard
 dotnet run
 ```
 
-Open `http://localhost:5000`. Click "Run Order Workflow" — watch 5 steps light up over ~4 seconds. Click "Run with Failure" — ChargePayment fails, then ReserveStock and ValidateOrder compensate. The UI updates in real time.
+Open `http://localhost:5075`. Two buttons. One happy path, one failure. Watch the steps stream in -- on failure, compensation runs in reverse.
 
----
-
-## When This Fits
-
-**Good fit:**
-- Admin dashboards, internal tools, status monitors
-- Workflows that need compensation (payments, inventory, external APIs)
-- Teams that want real-time without the complexity of SignalR or WebSockets
-
-**Not ideal:**
-- True bidirectional chat (use WebSockets)
-- Offline-first or heavy client state (use a SPA)
-
----
-
-## Resources
+**WorkflowForge 2.1.1** -- inline compensation, `GetOperationOutput`, automatic reverse-order rollback. One NuGet package.
 
 | What | Where |
 |------|-------|
 | WorkflowForge | [GitHub](https://github.com/animatlabs/workflow-forge) \| [NuGet](https://www.nuget.org/packages/WorkflowForge) |
 | HTMX | [htmx.org](https://htmx.org) |
-| Playground | [HtmxWorkflowForge](https://github.com/animat089/playground/tree/main/HtmxWorkflowForge) |
+| Playground | [WorkflowForge/HtmxDashboard](https://github.com/animat089/playground/tree/main/WorkflowForge/AnimatLabs.WorkflowForge.HtmxDashboard) |
 
 ---
 
-*What's your go-to for real-time dashboards — SSE, SignalR, or something else?*
+*What's your pick for real-time dashboards -- SSE, SignalR, or something else?*
 
 {% include cta-workflowforge.html %}
 
 ---
 
-<!-- ========== LINKEDIN PROMO POST - DO NOT PUBLISH IN BLOG ========== -->
+<!-- LINKEDIN PROMO
 
-**LinkedIn Promo Post (150–250 words):**
+Submit an order. Watch 5 steps execute live. Flip a switch -- payment fails, compensation cascades in real time.
 
-Submit an order. Watch 5 steps execute live. Flip a switch — watch it fail and roll back in real time.
+No React. No SignalR. No custom JavaScript.
 
-No React. No SignalR. No WebSockets.
+HTMX has an SSE extension. The server returns HTML fragments. HTMX swaps them into the page with attributes -- sse-connect, sse-swap. I paired it with WorkflowForge 2.1.1 for a 5-step order workflow. If ChargePayment fails, ReserveStock and ValidateOrder automatically roll back. All streamed to the browser.
 
-I paired HTMX + WorkflowForge 2.1.1 to build a real-time workflow dashboard in under 200 lines. Server-Sent Events stream step updates from the server. The browser's native EventSource API consumes them. WorkflowForge orchestrates the process with inline compensation — if ChargePayment fails, ReserveStock and ValidateOrder automatically roll back.
+Working playground. Two buttons. One success path, one failure path. Run it locally in 30 seconds.
 
-The architecture is simple: a `ChannelEventSink` pipes events from WorkflowForge operations into the SSE response. Each operation reports status (running, completed, failed, compensating). The server sends HTML fragments. The client just inserts them. No virtual DOM, no build step.
+Full post with code: [link]
 
-I built a playground you can run — two buttons, one happy path, one failure path. Click "Run with Failure" and watch the compensation cascade in real time.
+What do you use for real-time dashboards?
 
-Full post with code: [link to blog post]
-
-What do you use for real-time dashboards — SSE, SignalR, or something else?
+#dotnet #htmx #workflowforge
+-->

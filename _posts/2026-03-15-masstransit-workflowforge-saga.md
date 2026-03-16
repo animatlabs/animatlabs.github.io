@@ -1,7 +1,7 @@
 ---
-title: "The Saga Pattern Done Right: MassTransit + WorkflowForge"
+title: "MassTransit Saga + WorkflowForge Compensation: Real Rollback Code"
 excerpt: >-
-  "Everyone talks about the saga pattern. Nobody shows the compensation code. Here's a distributed order pipeline where MassTransit delivers the messages and WorkflowForge rolls back the failures."
+  "Everyone talks about the saga pattern. Nobody shows the compensation code. Here's a single-service demo where MassTransit delivers the messages and WorkflowForge rolls back the failures."
 categories:
   - Technical
   - .NET
@@ -15,24 +15,41 @@ tags:
   - Messaging
   - RabbitMQ
 author: animat089
-last_modified_at: 2026-03-09
+last_modified_at: 2026-03-15
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
 ---
 
-Everyone talks about the saga pattern. Nobody shows the compensation code. I spent weeks hunting for a real .NET example where payment fails, stock gets released, and refunds actually run—not just a diagram.
+Everyone talks about the saga pattern. Nobody shows the compensation code. I spent weeks hunting for a real .NET example where payment fails, stock gets released, and refunds actually run - not just a diagram.
 
 I built one. MassTransit handles the message routing. WorkflowForge handles the rollback. Here's the full pipeline.
 
+**You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/WorkflowForge/AnimatLabs.WorkflowForge.MassTransitSaga.OrderService){: .btn .btn--primary}
+
+## Prerequisites
+
+You need .NET 8 and the WorkflowForge solution. The demo runs out of the box with **InMemory transport** -- no RabbitMQ required.
+
+Want RabbitMQ instead? The project has a `docker-compose.yml`:
+
+```bash
+cd playground/WorkflowForge/AnimatLabs.WorkflowForge.MassTransitSaga.OrderService
+docker-compose up -d
+```
+
+That starts RabbitMQ on port **5672** with the management UI on **15672** (guest/guest). Swap `UsingInMemory` for `UsingRabbitMq` in Program.cs and you're set.
+
 ## The Problem
 
-You've got a distributed order flow: reserve stock, charge payment, create shipment. If any step fails, you need to undo the previous ones. That's the saga pattern. The hard part—the part most tutorials skip—is the compensation logic. When a payment gateway times out, who releases the stock? Who refunds the charge? And how do you keep that logic in one place instead of scattered across consumers?
+You've got an order flow: reserve stock, charge payment, create shipment. If any step fails, you need to undo the previous ones. That's the saga pattern.
+
+The hard part -- the part most tutorials skip -- is the compensation logic. When a payment gateway times out, who releases the stock? Who refunds the charge? How do you keep that logic in one place instead of scattered across consumers?
 
 ## The Split: MassTransit + WorkflowForge
 
-MassTransit (7k stars, the de facto .NET message bus) distributes the messages. WorkflowForge 2.1.1 compensates the failures. One library does pub/sub. The other does the orchestration and rollback.
+MassTransit distributes the messages. WorkflowForge 2.1.1 compensates the failures. One library does pub/sub. The other does the orchestration and rollback.
 
 The flow:
 
@@ -44,12 +61,20 @@ SubmitOrder → ReserveStock → ChargePayment → CreateShipment → OrderAccep
 
 Orders over $500 simulate a payment gateway timeout. When that happens, WorkflowForge runs the compensation in reverse order: refund payment, then release stock.
 
+## This Is a Single-Service Demo
+
+Important: this demo runs in **one process** -- OrderService. There are no separate Inventory, Payments, or Shipping services.
+
+The step-level events (ReserveStock, ChargePayment, CreateShipment) are published to the bus but **no consumers** handle them. They're fire-and-forget -- the workflow steps do the work directly and publish for visibility or future use.
+
+In a real system you'd add consumers in separate services. For this demo, the goal is to show the compensation pattern without the extra moving parts.
+
 ## Messages
 
 Contracts are simple records. No shared state, just events.
 
 ```csharp
-namespace AnimatLabs.MassTransitWorkflowForge.Contracts;
+namespace AnimatLabs.WorkflowForge.Workflows.Sample.OrderSaga.Contracts;
 
 public record SubmitOrder(Guid OrderId, string CustomerEmail, decimal Amount);
 
@@ -60,6 +85,8 @@ public record ReserveStock(Guid OrderId, int Quantity);
 public record ChargePayment(Guid OrderId, decimal Amount);
 public record CreateShipment(Guid OrderId, string CustomerEmail);
 ```
+
+These live in the shared `Workflows.Sample` library so any execution project can reference them. The same file also defines `StockReserved`, `PaymentFailed`, etc. Those are for a future multi-service setup. In this demo they're unused -- the workflow steps publish `ReserveStock`, `ChargePayment`, `CreateShipment` to the bus, but nothing consumes them.
 
 ## The Consumer
 
@@ -232,37 +259,21 @@ _ = Task.Run(async () =>
 
 ## What I Learned
 
-The compensation logic lives in one place—the `RestoreAsync` methods. No scattered event handlers. No "if payment failed then fire ReleaseStock" spaghetti. WorkflowForge runs the compensation cascade automatically when any step throws.
+The compensation logic lives in one place - the `RestoreAsync` methods. No scattered event handlers. No "if payment failed then fire ReleaseStock" spaghetti. WorkflowForge runs the compensation cascade automatically when any step throws.
 
 For RabbitMQ, swap `UsingInMemory` for `UsingRabbitMq`. Same code. Same workflow. Different transport.
 
 ## Run It
 
 ```bash
-cd playground/MassTransitWorkflowForge/AnimatLabs.MassTransitWorkflowForge.OrderService
-dotnet run
+cd playground/WorkflowForge
+dotnet run --project AnimatLabs.WorkflowForge.MassTransitSaga.OrderService
 ```
 
 The app auto-submits two orders. Watch the logs for the $999 failure and the compensation cascade.
 
-What's your go-to for saga compensation in .NET—MassTransit's built-in sagas, something else, or are you still writing it by hand?
-
 ---
 
-<!-- LINKEDIN PROMO POST (150-250 words) -->
+*What's your go-to for saga compensation in .NET -- MassTransit's built-in sagas, something else, or still writing it by hand?*
 
-Everyone talks about the saga pattern. Nobody shows the compensation code.
-
-I spent weeks hunting for a real .NET example where payment fails, stock gets released, and refunds actually run—not just a diagram. I built one.
-
-MassTransit (7k stars, the .NET message bus) distributes the messages. WorkflowForge 2.1.1 compensates the failures. One library does pub/sub. The other does the orchestration and rollback.
-
-The flow: SubmitOrder → ReserveStock → ChargePayment → CreateShipment. Orders over $500 simulate a payment gateway timeout. When that happens, WorkflowForge runs the compensation in reverse: refund payment, then release stock.
-
-The key: each step has a `RestoreAsync` method. When payment throws, WorkflowForge cascades back. No scattered event handlers. No "if payment failed then fire ReleaseStock" spaghetti.
-
-I wrote the full post with real code from the playground—consumer, workflow steps, compensation logic. Working code, not slides.
-
-Link in bio.
-
-What's your go-to for saga compensation in .NET—MassTransit's built-in sagas, something else, or are you still writing it by hand?
+{% include cta-workflowforge.html %}
