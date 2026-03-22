@@ -54,10 +54,6 @@ UNIQUE ANGLE: Timely (ingress-nginx retiring March 2026). Practical migration gu
 
 *Content to be written*
 
-## Conclusion
-
-*Content to be written*
-
 ---
 
 *Made the switch to Podman? Let me know your experience in the comments!*

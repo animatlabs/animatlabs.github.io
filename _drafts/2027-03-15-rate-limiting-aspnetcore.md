@@ -1,7 +1,7 @@
 ---
 title: "Rate Limiting, Throttling, and Circuit Breaking: The .NET Resilience Kit"
 excerpt: >-
-  "Your API needs rate limiting, throttling, and circuit breaking. Here's how they work together in ASP.NET Core + Polly."
+  "Your API needs rate limiting, throttling, and circuit breaking. How they fit together in ASP.NET Core + Polly."
 categories:
   - Technical
   - .NET
@@ -306,16 +306,7 @@ Include:
 4. **Set Reasonable Limits** - Too strict hurts legitimate users, too loose defeats the purpose
 5. **Monitor and Adjust** - Rate limits should evolve with your traffic patterns
 
-## Conclusion
-
-<!-- 
-TODO: Summarize with your personal recommendation
-What's your takeaway? What should readers do next?
-Include:
-- Key points to remember
-- Next steps for implementing rate limiting
-- Resources for further learning
--->
+## Putting rate limits into practice
 
 **You can access the example code from my** [GitHub Repo](https://github.com/animat089/playground){: .btn .btn--primary}
 

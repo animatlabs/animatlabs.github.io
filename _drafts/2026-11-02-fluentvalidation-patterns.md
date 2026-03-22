@@ -75,8 +75,6 @@ ORIGINALITY CHECKLIST:
 
 <!-- TODO: Organizing validators, performance considerations, when to validate -->
 
-## Conclusion
-
 ---
 
 *Using FluentValidation? What patterns work best for you?*

@@ -97,7 +97,3 @@ TODO: Share your actual workflow
 ## Common Mistakes
 
 <!-- TODO: Mistakes you've seen or made -->
-
-## Conclusion
-
-**My benchmark template:** [GitHub](https://github.com/animat089/benchmark-template){: .btn .btn--primary}

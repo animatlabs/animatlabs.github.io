@@ -1,5 +1,5 @@
 ---
-title: "Source Generators in C#: Eliminate Boilerplate, Boost Performance"
+title: "Source Generators in C#: Eliminate Repetitive Code, Boost Performance"
 excerpt: >-
   "Stop writing repetitive code. Source generators create it at compile time - zero runtime cost, full IntelliSense, completely debuggable."
 categories:
@@ -22,9 +22,9 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
-## The Problem: Death by Boilerplate
+## The Problem: Death by Ceremony
 
-Every .NET developer has been here. You're building a system with 50 DTOs, and for each one you need:
+Every .NET developer has been here. You're building a system with 50 DTOs. Same five chores, every class. For each one you need:
 
 - A mapper to convert between entities and DTOs
 - Validation logic
@@ -53,9 +53,9 @@ Source generators hook into the Roslyn compiler. They:
 2. **Generate** new C# source files
 3. **Add them** to your compilation
 
-The generated code is real C# - visible in your IDE, navigable with "Go to Definition", fully debuggable. There's zero runtime overhead for the generation itself.
+The generated code is real C# - visible in your IDE, navigable with "Go to Definition", fully debuggable. There's zero runtime overhead for the generation itself. Took me a while to trust that, but the debugger does not lie.
 
-Here's how they fit into the build pipeline:
+They sit in the build pipeline like this:
 
 ```mermaid
 flowchart TD
@@ -71,7 +71,7 @@ The key difference from reflection: by the time your app runs, the generated cod
 
 ## The Code: A Complete Playground Repo
 
-I’ve put all the samples for this post into a runnable playground solution:
+I’ve put all the samples into a runnable playground solution:
 
 **You can access the full sample code here:** [GitHub Repo](https://github.com/animat089/playground/tree/main/SourceGenerators){: .btn .btn--primary}
 
@@ -368,16 +368,18 @@ These production libraries prove the pattern works at scale:
 | Slow IDE | Typing lag, high CPU | Use incremental generator, filter early |
 | Missing partial keyword | Compiler error on generated code | Consumer class must be `partial` |
 
-## Conclusion
+## What I'd Actually Ship
 
-Source generators aren't just a cool compiler trick - they're a practical tool for eliminating the boilerplate that makes codebases harder to maintain. The examples above show real patterns you can implement today:
+Source generators aren't just a cool compiler trick - they're a practical tool for eliminating the repetitive code that makes codebases harder to maintain. The examples above show real patterns you can implement today:
 
 - **Configuration binding** without magic strings
-- **Enum helpers** that respect `DisplayAttribute`
+- Enum helpers that respect `DisplayAttribute` (no reflection on the hot path)
 - **DTO mapping** with compile-time safety
-- **ToString()** overrides without repetitive boilerplate
+- `ToString()` overrides without hand-written plumbing
 
-The investment in building a generator pays off every time it saves someone from writing (and debugging) boilerplate. Start with a simple pattern, test thoroughly, and scale from there.
+The investment in building a generator pays off every time it saves someone from writing (and debugging) ceremony. Start with a simple pattern, test thoroughly, and scale from there.
+
+One long rant worth the pixels: if your team keeps copy-pasting the same mapper and the same `ToString()` for every new model, you are not "moving fast," you are accruing diff noise that will explode the first time someone renames a property and forgets to update the third copy of the same method.
 
 **Next steps:**
 1. Clone the playground repo: https://github.com/animat089/playground/tree/main/SourceGenerators

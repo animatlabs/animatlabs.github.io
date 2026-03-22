@@ -1,7 +1,7 @@
 ---
 title: "Vertical Slice vs Clean Architecture: The 2026 Verdict"
 excerpt: >-
-  "The architecture debate that won't die. Here's when to use each—and why the best teams use both."
+  "The architecture debate that won't die. When to use each, and why the hybrid usually wins."
 categories:
   - Technical
   - .NET
@@ -95,10 +95,6 @@ src/
 ## Decision Framework
 
 <!-- TODO: When to lean Clean vs Vertical vs Hybrid -->
-
-## Conclusion
-
-<!-- TODO: There is no one right answer -->
 
 ---
 

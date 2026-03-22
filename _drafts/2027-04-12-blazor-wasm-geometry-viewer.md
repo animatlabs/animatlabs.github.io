@@ -563,7 +563,7 @@ This is part 3 of the **Geometry & CAD in C#** series:
 3. **Interactive Geometry Viewer with Blazor WASM** (this post)
 4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/) -- geometric algorithms
 
-## Conclusion
+## Geometry in the browser with Blazor WASM
 
 Building a geometry viewer in Blazor WebAssembly shows that .NET isn't just for backends and APIs. With SkiaSharp for rendering and ACadSharp for file parsing, you get a fully functional CAD viewer running entirely in the browser -- no server, no plugins, deployable as a static site.
 

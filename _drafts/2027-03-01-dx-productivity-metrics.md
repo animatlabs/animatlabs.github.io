@@ -1,7 +1,7 @@
 ---
 title: "Measuring Developer Productivity Without the BS"
 excerpt: >-
-  "Lines of code is garbage. Here's what actually works: the DX Core 4 framework and metrics that drive improvement."
+  "Lines of code is garbage. What actually works: the DX Core 4 framework and metrics that drive improvement."
 categories:
   - Technical
   - Developer Experience
@@ -110,10 +110,6 @@ Key questions:
 2. **Using metrics for individual evaluation**
 3. **Not combining system data with developer feedback**
 4. **Collecting data but not acting on it**
-
-## Conclusion
-
-<!-- TODO: Metrics should drive improvement, not punishment -->
 
 ---
 

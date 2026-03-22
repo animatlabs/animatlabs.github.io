@@ -1,7 +1,7 @@
 ---
 title: "System.Threading.Channels: The Most Underused Feature in .NET"
 excerpt: >-
-  "You're spinning up RabbitMQ for problems that Channels solve in 3 lines. Here's why most .NET developers are sleeping on this."
+  "You're spinning up RabbitMQ for problems that Channels solve in 3 lines. Most .NET developers are sleeping on this."
 categories:
   - Technical
   - .NET
@@ -80,10 +80,6 @@ REQUIRES: Working code examples, performance comparisons
 <!-- TODO: Memory usage patterns -->
 <!-- TODO: Throughput considerations -->
 <!-- TODO: When Channels might not be the right choice -->
-
-## Conclusion
-
-**Channel Resources:** [Microsoft Docs](https://learn.microsoft.com/dotnet/api/system.threading.channels){: .btn .btn--primary}
 
 ---
 

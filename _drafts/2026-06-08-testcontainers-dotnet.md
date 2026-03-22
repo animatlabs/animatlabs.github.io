@@ -104,7 +104,9 @@ public class UserRepositoryTests : IAsyncLifetime
 }
 ```
 
-## SQL Server
+## SQL Server (Free Developer Edition)
+
+The SQL Server Docker image is the free Developer edition (same engine as Enterprise, licensed for non-production use). If you need a fully OSS database, swap for PostgreSQL above.
 
 ```csharp
 private MsSqlContainer _sqlServer = new MsSqlBuilder()
@@ -137,10 +139,6 @@ Testcontainers works seamlessly on GitHub Actions and Azure DevOps—Docker is a
 ## Best Practices
 
 <!-- TODO: Use random ports, pin image versions, parallel safety -->
-
-## Conclusion
-
-<!-- TODO: Real dependencies, real confidence -->
 
 ---
 

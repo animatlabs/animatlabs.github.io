@@ -54,8 +54,6 @@ ORIGINALITY CHECKLIST:
 
 <!-- TODO: Decision framework, alternatives, trade-offs -->
 
-## Conclusion
-
 ---
 
 *Using domain events in your projects? Share your patterns!*

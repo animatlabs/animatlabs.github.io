@@ -1,7 +1,7 @@
 ---
 title: "What It Actually Takes to Ship a Quality .NET OSS Release"
 excerpt: >-
-  "SonarCloud, Sigstore attestation, CycloneDX SBOM, multi-TFM testing, environment-gated NuGet publish -- here is every piece of infrastructure that went into taking a .NET OSS project from local dotnet pack to a production-grade release pipeline. Including the parts that broke."
+  "SonarCloud, Sigstore attestation, CycloneDX SBOM, multi-TFM testing, environment-gated NuGet publish: every piece of infrastructure that went into taking a .NET OSS project from local dotnet pack to a production-grade release pipeline. Including the parts that broke."
 categories:
   - Technical
   - .NET
@@ -13,7 +13,7 @@ tags:
   - NuGet
   - WorkflowForge
 author: animat089
-last_modified_at: 2026-03-08
+last_modified_at: 2026-03-21
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
@@ -24,9 +24,9 @@ comments: true
 
 WorkflowForge 2.0 shipped from my laptop. `dotnet pack`, `dotnet nuget push`, done. Thirteen packages on NuGet.org, no CI to speak of.
 
-For the 2.1 release -- sixty issues on a feature branch, thirteen packages targeting .NET Framework 4.8, .NET 8.0, and .NET 10.0 -- I wanted to do it properly. Static analysis. Automated testing across all three frameworks. Supply chain attestation. A software bill of materials. Gated publish with human approval.
+For the 2.1 release (sixty issues on a feature branch, thirteen packages targeting .NET Framework 4.8, .NET 8.0, and .NET 10.0), I wanted to do it properly. Static analysis. Automated testing across all three frameworks. Supply chain attestation. A software bill of materials. Gated publish with human approval.
 
-This post covers every piece of infrastructure that went into that transition. Not a changelog, not a feature announcement -- just the tooling, the configuration, and the places where things broke in ways I did not expect.
+What follows is every piece of infrastructure that went into that transition. Not a changelog, not a feature announcement. Just the tooling, the configuration, and the places where things broke in ways I did not expect. Some of those breaks were embarrassing.
 
 If you maintain a .NET open-source project and ship to NuGet, this is the checklist I wish I had before I started.
 
@@ -66,10 +66,10 @@ The scanner wraps the build, collects coverage data, and uploads results. First 
 The most common finding was structured logging violations:
 
 ```csharp
-// Before -- string interpolation defeats structured logging
+// Looks innocent. Breaks structured logging.
 _logger.LogInformation($"Processing order {orderId}");
 
-// After -- orderId becomes a queryable property
+// Template + args: OrderId is a real field in Seq, App Insights, etc.
 _logger.LogInformation("Processing order {OrderId}", orderId);
 ```
 
@@ -84,10 +84,10 @@ The hardest bugs in this release required reasoning about concurrency, shared st
 **Thread safety in conditional operations:**
 
 ```csharp
-// Before -- plain field, visible to concurrent workflows
+// Shared bool without a memory barrier
 private bool _lastConditionResult;
 
-// After -- volatile ensures cross-thread visibility
+// volatile so compensation does not read another run's stale flag
 private volatile bool _lastConditionResult;
 ```
 
@@ -96,10 +96,10 @@ private volatile bool _lastConditionResult;
 **O(n^2) indexing in persistence middleware:**
 
 ```csharp
-// Before -- scanned the full operation list on every middleware call
+// O(n) scan on every middleware hop
 var index = workflow.Operations.ToList().IndexOf(currentOperation);
 
-// After -- O(1) lookup from foundry properties
+// Read the index the foundry already tracks
 private static int GetCurrentOperationIndex(IWorkflowFoundry foundry)
 {
     if (foundry.Properties.TryGetValue(
@@ -114,11 +114,11 @@ The foundry now sets `CurrentOperationIndex` before each operation executes. The
 **Allocation on every property access:**
 
 ```csharp
-// Before -- new wrapper allocated on every call
+// New ReadOnlyCollection every time someone touches Operations
 internal IReadOnlyList<IWorkflowOperation> Operations =>
     new ReadOnlyCollection<IWorkflowOperation>(_operations);
 
-// After -- cached, invalidated on mutation
+// Cache until the underlying list changes
 private ReadOnlyCollection<IWorkflowOperation>? _cachedOperations;
 
 internal IReadOnlyList<IWorkflowOperation> Operations =>
@@ -130,7 +130,7 @@ In hot paths that inspect the operation list, the old version created a new `Rea
 **Event handler memory leak:**
 
 ```csharp
-// Before -- events kept references to disposed subscribers
+// Dispose() never dropped event subscriptions
 public void Dispose()
 {
     if (_disposed) return;
@@ -138,7 +138,7 @@ public void Dispose()
     _concurrencyLimiter?.Dispose();
 }
 
-// After -- null out all event delegates
+// ...same, but clear delegates so GC can collect peers
 public void Dispose()
 {
     if (_disposed) return;
@@ -159,7 +159,7 @@ public void Dispose()
 
 **Silent recovery failures:**
 
-The recovery extension caught exceptions during resume and returned successfully -- silently swallowing errors. The persistence middleware overwrote restored operation outputs with input data during the resume path, undoing the point of checkpointing. Both required reading the code paths carefully and writing tests for the failure scenarios.
+The recovery extension caught exceptions during resume and returned successfully, silently swallowing errors. The persistence middleware overwrote restored operation outputs with input data during the resume path, undoing the point of checkpointing. Both required reading the code paths carefully and writing tests for the failure scenarios.
 
 SonarCloud earned its keep. It is also not enough. The badge is not a substitute for reading your own code.
 
@@ -181,7 +181,7 @@ dotnet test WorkflowForge.sln --framework net48
 
 Coverage is collected on .NET 8.0 and 10.0 (OpenCover format for SonarCloud ingestion). .NET Framework 4.8 runs the tests but without coverage instrumentation, since the XPlat collector does not support it.
 
-This caught real issues. .NET Framework 4.8 enforces strong-name validation strictly -- if assembly A is signed and references unsigned assembly B, the runtime throws a `FileLoadException`. .NET Core and later ignore strong names entirely. Without multi-TFM testing, the benchmark suite worked on .NET 8.0 and 10.0 but failed on 4.8 due to a `SignAssembly` inheritance issue in `Directory.Build.props`.
+This caught real issues. .NET Framework 4.8 enforces strong-name validation strictly. If assembly A is signed and references unsigned assembly B, the runtime throws a `FileLoadException`. .NET Core and later ignore strong names entirely. Without multi-TFM testing, the benchmark suite worked on .NET 8.0 and 10.0 but failed on 4.8 due to a `SignAssembly` inheritance issue in `Directory.Build.props`.
 
 Coverage reports are uploaded as separate artifacts for independent auditing, alongside the `.trx` test result files.
 
@@ -211,10 +211,9 @@ This is the full CI/CD workflow that runs on every push, every PR, and on-demand
 
 A few design decisions worth explaining.
 
-**Two separate jobs.** The build job produces packages as artifacts. The publish job downloads them and pushes to NuGet. This means the publish job never needs to build anything -- it only handles signing, attestation, and push. If the publish fails, the build artifacts are still available for retry without re-running tests.
-
 **Environment gate.** The publish job runs in a `nuget-publish` GitHub Environment that requires manual approval. No accidental publishes. The concurrency group prevents parallel publish attempts to the same branch:
 
+{% raw %}
 ```yaml
 publish:
   needs: build
@@ -223,8 +222,7 @@ publish:
     group: publish-${{ github.ref }}
     cancel-in-progress: false
 ```
-
-**Concurrency controls.** The build job uses `cancel-in-progress: true` -- if a new push arrives while a build is running, the old one is cancelled. The publish job uses `cancel-in-progress: false` -- once a publish starts, it must complete.
+{% endraw %}
 
 **Minimal permissions.** The top-level `permissions: {}` drops all default GitHub token permissions. Each job requests only what it needs: `contents: read` for the build, `id-token: write` and `attestations: write` for the publish.
 
@@ -246,11 +244,11 @@ Every GitHub Action in the workflow is pinned to a full commit SHA instead of a 
 - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32  # v4.1.0
 ```
 
-Tags like `v6` can be moved to point to a different commit at any time. A compromised action author could push malicious code under the same tag. SHAs are immutable -- if the hash does not match, the step fails.
+Tags like `v6` can be moved to point to a different commit at any time. A compromised action author could push malicious code under the same tag. SHAs are immutable. If the hash does not match, the step fails.
 
 The tradeoff is maintenance: when actions release new versions, you need to update the hash. Dependabot handles this automatically with weekly update PRs for both GitHub Actions and NuGet dependencies.
 
-One gotcha: precision matters. During the 2.1 publish, the `attest-build-provenance` step failed because the SHA had a single-character typo -- `ecc` instead of `ecd`. The entire pipeline stopped. There is no "close enough" with SHA-pinning.
+One gotcha: precision matters. During the 2.1 publish, the `attest-build-provenance` step failed because the SHA had a single-character typo (`ecc` instead of `ecd`). The entire pipeline stopped. There is no "close enough" with SHA-pinning.
 
 ### Sigstore Build Attestation
 
@@ -273,7 +271,7 @@ Every `.nupkg`, `.snupkg`, and SBOM file gets a cryptographic attestation before
     subject-path: './packages/bom.json'
 ```
 
-This proves, cryptographically, that each artifact was built by a specific GitHub Actions workflow, from a specific commit, in a specific repository. Consumers can verify with `gh attestation verify`. No long-lived signing keys to manage -- GitHub's Sigstore integration uses short-lived OIDC tokens.
+This proves, cryptographically, that each artifact was built by a specific GitHub Actions workflow, from a specific commit, in a specific repository. Consumers can verify with `gh attestation verify`. No long-lived signing keys to manage. GitHub's Sigstore integration uses short-lived OIDC tokens.
 
 ### CycloneDX SBOM
 
@@ -360,7 +358,7 @@ Plus a SourceLink package reference:
 
 Together, these give consumers of the NuGet package the ability to step into the source code directly from their debugger. `EmbedUntrackedSources` ensures generated files are included. `PublishRepositoryUrl` embeds the repository URL in the package metadata.
 
-The key lesson: these properties must live in one place. The moment individual `.csproj` files start overriding `DebugType`, the symbol package pipeline breaks silently -- `dotnet pack` does not warn you that the `.snupkg` is empty.
+The key lesson: these properties must live in one place. The moment individual `.csproj` files start overriding `DebugType`, the symbol package pipeline breaks silently (`dotnet pack` does not warn you that the `.snupkg` is empty).
 
 ---
 
@@ -368,7 +366,7 @@ The key lesson: these properties must live in one place. The moment individual `
 
 Beyond the infrastructure, three user-facing changes made it into 2.1.
 
-**Inline compensation** -- attach a restore delegate directly to `AddOperation` instead of writing a separate class:
+**Inline compensation:** attach a restore delegate directly to `AddOperation` instead of writing a separate class:
 
 ```csharp
 var workflow = WorkflowForge.CreateWorkflow("OrderProcessing")
@@ -386,9 +384,9 @@ var workflow = WorkflowForge.CreateWorkflow("OrderProcessing")
 
 For workflows where the compensation logic is simple, this eliminates an entire class per operation.
 
-**`GetOperationOutput`** -- inspect what any completed operation returned, by name or index, from the orchestrator level.
+**`GetOperationOutput`:** inspect what any completed operation returned, by name or index, from the orchestrator level.
 
-**Multi-target test validation** -- all tests run across .NET Framework 4.8, .NET 8.0, and .NET 10.0 on every CI build. API compatibility issues get caught before they ship.
+**Multi-target test validation:** all tests run across .NET Framework 4.8, .NET 8.0, and .NET 10.0 on every CI build. API compatibility issues get caught before they ship.
 
 ---
 
@@ -396,7 +394,7 @@ For workflows where the compensation logic is simple, this eliminates an entire 
 
 If I were setting up a new .NET OSS project today, this is what I would add before the first NuGet publish:
 
-- [ ] **Static analysis** -- SonarCloud or equivalent, free for public repos
+- [ ] **Static analysis:** SonarCloud or equivalent, free for public repos
 - [ ] **Code coverage** with quality gate (coverage on new code, not just overall)
 - [ ] **Multi-target testing** across every framework you ship
 - [ ] **CI/CD pipeline** with environment-gated publish and manual approval
@@ -421,10 +419,5 @@ None of this is individually complex. The complexity is in getting all of it wor
 | Documentation | [animatlabs.com/workflow-forge](https://animatlabs.com/workflow-forge) |
 | CI/CD Workflow | [build-test.yml](https://github.com/animatlabs/workflow-forge/blob/main/.github/workflows/build-test.yml) |
 | CHANGELOG | [CHANGELOG.md](https://github.com/animatlabs/workflow-forge/blob/main/CHANGELOG.md) |
-| Release PR | [PR #5 -- 60 issues resolved](https://github.com/animatlabs/workflow-forge/pull/5) |
-
----
-
-*What does your .NET OSS release checklist look like? Anything I missed? Let me know in the comments.*
 
 {% include cta-workflowforge.html %}

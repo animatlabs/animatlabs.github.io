@@ -1,7 +1,7 @@
 ---
 title: "Mapperly: Why I Ditched AutoMapper for Source-Generated Mapping"
 excerpt: >-
-  "3.5x faster than AutoMapper, zero runtime reflection, AOT-friendly. Mapperly generates your mapping code at compile time. Here's why it's the future."
+  "3.5x faster than AutoMapper, zero runtime reflection, AOT-friendly. Mapperly generates your mapping code at compile time. Why source-generated mapping is the future."
 categories:
   - Technical
   - .NET
@@ -377,7 +377,7 @@ Mapperly is part of a broader trend: **source generators replacing runtime refle
 
 The .NET ecosystem is moving toward compile-time code generation. Mapperly is one of the best examples of why.
 
-## Conclusion
+## Mapperly as your default object mapper
 
 If you're starting a new project in 2026, use Mapperly. If you're maintaining an existing AutoMapper project, consider migrating gradually -- the performance gains and AOT compatibility are worth it.
 

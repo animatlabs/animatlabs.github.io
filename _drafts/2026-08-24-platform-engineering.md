@@ -1,7 +1,7 @@
 ---
 title: "Platform Engineering: Build Your Internal Developer Platform"
 excerpt: >-
-  "DevOps promised freedom. Platform Engineering delivers it. Here's how to build an Internal Developer Platform that developers actually use."
+  "DevOps promised freedom. Platform Engineering delivers it. Building an Internal Developer Platform that developers actually use."
 categories:
   - Technical
   - DevOps
@@ -104,10 +104,6 @@ spec:
 ## Measuring Success
 
 <!-- TODO: DORA metrics, developer satisfaction, time to first deploy -->
-
-## Conclusion
-
-<!-- TODO: Platform as a product, not a project -->
 
 ---
 

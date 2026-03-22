@@ -176,7 +176,7 @@ The postmortem isn't complete when the meeting ends - it's complete when the act
 
 ## Postmortem Template
 
-Here's the template I use. Copy it directly for your next incident.
+The template I use. Copy it directly for your next incident.
 
 ```markdown
 # Incident Postmortem: [Brief Title]
@@ -332,7 +332,7 @@ Having the right tools makes postmortems easier:
 
 The specific tools matter less than having *a* tool for each purpose and using it consistently.
 
-## Conclusion
+## What Postmortems Actually Change
 
 Postmortems are how good teams become great teams. Every incident is tuition paid for a lesson - the postmortem is how you make sure you actually learn it.
 

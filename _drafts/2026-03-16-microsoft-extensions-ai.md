@@ -30,7 +30,7 @@ POST PLAN:
 - Middleware pipeline (caching, telemetry, function calling)
 - Swap providers with zero code changes (demo)
 - Integration with dependency injection
-- OpenTelemetry observability out of the box
+- OpenTelemetry observability by default
 - Comparison: before vs after Extensions.AI
 - Real-world pattern: local dev with Ollama, prod with Azure OpenAI
 
@@ -54,10 +54,6 @@ var response = await client.CompleteAsync("Explain dependency injection");
 ```
 
 ## Middleware Pipeline
-
-*Content to be written*
-
-## Conclusion
 
 *Content to be written*
 

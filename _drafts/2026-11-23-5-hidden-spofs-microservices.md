@@ -276,7 +276,7 @@ When the circuit opens, requests fail immediately instead of waiting for timeout
 
 ### Health Checks
 
-Comprehensive health checks reveal dependencies before they become SPOFs:
+Thorough health checks reveal dependencies before they become SPOFs:
 
 ```csharp
 builder.Services.AddHealthChecks()
@@ -310,7 +310,7 @@ When you discover a SPOF in production:
 - [ ] Document in runbook for future incidents
 - [ ] Schedule chaos testing to verify the fix
 
-## Conclusion
+## Finding SPOFs Before Production Does
 
 SPOFs in microservices are sneaky. They hide in shared infrastructure, implicit dependencies, and optimistic assumptions. Every system has them - the question is whether you find them through architecture review and chaos testing, or through production outages.
 

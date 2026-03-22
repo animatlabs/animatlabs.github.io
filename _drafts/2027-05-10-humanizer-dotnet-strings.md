@@ -399,7 +399,7 @@ Humanizer is designed for display formatting, not hot paths. For most use cases,
 // use string interpolation or Span<char> directly
 ```
 
-## Conclusion
+## Humanizer belongs in every project
 
 Humanizer eliminates dozens of small utility methods that every project ends up writing. Instead of `FormatFileSize()`, `TimeAgo()`, `PascalToWords()`, and `Pluralize()` scattered across your codebase, you get a single, well-tested, localized library.
 

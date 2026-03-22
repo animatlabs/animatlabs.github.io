@@ -53,10 +53,6 @@ HTMX (frontend) ←→ SSE ←→ ASP.NET Core Minimal API (backend)
 
 *Content to be written*
 
-## Conclusion
-
-*Content to be written*
-
 ---
 
 *Building real-time UIs without JavaScript frameworks? Let me know in the comments!*

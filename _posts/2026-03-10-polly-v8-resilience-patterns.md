@@ -1,7 +1,7 @@
 ---
-title: ".NET Resilience: When the Defaults Aren't Enough"
+title: ".NET Resilience with Polly v8"
 excerpt: >-
-  "AddStandardResilienceHandler covers 80% of cases. Here's what I do for the other 20% - custom pipelines, non-HTTP scenarios, and the production config that saved my app."
+  "Most .NET apps I've worked on had zero resilience until something broke in production. Polly v8 setup I actually use, from the one-liner that covers 80% of cases to custom pipelines for the rest."
 categories:
   - Technical
   - .NET
@@ -15,57 +15,48 @@ tags:
   - Retry
   - Microservices
 author: animat089
-last_modified_at: 2026-03-10
+last_modified_at: 2026-03-21
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
 ---
 
-## The Outage That Took 10 Minutes to Fix
+Most .NET apps I've worked on had zero resilience code until something actually broke. A third-party API times out, the connection pool fills up, and suddenly completely unrelated endpoints start failing. The usual pattern: someone adds a try-catch, wraps it in a retry loop with `Thread.Sleep`, and calls it a day. Works until it doesn't.
 
-A third-party API started timing out. No circuit breakers. Each request queued up waiting for a response that never came. Within minutes our connection pool was exhausted. Requests to completely unrelated endpoints started failing. One flaky dependency, full outage.
+Polly v8 does this properly. I want to walk through how I set it up, what the defaults give you, and where I've had to go beyond them. Retries without jitter are basically a distributed denial of service you aimed at yourself, which is a mouthful, but it is also the fastest way to turn a brownout into an outage when every pod wakes up and slams the same downstream at the same millisecond.
 
-The fix took 10 minutes. The outage lasted 45.
+## Start Here
 
+`Microsoft.Extensions.Http.Resilience` gives you a pre-configured pipeline with one line:
 
-## The 80% Solution: One Line
-
-`Microsoft.Extensions.Http.Resilience` ships with a pre-configured pipeline that handles retries, circuit breakers, and timeouts out of the box:
+```bash
+dotnet add package Microsoft.Extensions.Http.Resilience
+```
 
 ```csharp
 builder.Services.AddHttpClient("MyApi")
     .AddStandardResilienceHandler();
 ```
 
-That's it. You get exponential backoff with jitter, a circuit breaker, and a timeout - all with sensible defaults. For most HTTP clients, this is all you need.
+That gets you exponential backoff with jitter, a circuit breaker, and a timeout. Sensible defaults. For most HTTP clients in a typical web app, this is enough. Honestly, I wish more teams would start here instead of building custom retry logic from scratch.
 
-```bash
-dotnet add package Microsoft.Extensions.Http.Resilience
-```
+If this covers your case, stop reading. What follows is for the other 20%.
 
-If `AddStandardResilienceHandler()` covers your use case, stop here. What follows is for the cases where it doesn't.
+## Going Beyond the Defaults
 
-## When You Need More
+I reach for custom Polly pipelines when the one-liner doesn't fit. In my experience that's usually one of these situations:
 
-I reach for custom Polly pipelines when:
+- A payment gateway needs 2 retries with a 5-second timeout while an analytics endpoint is fine with 5 retries and 30 seconds
+- Database calls, message queues, file I/O. Anything that isn't `IHttpClientFactory`
+- The SLA is tight enough (say 500ms) that the default circuit breaker settings are too generous
+- I need `OnRetry` or `OnOpened` callbacks wired into our structured logging
 
-- **Different backends need different configs.** A payment gateway gets 2 retries and a 5-second timeout. An analytics endpoint gets 5 retries and 30 seconds.
-- **Non-HTTP scenarios.** Database calls, message queues, file I/O - `AddStandardResilienceHandler` only works with `IHttpClientFactory`.
-- **Stricter SLAs.** The default circuit breaker settings are generous. If your SLA is 500ms, you need tighter controls.
-- **Observability hooks.** Custom `OnRetry`, `OnOpened`, `OnTimeout` callbacks for structured logging and alerting.
+## Retries
 
-## Retries Without Thundering Herd
+If something fails, try again. Simple idea, easy to get wrong. Naive retries with fixed delays can turn a struggling service into a dead one because every instance retries at the same interval and you get a thundering herd.
 
-Retries are the simplest pattern - if something fails, try again. Naive retries make things worse though. If a service is struggling, hammering it with immediate retries adds fuel.
-
-**When to use retries:**
-- Transient failures (network blips, temporary unavailability)
-- Idempotent operations (safe to repeat)
-
-**When NOT to:**
-- Non-idempotent operations (payments, order creation) without safeguards
-- Validation errors (4xx won't succeed on retry)
+The fix is jitter. `UseJitter = true` adds randomness to the backoff so retries spread out instead of hitting the downstream service in waves. I've seen this make the difference between a service recovering on its own and a full cascading failure.
 
 ```csharp
 var retryPipeline = new ResiliencePipelineBuilder()
@@ -89,16 +80,13 @@ var result = await retryPipeline.ExecuteAsync(async ct =>
 });
 ```
 
-`UseJitter = true` is crucial. Without it, all your instances retry at the same intervals - thundering herd. Jitter adds randomness to spread retries out.
+One thing to watch: don't retry non-idempotent operations without safeguards. Retrying a payment charge can double-bill someone. Retrying a 400 is pointless because it'll fail the same way every time.
 
-## Circuit Breaker: Fail Fast, Recover Fast
+## Circuit Breaker
 
-Circuit breakers prevent cascading failures. When a downstream service is unhealthy, you fail fast instead of queueing up doomed requests.
+When a downstream service is unhealthy, retrying just delays the inevitable. Circuit breakers flip the approach: once failures cross a threshold, stop trying altogether and fail fast.
 
-**Three states:**
-- **Closed** - normal, requests flow through
-- **Open** - too many failures, requests fail immediately
-- **Half-Open** - after the break, a few test requests check recovery
+The circuit has three states. Closed (normal flow), Open (requests fail immediately), and Half-Open (a few test requests probe whether the service recovered). Pretty standard pattern, but there's a setting most people miss:
 
 ```csharp
 var circuitBreakerPipeline = new ResiliencePipelineBuilder()
@@ -122,13 +110,11 @@ var circuitBreakerPipeline = new ResiliencePipelineBuilder()
     .Build();
 ```
 
-`MinimumThroughput` is often overlooked. It stops the circuit from opening during low-traffic periods when a single failure would exceed the ratio.
+`MinimumThroughput` is the one. Without it, a single failure during low-traffic hours (say, 1 request in 10 seconds) would open the circuit because 1/1 = 100% failure. I set it to 8 so the circuit only evaluates after enough requests to be meaningful.
 
-## Timeouts: Your Safety Net
+## Timeouts
 
-Without timeouts, a slow downstream service consumes your connection pool and thread pool until the whole app stalls.
-
-I set two levels: an overall timeout for the entire operation (including retries) and a per-attempt timeout for individual calls.
+This is the one that bit us the hardest. Without timeouts, a slow downstream service silently consumes your connection pool and thread pool until the whole app stalls. No errors, no exceptions. Just increasing latency and then everything stops.
 
 ```csharp
 var timeoutPipeline = new ResiliencePipelineBuilder()
@@ -144,19 +130,11 @@ var timeoutPipeline = new ResiliencePipelineBuilder()
     .Build();
 ```
 
-Common mistake: timeouts too high. If your SLA requires a response in 2 seconds, a 30-second timeout means you'll violate the SLA long before it triggers.
+I use two levels: an overall timeout for the entire operation (including retries) and a per-attempt timeout for individual calls. A common mistake is setting the timeout to 30 seconds when the SLA requires a 2-second response. By the time it fires, you've already violated the SLA.
 
-Set timeouts from your actual latency requirements, not how long the downstream *might* take.
+## Putting It Together
 
-## Combining Strategies
-
-Polly's power is in composition. Order matters - strategies apply outer to inner.
-
-Typical production setup:
-1. **Overall timeout** - max time for the entire operation
-2. **Retry** - retry transient failures
-3. **Circuit breaker** - stop trying if the service is unhealthy
-4. **Per-attempt timeout** - limit individual call duration
+Order matters when you compose strategies. They apply outer to inner:
 
 ```csharp
 var resiliencePipeline = new ResiliencePipelineBuilder()
@@ -176,11 +154,11 @@ var resiliencePipeline = new ResiliencePipelineBuilder()
     .Build();
 ```
 
-Each HTTP call gets 5 seconds. Failures retry up to 3 times with exponential backoff. If 50% of calls fail, the circuit opens for 30 seconds. The whole operation must finish within 30 seconds.
+So each HTTP call gets 5 seconds max. Failures retry up to 3 times with exponential backoff. If 50% of calls fail within the sampling window, the circuit opens for 30 seconds. And the whole thing wraps in a 30-second overall timeout.
 
-## Custom Pipelines with HttpClient
+## Per-Client Configuration
 
-When `AddStandardResilienceHandler()` isn't enough, use `AddResilienceHandler` for full control:
+When `AddStandardResilienceHandler()` isn't enough, `AddResilienceHandler` gives you full control per named client:
 
 ```csharp
 builder.Services.AddHttpClient("PaymentGateway")
@@ -205,15 +183,11 @@ builder.Services.AddHttpClient("AnalyticsApi")
     .AddStandardResilienceHandler();
 ```
 
-Payment gateway: tight timeout, fewer retries, aggressive circuit breaker. Analytics: default resilience is fine. Different backends, different configs.
-
-`HttpRetryStrategyOptions` and `HttpCircuitBreakerStrategyOptions` handle transient HTTP errors (5xx, network failures) without you specifying which exceptions to catch.
+Payment gateway gets tight timeouts, fewer retries, and an aggressive circuit breaker. Analytics API is fine with defaults. `HttpRetryStrategyOptions` and `HttpCircuitBreakerStrategyOptions` handle transient HTTP errors (5xx, network failures) so you don't have to specify which exceptions to catch.
 
 ## WorkflowForge Integration
 
-If you're using [WorkflowForge](https://github.com/animatlabs/workflow-forge) for workflow orchestration, the Polly extension adds resilience as middleware on your foundry.
-
-**Retry only** - add to the foundry, applies to all operations:
+If you're using [WorkflowForge](https://github.com/animatlabs/workflow-forge) for workflow orchestration, the Polly extension adds resilience as middleware on the foundry:
 
 ```csharp
 // dotnet add package WorkflowForge.Extensions.Resilience.Polly
@@ -223,7 +197,7 @@ using var foundry = WorkflowForge.CreateFoundry("OrderProcessing");
 foundry.UsePollyRetry(maxRetryAttempts: 3, baseDelay: TimeSpan.FromSeconds(1));
 ```
 
-**All-in-one** - retry, circuit breaker, and timeout in a single call:
+Or go all-in with retry, circuit breaker, and timeout together:
 
 ```csharp
 foundry.UsePollyComprehensive(
@@ -232,7 +206,7 @@ foundry.UsePollyComprehensive(
     timeoutDuration: TimeSpan.FromSeconds(30));
 ```
 
-Or wrap individual operations instead of the whole foundry:
+You can also wrap individual operations instead of the entire foundry:
 
 ```csharp
 var resilientOp = PollyRetryOperation.WithRetryPolicy(
@@ -244,43 +218,36 @@ var resilientOp = PollyRetryOperation.WithRetryPolicy(
     baseDelay: TimeSpan.FromSeconds(1));
 ```
 
-## My Defaults
+## What I Actually Run in Production
 
-| Pattern | Default Value | Reasoning |
+| Pattern | Value | Why |
 |-----|--------|------|
-| Retry attempts | 3 | Enough for transient failures, not so many we delay failure detection |
-| Initial delay | 1 second | Long enough for transient issues to resolve |
-| Backoff | Exponential with jitter | Prevents thundering herd |
-| Circuit breaker failure ratio | 50% | Sensitive enough to catch problems, not so sensitive normal variance triggers it |
-| Circuit break duration | 30 seconds | Long enough for recovery, short enough we don't miss when services come back |
-| Timeout | 10 seconds (per-call), 30 seconds (overall) | Depends on your SLA |
+| Retry attempts | 3 | Enough for transient blips, not so many it delays failure detection |
+| Initial delay | 1 second | Gives transient issues time to clear |
+| Backoff | Exponential + jitter | Prevents thundering herd |
+| Circuit breaker ratio | 50% | Catches real problems without tripping on normal variance |
+| Break duration | 30 seconds | Long enough for recovery, short enough to detect when services come back |
+| Timeout | 10s per-call, 30s overall | Adjust to your SLA |
 
-What's saved me in production: circuit breakers on every external HTTP client, no exceptions. Structured logging in `OnRetry` and `OnOpened`. Separate configs for critical vs non-critical services.
+The patterns above are what I've settled on after running these in production for a while. Circuit breakers on every external HTTP client, structured logging in `OnRetry` and `OnOpened` so we actually know when things degrade, and separate configs for critical vs best-effort services.
 
-## Run It
+The snippets above are standalone. Copy them into any .NET 8+ project with `dotnet add package Polly` (or `Microsoft.Extensions.Http.Resilience` for the `IHttpClientFactory` integration). For WorkflowForge, add `WorkflowForge.Extensions.Resilience.Polly`.
 
-The code snippets in this post are standalone. Copy-paste into any .NET 8+ project:
-
-```bash
-dotnet add package Microsoft.Extensions.Http.Resilience
-```
-
-For custom pipelines outside of `IHttpClientFactory`:
-
-```bash
-dotnet add package Polly
-```
-
-For WorkflowForge integration:
-
-```bash
-dotnet add package WorkflowForge.Extensions.Resilience.Polly
-```
-
-Start with `AddStandardResilienceHandler()`. Customize when you hit its limits. The best time to add resilience was before your first outage.
+{% include cta-workflowforge.html %}
 
 ---
 
-*What's your go-to when a downstream service starts flaking?*
+<!-- LINKEDIN PROMO
 
-{% include cta-workflowforge.html %}
+Most .NET apps I've worked on had zero resilience until something broke in production. No retries, no circuit breakers, no timeouts.
+
+Polly v8 changed how I approach this. One line (AddStandardResilienceHandler) covers 80% of HTTP clients with sensible defaults. For the other 20% like payment gateways, strict SLAs, and non-HTTP calls, custom pipelines with per-client configuration.
+
+Walked through the setup I actually run in production: retries with jitter to avoid thundering herd, circuit breakers with MinimumThroughput (the setting most people miss), two-level timeouts, and how to compose them. Also covered WorkflowForge's Polly extension for workflow-level resilience.
+
+All code is inline and copy-pasteable into any .NET 8+ project.
+
+Full post: [link]
+
+#dotnet #polly #resilience #microservices
+-->

@@ -1,7 +1,7 @@
 ---
-title: "Goodbye Swagger: Scalar is Now the .NET Default"
+title: "Scalar Replaced Swagger in .NET 9. The Migration Guide"
 excerpt: >-
-  "Microsoft replaced Swagger UI with Scalar in .NET 9. Here's why it's better and how to make the switch."
+  "Swashbuckle went unmaintained. .NET 9 ships Scalar as the default API docs UI. Half the bundle, dark mode, code samples in six languages. Migration is three lines."
 categories:
   - Technical
   - .NET
@@ -14,43 +14,35 @@ tags:
   - API Documentation
   - Developer Experience
 author: animat089
-last_modified_at: 2026-03-14
+last_modified_at: 2026-04-13
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
 ---
 
-## The End of Swagger UI
+If you've created a new .NET 9 web API project recently, you might have noticed Swagger is gone from the template. Scalar is the default now. Fine by me.
 
-For years, Swagger UI was synonymous with API documentation in .NET. But in .NET 9, Microsoft made a bold move: Scalar is now the default.
+The backstory: Swashbuckle's maintainer stepped back. No .NET 8 release, no merged PRs since late 2022. Dead air. Microsoft had to choose between shipping templates that depend on dead code or building something new.
 
-Why? Better performance, cleaner design, and features that Swagger UI never had.
+They went with new. `Microsoft.AspNetCore.OpenApi` handles spec generation natively. `MapOpenApi()` gives you `/openapi/v1.json` without any third-party package. For the UI, they picked Scalar. The ASP.NET team called it out in their release notes.
 
-## What Changed in .NET 9
+You can still use Swashbuckle. It's not blocked. But it's no longer the default, and I wouldn't bet on it for new projects.
 
-Swashbuckle.AspNetCore had a good run. Then the maintainer stepped back. No .NET 8 release. No merged PRs since late 2022. The package went effectively unmaintained.
-
-Microsoft had a choice: keep shipping templates that depended on dead code, or build something new.
-
-They chose new. .NET 9 introduced `Microsoft.AspNetCore.OpenApi` — native OpenAPI document generation built into the framework. No third-party package for the spec itself. You call `MapOpenApi()` and you get `/openapi/v1.json`. Done.
-
-For the UI, Microsoft picked Scalar. Same OpenAPI spec, different experience. Lighter bundle. Dark mode out of the box. Code samples in six languages instead of one. The ASP.NET team even called it out in their release notes.
-
-Swagger isn't gone — you can still add Swashbuckle if you want. But it's no longer the default. Scalar is.
-
-## Scalar vs Swagger UI
+## Why Scalar
 
 | Feature | Swagger UI | Scalar |
 |---------|------------|--------|
 | Load time | ~1.5s | ~500ms |
 | Bundle size | ~400KB | ~200KB |
-| Dark mode | ❌ | ✅ |
-| Code examples | Limited | Multiple languages |
+| Dark mode | No | Yes |
+| Code examples | Limited | 6 languages |
 | Search | Basic | Full-text |
 | Mobile responsive | Partial | Full |
 
-## Setting Up Scalar
+The code examples are the biggest win for my team. Open any endpoint in Scalar and you see tabs: cURL, JavaScript, Python, C#, Go, Ruby. Click one, the code block updates. Frontend dev copies the fetch snippet, Python script gets requests, Go microservice gets net/http. When you ship a .NET API but half your consumers are on TypeScript or Python, those six-language samples save more time than every theme toggle combined, even if you personally only ever copy the C# tab. That alone has killed a lot of "how do I call this from X?" threads.
+
+## Setup
 
 ```bash
 dotnet add package Scalar.AspNetCore
@@ -64,11 +56,13 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 app.MapOpenApi();
-app.MapScalarApiReference(); // That's it!
+app.MapScalarApiReference();
 app.Run();
 ```
 
-## Configuration Options
+Three lines after the standard builder. Your docs are at `/scalar/v1`.
+
+## Configuration
 
 ```csharp
 app.MapScalarApiReference(options =>
@@ -79,23 +73,13 @@ app.MapScalarApiReference(options =>
 });
 ```
 
-`ScalarTarget` picks the language for code samples (CSharp, JavaScript, Python, cURL, Go, Ruby). `ScalarClient` picks the client library — e.g. `HttpClient` for C#, `Fetch` for JavaScript. Default is cURL. I set C# HttpClient because that's what my team uses.
+`ScalarTarget` picks the default language for code samples. `ScalarClient` picks the HTTP client (`HttpClient` for C#, `Fetch` for JavaScript). I set C# + HttpClient because that's what my team reaches for.
 
-## Advanced Features
+## Pre-Filled Auth
 
-### Multiple Code Examples
+This is something Swagger never did well. Scalar can pre-fill security schemes so devs don't type tokens by hand every time they open the docs.
 
-Open any endpoint in Scalar. You'll see a tab bar above the request: cURL, JavaScript, Python, C#, Go, Ruby. Click one — the code block updates instantly. Same endpoint, same parameters, different language.
-
-Your frontend dev copies the fetch snippet. Your Python script gets the requests version. The Go microservice gets the net/http example. No more "how do I call this from X?" — the answer is right there. I've lost count of how many Slack threads that's killed.
-
-Swagger gave you one code block. Scalar gives you the one you need.
-
-### Authentication
-
-Your OpenAPI spec defines the security schemes. Scalar can pre-fill them so devs don't type tokens by hand.
-
-**API key:**
+API key:
 
 ```csharp
 app.MapScalarApiReference(options => options
@@ -106,7 +90,7 @@ app.MapScalarApiReference(options => options
     }));
 ```
 
-**Bearer token:**
+Bearer token:
 
 ```csharp
 app.MapScalarApiReference(options => options
@@ -117,7 +101,7 @@ app.MapScalarApiReference(options => options
     }));
 ```
 
-**OAuth2 (authorization code):**
+OAuth2 with PKCE:
 
 ```csharp
 app.MapScalarApiReference(options => options
@@ -131,42 +115,41 @@ app.MapScalarApiReference(options => options
     }));
 ```
 
-Security notice: pre-filled auth is visible in the browser. Use this for dev and staging only. Never in production.
+Pre-filled auth is visible in the browser. Use this for dev and staging only. Not production.
 
-## Migrating from Swashbuckle
+## Migration from Swashbuckle
 
 ```csharp
-// Before (.NET 8)
+// Swashbuckle
 builder.Services.AddSwaggerGen();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// After (.NET 9+)
+// OpenAPI + Scalar
 builder.Services.AddOpenApi();
 app.MapOpenApi();
 app.MapScalarApiReference();
 ```
 
-Remove the Swashbuckle package. Add Scalar.AspNetCore. Swap the three lines. Your docs move from `/swagger` to `/scalar`. Existing OpenAPI annotations (e.g. `[ProducesResponseType]`) still work — both generators read the same metadata.
+Remove the Swashbuckle package. Add `Scalar.AspNetCore`. Swap the three lines. Your docs move from `/swagger` to `/scalar/v1`. Existing OpenAPI annotations like `[ProducesResponseType]` still work; both generators read the same metadata.
 
-## Conclusion
+If you have XML comments configured via `IncludeXmlComments`, those carry over too. The spec generation is framework-level now, not Swashbuckle-level.
 
-Scalar is the default because it's faster, smaller, and more useful. If you're on .NET 9, you're already halfway there. Make the switch. Your API consumers will notice the difference.
+Scalar is faster, lighter, and actively maintained. New .NET 9 project? Already there. Migrating? Three lines. Not complicated.
 
 ---
 
-*Made the switch to Scalar? Share your experience in the comments!*
+<!-- LINKEDIN PROMO
 
-<!--
-LINKEDIN PROMO (150-250 words):
+Swagger UI is gone from the .NET 9 web API template. Scalar is the default now.
 
-Swagger UI is dead in .NET 9. Microsoft replaced it with Scalar.
+Swashbuckle's maintainer stepped back, no releases since late 2022. Microsoft built native OpenAPI support into the framework (MapOpenApi) and picked Scalar for the UI.
 
-Not deprecated — replaced. The new web API templates ship Scalar by default. Swashbuckle's maintainer stepped back, the package went unmaintained, and Microsoft built native OpenAPI support into the framework instead.
+Why Scalar: half the bundle size, ~500ms load vs ~1.5s, dark mode, and code samples in six languages per endpoint (cURL, JS, Python, C#, Go, Ruby). The multi-language code samples alone have killed a lot of Slack threads on my team.
 
-I wrote up why Scalar wins: ~500ms load time vs ~1.5s, half the bundle size, dark mode, and code samples in six languages (cURL, JavaScript, Python, C#, Go, Ruby) instead of one. Plus OAuth2 and API key auth pre-configuration so your team doesn't retype tokens every time they hit the docs.
+Also covered: pre-filled auth (API key, Bearer, OAuth2 with PKCE) for dev environments, and the three-line migration from Swashbuckle.
 
-Migration is three lines. Remove Swashbuckle, add Scalar.AspNetCore, swap MapOpenApi + MapScalarApiReference for the old UseSwagger/UseSwaggerUI. Full post with code examples in the first comment.
+Full post: [link]
 
-What's your go-to for API docs — still Swagger, or have you switched?
+#dotnet #scalar #openapi #webapi
 -->

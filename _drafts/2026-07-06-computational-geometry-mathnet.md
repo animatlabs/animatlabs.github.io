@@ -64,10 +64,6 @@ var triangle = new Triangle(
 
 *Content to be written with visual outputs*
 
-## Conclusion
-
-*Content to be written*
-
 ---
 
 *Built something fun with geometry in .NET? Let me know in the comments!*

@@ -1,7 +1,7 @@
 ---
 title: "Saga Pattern in .NET: Automatic Compensation Made Simple"
 excerpt: >-
-  "Distributed transactions are hard. Here's how I implement the Saga pattern with automatic compensation using WorkflowForge."
+  "Distributed transactions are hard. The Saga pattern with automatic compensation in WorkflowForge makes them manageable."
 categories:
   - Technical
   - .NET
@@ -46,7 +46,7 @@ I prefer orchestration for most business-critical flows because the explicit flo
 
 ## Traditional Implementation: Lots of Code
 
-Here's what saga implementation typically looks like without a framework - nested try-catch blocks tracking what needs to be undone:
+Saga implementation without a framework usually looks like nested try-catch blocks tracking what needs to be undone:
 
 ```csharp
 // Traditional saga - manual compensation tracking
@@ -172,7 +172,7 @@ The `IWorkflowFoundry` acts as a shared context, allowing operations to store da
 
 ## Real-World Example: Order Processing
 
-Here's a more complete order processing workflow with error handling and logging:
+A more complete order processing workflow with error handling and logging:
 
 ```csharp
 public class OrderWorkflowBuilder
@@ -209,7 +209,7 @@ Notice that not every operation needs a compensation. Validation doesn't change 
 
 ## When to Use Sagas
 
-The saga pattern isn't always the right choice. Here's my decision framework:
+The saga pattern isn't always the right choice. My decision framework:
 
 | Use Case | Saga Appropriate? | Why |
 |----------|-------------------|-----|
@@ -230,7 +230,7 @@ The saga pattern isn't always the right choice. Here's my decision framework:
 
 **Add observability.** Log every step and compensation. When a saga fails at 3 AM, you need to understand exactly what happened and what was compensated.
 
-## Conclusion
+## Sagas Without the Boilerplate
 
 The saga pattern solves a real problem in distributed systems: maintaining data consistency without distributed transactions. But implementing it manually leads to complex, error-prone code.
 

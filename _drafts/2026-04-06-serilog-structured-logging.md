@@ -1,7 +1,7 @@
 ---
-title: "Structured Logging with Serilog: The Production Setup"
+title: "Serilog in Production: The Setup I Actually Use"
 excerpt: >-
-  "50,000 lines of 'Processing request...' with zero context. Here's the Serilog setup that actually helps at 2 AM."
+  "Most .NET Serilog tutorials stop at Console and File sinks. Production setup: appsettings-driven, correlation IDs, PII redaction, async sinks, and graceful shutdown."
 categories:
   - Technical
   - .NET
@@ -13,32 +13,30 @@ tags:
   - Production
   - Observability
 author: animat089
-last_modified_at: 2026-03-14
+last_modified_at: 2026-04-06
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
 ---
 
-## The 2 AM Wake-Up Call
+Most Serilog tutorials show you `Log.Information("Hello")` and call it a day. Production is different.
 
-The alert fired at 2 AM. "Payment service unhealthy." I opened the logs and found 50,000 lines of "Processing request..." with zero context about which request, which user, or which payment. No timestamps that lined up. No way to trace a single transaction across the three services that touched it.
+You need logs you can query when something breaks, correlation IDs across services, config-driven levels so ops can change them without redeployment, and redaction so you don't ship card numbers to the SIEM. Non-negotiable.
 
-That's when I rewrote our logging setup.
+This is what I run. Config-heavy on purpose: **log levels do not belong hard-coded in assemblies.** I learned that the hard way once.
 
 ## Why Structured Logging
 
-Text logs are fine for `tail -f` during development. In production, when you're searching for one failed payment among millions of requests, they're useless. You grep for "error" and get 12,000 hits. You grep for "payment" and get every successful transaction too.
+Text logs are fine for `tail -f` during development. In production, when you're searching for one failed payment among millions of requests, they don't cut it. Grep stops working fast once more than one noisy service prints "Processing request" with no identifiers. You grep for "error" and get 12,000 hits. You grep for "payment" and get every successful transaction too.
 
-Structured logs are JSON. Each field is queryable. In Seq or Kibana, you run:
+Structured logs are JSON. Each field is queryable. In Seq or Kibana, you write:
 
 ```
 CorrelationId = 'a1b2c3d4' and Level = 'Error'
 ```
 
-You get exactly the failed request and every log line that touched it. No grep. No regex. One query.
-
-Here's the difference. Text log:
+One query, one request, the full trace. Plain text versus structured:
 
 ```
 2026-03-14 02:17:23 [INF] Processing request for user 8472
@@ -46,19 +44,19 @@ Here's the difference. Text log:
 2026-03-14 02:17:24 [ERR] Payment failed
 ```
 
-Which request failed? Which user? You can't tell. Structured log:
+Which request? Which user? You can't tell. Structured:
 
 ```json
 {"@t":"2026-03-14T02:17:24Z","@l":"Error","@mt":"Payment failed","UserId":8472,"CorrelationId":"a1b2c3d4","OrderId":"ord_9x7k2"}
 ```
 
-Query by `CorrelationId` and you get the full story. That's the setup below.
+Query by `CorrelationId` and you get the full story.
 
-## The Production Setup
+## The Config
 
-### 1. appsettings.json (Not Fluent API)
+### appsettings.json
 
-Ops teams need to change log levels and sinks without redeployment. Config-driven beats code-driven.
+Ops teams need to change log levels and sinks without redeployment. That's why I use `ReadFrom.Configuration` instead of the fluent API in code:
 
 ```json
 {
@@ -94,9 +92,9 @@ Ops teams need to change log levels and sinks without redeployment. Config-drive
 }
 ```
 
-`Override` is critical. `Microsoft` and `System` are chatty. In production, set them to `Warning` unless you're debugging. In dev, you might use `Information` or `Debug` for EF Core. Add `Serilog.Enrichers.Environment` for `WithMachineName` and `WithEnvironmentName`.
+The `Override` section matters. `Microsoft` and `System` are incredibly chatty at `Information` level. Set them to `Warning` in production. Add `Serilog.Enrichers.Environment` for `WithMachineName` and `WithEnvironmentName`.
 
-### 2. appsettings.Development.json
+### Development Overrides
 
 Verbose in dev, quiet in prod:
 
@@ -114,14 +112,13 @@ Verbose in dev, quiet in prod:
 }
 ```
 
-### 3. Program.cs Bootstrap
+### Program.cs
 
 ```csharp
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Serilog first - captures startup
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
@@ -141,15 +138,13 @@ finally
 }
 ```
 
-`ReadFrom.Configuration` pulls the `Serilog` section from appsettings. No fluent API in code. Change the config, restart the app, new behavior.
-
-`UseSerilogRequestLogging()` adds a log per request with duration, status code, and path. Essential for tracing slow requests.
+`ReadFrom.Configuration` pulls the `Serilog` section from appsettings. Change the config, restart, new behavior. `UseSerilogRequestLogging()` adds one log per request with duration, status code, and path, which is essential for spotting slow requests.
 
 ## Correlation IDs
 
-A request hits your API, then a payment service, then an email service. Without correlation IDs, you're piecing together three separate log streams by timestamp. Good luck.
+A request hits your API, then a payment service, then an email service. Without correlation IDs, you're piecing together three separate log streams by timestamp. That's miserable.
 
-Add middleware that assigns a correlation ID to every request and sticks it in `LogContext`:
+This middleware assigns a correlation ID to every request:
 
 ```csharp
 using Serilog.Context;
@@ -167,16 +162,15 @@ app.Use(async (context, next) =>
 });
 ```
 
-Now every log during that request includes `CorrelationId`. Before: "Payment failed" somewhere in service B. After: grep for `CorrelationId = 'a1b2c3d4'` in Seq and you see the full path — API received request, called payment service, payment failed, returned 500.
+Now every log line during that request includes `CorrelationId`. If the upstream service already set `X-Correlation-ID`, we reuse it, so you can trace across service boundaries.
 
-## Sensitive Data
+## Redacting Sensitive Data
 
 Logs end up in dashboards, SIEM tools, support tickets. PII, tokens, and card numbers don't belong there.
 
-Use a destructuring policy to redact:
+Use a destructuring policy to strip sensitive fields before they reach any sink:
 
 ```csharp
-// Add to LoggerConfiguration
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Destructure.ByTransforming<CreditCardRequest>(r => new
@@ -188,7 +182,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 ```
 
-Or mask inline with a custom enricher. Simpler approach — a regex-based sanitizer:
+For broader protection, a regex-based enricher catches anything that slips through:
 
 ```csharp
 using System.Text.RegularExpressions;
@@ -210,13 +204,13 @@ public class SensitiveDataEnricher : ILogEventEnricher
 }
 ```
 
-Register it: `.Enrich.With<SensitiveDataEnricher>()`. Any log that accidentally includes a card number or email gets redacted. Better: don't log those objects at all. Use the destructuring policy so they never hit the message template.
+Register with `.Enrich.With<SensitiveDataEnricher>()`. Better approach: don't log those objects at all. Use destructuring so they never hit the message template in the first place.
 
 ## Performance
 
-Logging can block. Async sinks and buffering matter.
+Logging can block. Two things matter here.
 
-**Async file sink** — use `Serilog.Sinks.Async` to wrap the file sink. Logs go to a bounded queue; a background thread writes. Your request thread never blocks on disk I/O. Default buffer is 10,000 events. Under load, sync file writes can add 5–20ms per request. Async drops that to near zero.
+**Async sinks:** `Serilog.Sinks.Async` wraps the file sink with a bounded queue. A background thread handles the I/O. Your request thread never blocks on disk writes. Under load, sync file writes can add 5-20ms per request. Async drops that to near zero:
 
 ```json
 {
@@ -235,7 +229,7 @@ Logging can block. Async sinks and buffering matter.
 }
 ```
 
-**Container shutdown** — when the app exits, buffered logs can be lost. `Log.CloseAndFlushAsync()` in the `finally` block flushes before the process dies. For graceful shutdown in Kubernetes:
+**Container shutdown:** when the app exits, buffered logs get lost unless you flush. `Log.CloseAndFlushAsync()` in the `finally` block handles normal shutdown. For Kubernetes, hook into `ApplicationStopping`:
 
 ```csharp
 var host = builder.Build();
@@ -249,26 +243,21 @@ lifetime.ApplicationStopping.Register(() =>
 
 `ApplicationStopping` fires when SIGTERM arrives. Flush before the process exits.
 
-## Wrap Up
+## What Comes Next
 
-Structured logs, correlation IDs, and config-driven levels turn "50,000 lines of noise" into "one query, one request, full trace." The setup above is what I run in production — no external dependencies beyond NuGet packages.
-
-In the next post, I'll show how these structured logs feed into Prometheus and Grafana dashboards.
+This setup gives you structured logs with correlation IDs, PII redaction, and async writes. Next article wires the same logs into Prometheus metrics and Grafana dashboards for production monitoring (the part where pretty graphs finally justify all the JSON).
 
 ---
 
-*Questions about Serilog config or correlation IDs? Drop them in the comments.*
+<!-- LINKEDIN PROMO
 
-<!--
-LINKEDIN PROMO (150-250 words):
+Most Serilog tutorials stop at Console and File sinks. Production stack I actually run:
 
-The alert fired at 2 AM. "Payment service unhealthy." I opened the logs: 50,000 lines of "Processing request..." Zero context. Which request? Which user? Which payment? I couldn't trace a single transaction across the three services that touched it.
+Config-driven setup (appsettings.json, not fluent API) so ops can change log levels without redeploying. Correlation ID middleware for tracing requests across services. Destructuring policies and regex enrichers to redact card numbers and emails before they hit any sink. Async file sinks so logging doesn't add 5-20ms per request under load. Graceful shutdown flushing for Kubernetes.
 
-That's when I rewrote our logging.
+The post is code-heavy: working config, correlation middleware, redaction enricher, async sink setup. No external dependencies beyond Serilog NuGet packages.
 
-I wrote up the Serilog setup that actually works in production: appsettings-driven config (so ops can change log levels without redeploying), correlation ID middleware so you can trace one request across your whole stack, destructuring policies to redact card numbers and emails, and async sinks so logging doesn't block your request thread. Also covered: Log.CloseAndFlushAsync() for graceful container shutdown — because buffered logs disappear when the process dies.
+Full post: [link]
 
-The post is code-heavy. 60%+ code blocks. No external deps beyond NuGet. Working config, not slides.
-
-What's your go-to when you need to debug a failed request at 2 AM?
+#dotnet #serilog #logging #observability
 -->

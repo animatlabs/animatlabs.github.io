@@ -1,7 +1,7 @@
 ---
 title: "System.IO.Pipelines: High-Performance I/O in .NET"
 excerpt: >-
-  "When streams aren't fast enough. Here's how Pipelines work and when to use them."
+  "When streams aren't fast enough: how Pipelines work and when to use them."
 categories:
   - Technical
   - .NET
@@ -57,8 +57,6 @@ TARGET: 1,800-2,200 words (long-form)
 ## When to Use
 
 <!-- TODO: Your recommendations - when to use Pipelines vs Streams, performance characteristics, complexity trade-offs -->
-
-## Conclusion
 
 **Sample code:** [GitHub](https://github.com/animat089/pipelines-sample){: .btn .btn--primary}
 

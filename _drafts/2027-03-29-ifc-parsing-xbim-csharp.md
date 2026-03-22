@@ -397,7 +397,7 @@ This is part 1 of the **Geometry & CAD in C#** series:
 3. [Interactive Geometry Viewer with Blazor WASM](/technical/.net/.net-core/blazor-wasm-geometry-viewer/) -- browser-based visualization
 4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/) -- geometric algorithms
 
-## Conclusion
+## IFC from .NET with xBIM
 
 xBIM makes IFC files accessible to any .NET developer -- no AutoCAD, no Revit, no expensive licenses. Whether you're building a model viewer, automating quantity takeoffs, or validating BIM data, xBIM gives you the full power of IFC in idiomatic C#.
 

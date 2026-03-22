@@ -1,7 +1,7 @@
 ---
 title: "Zero Trust for Developers: Not Just Security Team Stuff"
 excerpt: >-
-  "Zero Trust isn't just a network architecture—it's a development mindset. Here's what it means for your .NET code."
+  "Zero Trust isn't just a network architecture—it's a development mindset. What it means for your .NET code."
 categories:
   - Technical
   - .NET
@@ -138,10 +138,6 @@ public async Task<IActionResult> ProcessOrder([FromBody] OrderRequest request)
 ```csharp
 // TODO: Short-lived credentials, rotation, no hardcoding
 ```
-
-## Conclusion
-
-<!-- TODO: Security is everyone's job -->
 
 ---
 

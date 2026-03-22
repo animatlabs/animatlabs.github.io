@@ -183,7 +183,7 @@ Zero dependencies isn't free. Here are the trade-offs I've accepted:
 
 ## When Zero Dependencies Makes Sense
 
-This approach isn't for everyone or everything. Here's my framework:
+This approach isn't for everyone or everything. My framework:
 
 | Scenario | Zero Deps? | Why |
 |----------|------------|-----|
@@ -205,7 +205,7 @@ This approach isn't for everyone or everything. Here's my framework:
 - The dependency is truly foundational (e.g., Microsoft.Extensions.Logging.Abstractions)
 - The implementation complexity far exceeds the dependency cost
 
-## Conclusion
+## Why Zero Dependencies Still Matters
 
 Building zero-dependency libraries is harder than just adding packages. It requires discipline, careful API design, and willingness to implement functionality yourself.
 

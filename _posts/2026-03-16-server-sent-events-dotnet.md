@@ -13,14 +13,14 @@ tags:
   - Real-Time
   - ASP.NET Core
 author: animat089
-last_modified_at: 2026-03-16
+last_modified_at: 2026-03-21
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
 ---
 
-I added SignalR to a project that only needed server-to-client updates. 200 lines of hub code, connection management, and a JavaScript dependency - for a dashboard that never sends data back. SSE does it in 15 lines.
+I added SignalR to a project that only needed server-to-client updates. 200 lines of hub code, connection management, and a JavaScript dependency. All of that for a dashboard that never sends data back. SSE does it in 15 lines. I still ask "does the client ever push?" before I touch SignalR.
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/ServerSentEvents){: .btn .btn--primary}
 
@@ -30,15 +30,15 @@ HTTP. Set `Content-Type: text/event-stream`, keep the connection open, write `da
 
 The browser's `EventSource` API parses it. That's the whole spec.
 
-No WebSocket upgrade. Proxies treat it like a long-lived HTTP response - most already allow it. `EventSource` reconnects automatically and sends `Last-Event-ID` so the server knows where to resume.
+No WebSocket upgrade. Proxies treat it like a long-lived HTTP response; most already allow it. `EventSource` reconnects automatically and sends `Last-Event-ID` so the server knows where to resume.
 
 Three optional fields: `data` (payload), `event` (name for multiple types on one stream), `id` (for reconnection).
 
-## Pattern 1: Simple Stream (Clock)
+If your UI only needs the server to talk and the browser to listen, you skip the WebSocket handshake, you skip hub abstractions, and you stay on plain HTTP semantics that ops already know how to load-balance and cache-policy, which is why I reach for SSE first on internal dashboards.
 
-One event type. One value. Fire every second. No names, no IDs.
+## The Simplest Stream: A Clock
 
-**Server (C#):**
+Start with the bare minimum: one event type, one value, fire every second:
 
 ```csharp
 app.MapGet("/events/clock", async (HttpContext ctx) =>
@@ -67,9 +67,9 @@ static async IAsyncEnumerable<DateTime> StreamClock(
 }
 ```
 
-`IAsyncEnumerable` keeps the stream lazy. Each tick becomes a `data:` line. The `\n\n` is the event boundary. Flush after each write or the client won't see it until the buffer fills.
+`IAsyncEnumerable` keeps the stream lazy. Each tick becomes a `data:` line, the `\n\n` is the event boundary. Important: flush after each write or the client won't see anything until the buffer fills.
 
-**Client (JavaScript):**
+On the browser side, `EventSource` is native. No library:
 
 ```javascript
 const clock = new EventSource('/events/clock');
@@ -80,13 +80,9 @@ clock.onopen = () => document.getElementById('clock-status').classList.remove('o
 clock.onerror = () => document.getElementById('clock-status').classList.add('off');
 ```
 
-`onmessage` handles unnamed events. No library. Native `EventSource` in every modern browser.
+## Named Events
 
-## Pattern 2: Named Events (Orders)
-
-Multiple event types on one connection. Use the `event:` field.
-
-**Server (C#):**
+What if you need multiple event types on one connection? The `event:` field handles that. Order stream example: it pushes both `placed` and `cancelled` events.
 
 ```csharp
 app.MapGet("/events/orders", async (HttpContext ctx) =>
@@ -113,9 +109,7 @@ app.MapGet("/events/orders", async (HttpContext ctx) =>
 });
 ```
 
-`event: placed` or `event: cancelled` goes before `data:`. The client listens by name.
-
-**Client (JavaScript):**
+The `event:` line goes before `data:`. On the client, you use `addEventListener` instead of `onmessage`. That's the key difference. `onmessage` only fires for unnamed events:
 
 ```javascript
 const orders = new EventSource('/events/orders');
@@ -123,13 +117,11 @@ orders.addEventListener('placed', e => addOrderLine(e.data, 'placed'));
 orders.addEventListener('cancelled', e => addOrderLine(e.data, 'cancelled'));
 ```
 
-`onmessage` only fires for unnamed events. Named events need `addEventListener`. One connection, multiple handlers.
+One connection, multiple handlers.
 
-## Pattern 3: Event IDs (Metrics)
+## Reconnection with Event IDs
 
-Reconnection without losing your place. The server sends `id:` with each event. On reconnect, the browser sends `Last-Event-ID` in the request headers.
-
-**Server (C#):**
+This is the part that makes SSE actually production-ready. The server sends `id:` with each event. When the connection drops, the browser automatically reconnects and sends `Last-Event-ID` in the request header so the server can pick up where it left off.
 
 {% raw %}
 ```csharp
@@ -165,9 +157,7 @@ app.MapGet("/events/metrics", async (HttpContext ctx) =>
 ```
 {% endraw %}
 
-Read `Last-Event-ID`, start the sequence from there. JSON in `data:` is just a string - parse it on the client.
-
-**Client (JavaScript):**
+The client code is straightforward. JSON in `data:` is a string, so you parse it:
 
 ```javascript
 const metrics = new EventSource('/events/metrics');
@@ -179,7 +169,7 @@ metrics.onmessage = e => {
 };
 ```
 
-The browser handles reconnection. It sends `Last-Event-ID` automatically. You don't write that code.
+The browser handles the reconnection loop and sends `Last-Event-ID` automatically. You don't write that code.
 
 ## When to Use What
 
@@ -198,22 +188,38 @@ No tech is wrong. Pick by direction of data flow and what your infra allows.
 
 **HTTP/1.1 connection limits.** Browsers cap connections per domain at ~6. Open 6 SSE streams and your next fetch queues.
 
-HTTP/2 multiplexes over one connection -- problem disappears. If you're on HTTP/1.1, keep streams under the limit.
+HTTP/2 multiplexes over one connection, so the problem disappears. If you're on HTTP/1.1, keep streams under the limit.
 
-**Text only.** No binary. Base64 if you must.
+**Text only.** No binary. Base64 if you must, but at that point you probably want WebSockets.
 
-## Run It
+The playground has all three patterns running on `http://localhost:5074`:
 
 ```bash
 cd playground/ServerSentEvents/AnimatLabs.ServerSentEvents
 dotnet run
 ```
 
-Open `http://localhost:5074`. Three sections, three patterns. No NuGet. No hub. Just a GET endpoint and a loop.
+No NuGet packages, no hub classes: just a GET endpoint and a loop. Full code and setup in the [playground README](https://github.com/animat089/playground/tree/main/ServerSentEvents).
 
-For full code and setup details, see the [playground README](https://github.com/animat089/playground/tree/main/ServerSentEvents).
+Follow-up piece: SSE plus HTMX for a workflow dashboard where the server pushes HTML fragments. No custom JavaScript. I wanted that article to exist mostly so I'd stop re-explaining EventSource to myself every six months.
 
-**Next up:** I pair SSE with HTMX for a real-time workflow dashboard - no custom JavaScript at all. Stay tuned.
+---
 
-What are you streaming? Dashboards, logs, or something else?
+<!-- LINKEDIN PROMO
+
+Added SignalR to a project that only needed server-to-client updates. 200 lines of hub code, connection management, a JS dependency, for a dashboard that never sends data back.
+
+SSE does it in 15 lines. HTTP, text/event-stream content type, keep the connection open, write data lines. The browser's EventSource API handles parsing and automatic reconnection.
+
+Walked through three patterns in C#:
+- Simple stream (IAsyncEnumerable clock)
+- Named events (multiple event types on one connection)
+- Event IDs (reconnection without losing your place)
+
+No NuGet packages. No hub abstractions. Native browser API. Works behind corporate proxies where WebSockets sometimes don't.
+
+Working demo: [link]
+
+#dotnet #sse #realtime #aspnetcore
+-->
 

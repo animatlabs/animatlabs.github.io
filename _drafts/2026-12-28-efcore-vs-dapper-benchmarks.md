@@ -1,7 +1,7 @@
 ---
 title: "EF Core vs Dapper: Real Benchmarks for Real Scenarios"
 excerpt: >-
-  "I benchmarked EF Core against Dapper in scenarios that actually matter. Here's the data."
+  "I benchmarked EF Core against Dapper in scenarios that actually matter. The benchmarks tell a different story."
 categories:
   - Technical
   - .NET
@@ -383,13 +383,6 @@ public class OrderService
     }
 }
 ```
-
-## Conclusion
-
-<!-- 
-TODO: Summarize with your personal takeaway
-What's your main recommendation? What should readers do next?
--->
 
 **You can access the full benchmark code from my** [GitHub Repo](https://github.com/animat089/playground){: .btn .btn--primary}
 

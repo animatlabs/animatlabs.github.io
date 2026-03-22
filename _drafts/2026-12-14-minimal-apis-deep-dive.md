@@ -1,7 +1,7 @@
 ---
-title: "Minimal APIs Deep Dive: When Controllers Are Overkill"
+title: "Minimal APIs: When Controllers Are Overkill"
 excerpt: >-
-  "Controllers aren't always the answer. Here's when Minimal APIs shine and how to structure them for production."
+  "Controllers aren't always the answer. When Minimal APIs actually shine, and how to structure them for production."
 categories:
   - Technical
   - .NET
@@ -29,7 +29,7 @@ When Minimal APIs shipped with .NET 6, the immediate question was: "Should I aba
 - Large APIs with dozens of endpoints (the class structure helps organization)
 - Teams already comfortable with the MVC pattern
 - Complex APIs requiring extensive use of filters and model binding
-- APIs that heavily leverage attribute-based routing and documentation
+- APIs that heavily use attribute-based routing and documentation
 
 **Minimal APIs excel at:**
 - Microservices with focused, small APIs
@@ -42,7 +42,7 @@ I reach for Minimal APIs when building microservices with 5-15 endpoints. The re
 
 ## Basic Minimal API Setup
 
-Here's the simplest possible Minimal API - no controllers, no startup class, just handlers:
+The simplest possible Minimal API—no controllers, no startup class, just handlers:
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -297,7 +297,7 @@ This provides compile-time safety for your return types and generates accurate O
 
 ## My Recommendations
 
-After using Minimal APIs in production, here's my decision framework:
+After using Minimal APIs in production, my decision framework:
 
 | Scenario | My Choice | Why |
 |----------|-----------|-----|
@@ -315,7 +315,7 @@ After using Minimal APIs in production, here's my decision framework:
 4. Document endpoints properly for OpenAPI generation
 5. Use typed results (`Results<T1, T2>`) for complex return scenarios
 
-## Conclusion
+## Minimal APIs Aren't a Replacement for Controllers
 
 Minimal APIs aren't a replacement for controllers - they're an alternative that's better suited for certain scenarios. For microservices, prototypes, and smaller APIs, they reduce boilerplate and make the code more explicit.
 

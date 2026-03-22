@@ -52,10 +52,6 @@ UNIQUE ANGLE: Viral-format "in N lines" post. Practical, impressive, shareable.
 
 *Content to be written*
 
-## Conclusion
-
-*Content to be written*
-
 ---
 
 *Built something cool with Semantic Kernel? Let me know in the comments!*

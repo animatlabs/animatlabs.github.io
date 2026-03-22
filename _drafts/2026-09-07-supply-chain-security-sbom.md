@@ -1,7 +1,7 @@
 ---
 title: "Supply Chain Security: SBOM, Package Signing, and the 500-Package Attack"
 excerpt: >-
-  "500+ npm packages compromised in one attack. Your NuGet packages could be next. Here's how to protect your .NET supply chain."
+  "500+ npm packages compromised in one attack. Your NuGet packages could be next. Protecting your .NET supply chain with SBOMs and signed builds."
 categories:
   - Technical
   - Security
@@ -46,10 +46,6 @@ UNIQUE ANGLE: Hot security topic (real attack). Practical, not theoretical.
 *Content to be written*
 
 ## Practical Checklist
-
-*Content to be written*
-
-## Conclusion
 
 *Content to be written*
 

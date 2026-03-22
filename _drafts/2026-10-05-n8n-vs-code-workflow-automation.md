@@ -1,7 +1,7 @@
 ---
 title: "n8n vs Code: When to Build vs Buy Workflow Automation"
 excerpt: >-
-  "n8n has 60k+ GitHub stars. But should you use a visual workflow tool or build your own? Here's a framework for deciding."
+  "n8n has 60k+ GitHub stars. But should you use a visual workflow tool or build your own? A framework for deciding."
 categories:
   - Technical
   - Architecture
@@ -51,10 +51,6 @@ PROMOTION STRATEGY: Fair comparison drives traffic. Mention WF GitHub link natur
 | Testing | Limited | Full unit/integration |
 | Version Control | Difficult | Native git |
 | Performance | Good | Excellent |
-
-## Conclusion
-
-*Content to be written*
 
 ---
 

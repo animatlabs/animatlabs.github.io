@@ -81,8 +81,6 @@ ORIGINALITY CHECKLIST:
 // TODO: Show when NOT to use frozen collections
 ```
 
-## Conclusion
-
 ---
 
 *Using frozen collections? Share your use cases!*

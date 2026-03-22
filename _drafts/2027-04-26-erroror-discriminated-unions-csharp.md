@@ -1,7 +1,7 @@
 ---
 title: "ErrorOr, OneOf, and the Result Pattern: Discriminated Unions in C#"
 excerpt: >-
-  "Three libraries, one goal: stop throwing exceptions for expected failures. Here's how ErrorOr, OneOf, and Ardalis.Result compare -- and which one fits your project."
+  "Three libraries, one goal: stop throwing exceptions for expected failures. How ErrorOr, OneOf, and Ardalis.Result compare -- and which one fits your project."
 categories:
   - Technical
   - .NET
@@ -391,7 +391,7 @@ var response = result switch
 
 Until then, ErrorOr, OneOf, and Ardalis.Result are the best options available.
 
-## Conclusion
+## Choosing ErrorOr, OneOf, or Ardalis.Result
 
 All three libraries solve the same fundamental problem: making error handling explicit instead of relying on exceptions. The "right" choice depends on your project's architecture, team experience, and how general-purpose you need the discriminated union to be.
 

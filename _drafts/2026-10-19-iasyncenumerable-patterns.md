@@ -1,7 +1,7 @@
 ---
 title: "Stop Loading Everything Into Memory: IAsyncEnumerable Patterns"
 excerpt: >-
-  "Your API loads 100k rows into a List, serializes them, and wonders why it OOMs. IAsyncEnumerable fixes this. Here's how."
+  "Your API loads 100k rows into a List, serializes them, and wonders why it OOMs. IAsyncEnumerable fixes this. The patterns that work."
 categories:
   - Technical
   - .NET
@@ -80,8 +80,6 @@ ORIGINALITY CHECKLIST:
 // TODO: Add examples of common mistakes
 // TODO: Show correct patterns
 ```
-
-## Conclusion
 
 ---
 

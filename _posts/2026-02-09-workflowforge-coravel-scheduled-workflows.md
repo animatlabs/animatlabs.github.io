@@ -1,7 +1,7 @@
 ---
 title: "Scheduled Workflows in .NET: WorkflowForge Meets Coravel"
 excerpt: >-
-  "Coravel handles when to run. WorkflowForge handles what to run. Together they create lightweight scheduled workflows with automatic compensation -- no Hangfire required."
+  "Coravel handles when to run. WorkflowForge handles what to run. Together they create lightweight scheduled workflows with automatic compensation, no Hangfire required."
 categories:
   - Technical
   - .NET  
@@ -25,16 +25,16 @@ comments: true
 
 ## The Problem: Scheduled Workflows Are Overcomplicated
 
-You need to run a multi-step business process on a schedule -- nightly order reconciliation, hourly data syncs, daily report generation. The typical approach? Hangfire for scheduling, custom code for the workflow logic, and manual error handling for each step. That's three concerns tangled together, plus a Redis or SQL dependency just for scheduling.
+You need to run a multi-step business process on a schedule: nightly order reconciliation, hourly data syncs, daily report generation. The typical approach? Hangfire for scheduling, custom code for the workflow logic, and manual error handling for each step. That's three concerns tangled together, plus a Redis or SQL dependency just for scheduling.
 
 What if you could have:
 
 - **Zero external dependencies** for scheduling (no Redis, no SQL)
-- **Automatic compensation** if any step fails (saga pattern, built-in)
+- Automatic compensation if any step fails (saga pattern, built-in)
 - **Microsecond execution** instead of milliseconds
-- **Clean separation** between "when to run" and "what to run"
+- Clean separation between "when to run" and "what to run"
 
-That's exactly what happens when you pair **Coravel** (scheduling) with **WorkflowForge** (workflow orchestration).
+That's exactly what happens when you pair **Coravel** (scheduling) with **WorkflowForge** (workflow orchestration). I like that split. Took me a while to stop stuffing everything into one scheduler-shaped lump.
 
 I've built a complete runnable sample that demonstrates this pattern end-to-end:
 
@@ -61,7 +61,7 @@ I've built a complete runnable sample that demonstrates this pattern end-to-end:
 └─────────────────────────────────────────────────────────┘
 ```
 
-Coravel decides **when** to run. WorkflowForge handles **what** to run -- including automatic rollback of completed steps when something fails downstream.
+Coravel decides **when** to run. WorkflowForge handles **what** to run, including automatic rollback of completed steps when something fails downstream.
 
 ---
 
@@ -102,7 +102,7 @@ WorkflowForge/
 └── AnimatLabs.WorkflowForge.sln
 ```
 
-The **workflows project** contains only business logic -- operations, models, and service interfaces. It has a single dependency: `WorkflowForge`.
+The **workflows project** contains only business logic: operations, models, and service interfaces. It has a single dependency: `WorkflowForge`.
 
 The **host project** wires Coravel scheduling, provides fake service implementations for demo purposes, and depends on `Coravel`, `WorkflowForge`, and `Microsoft.Extensions.Hosting`.
 
@@ -121,7 +121,7 @@ No database migrations. No connection strings for the scheduler.
 
 ## The Workflow Definition
 
-The entire workflow is defined in one method -- chain the operations and build:
+The entire workflow is defined in one method. Chain the operations and build:
 
 ```csharp
 using AnimatLabs.WorkflowForge.Workflows.Sample.NightlyReconciliation.Operations;
@@ -151,7 +151,7 @@ public static class NightlyReconciliationWorkflow
 }
 ```
 
-Dependencies are injected into operations via constructors -- clean, testable, no service locator.
+Dependencies are injected into operations via constructors (clean, testable, no service locator).
 
 ---
 
@@ -177,7 +177,7 @@ public sealed class PaymentTransaction
 
 ## Shared State Keys
 
-Operations communicate through the foundry's property bag. The keys are simple constants -- no magic strings scattered across the codebase:
+Operations communicate through the foundry's property bag. The keys are simple constants, no magic strings scattered across the codebase:
 
 ```csharp
 public static class ReconciliationKeys
@@ -294,7 +294,7 @@ public sealed class ProcessPaymentsOperation : WorkflowOperationBase
 
 ### Updating Inventory (with Release Compensation)
 
-Same pattern -- reserve on execute, release on compensate:
+Same pattern: reserve on execute, release on compensate:
 
 ```csharp
 public sealed class UpdateInventoryOperation : WorkflowOperationBase
@@ -348,7 +348,7 @@ public sealed class UpdateInventoryOperation : WorkflowOperationBase
 
 ### The Simulated Failure Toggle
 
-This operation exists purely to demonstrate compensation. When `DemoFailure` is set to `true`, it throws -- causing WorkflowForge to roll back payments and inventory automatically:
+This operation exists purely to demonstrate compensation. When `DemoFailure` is set to `true`, it throws, which makes WorkflowForge roll back payments and inventory automatically:
 
 ```csharp
 public sealed class MaybeFailOperation : WorkflowOperationBase
@@ -378,7 +378,7 @@ public sealed class MaybeFailOperation : WorkflowOperationBase
 
 ### Sending Confirmations
 
-The final step -- no meaningful compensation needed (you can't unsend an email):
+The final step. No meaningful compensation needed (you can't unsend an email):
 
 ```csharp
 public sealed class SendConfirmationEmailsOperation : WorkflowOperationBase
@@ -509,7 +509,7 @@ public sealed class ReconciliationJobOptions
 
 ### Host Setup (Program.cs)
 
-Standard .NET hosting with Coravel scheduler -- the entire host in one file:
+Standard .NET hosting with Coravel scheduler. The entire host in one file:
 
 ```csharp
 var builder = Host.CreateApplicationBuilder(args);
@@ -547,7 +547,7 @@ host.Services.UseScheduler(scheduler =>
 await host.RunAsync();
 ```
 
-`PreventOverlapping` ensures a new run doesn't start if the previous one is still going -- important for workflows that touch external systems.
+`PreventOverlapping` ensures a new run doesn't start if the previous one is still going. Important for workflows that touch external systems.
 
 ---
 
@@ -562,7 +562,7 @@ dotnet run --project AnimatLabs.WorkflowForge.CoravelScheduledWorkflows -- \
     ReconciliationJob:DemoFailure=true
 ```
 
-With `DemoFailure=true`, the `MaybeFailOperation` throws after payments and inventory are processed. Watch the logs -- you'll see WorkflowForge automatically refund payments and release inventory reservations. The saga pattern, without writing a single line of orchestration code.
+With `DemoFailure=true`, the `MaybeFailOperation` throws after payments and inventory are processed. Watch the logs. You'll see WorkflowForge automatically refund payments and release inventory reservations. The saga pattern, without writing a single line of orchestration code.
 
 ---
 

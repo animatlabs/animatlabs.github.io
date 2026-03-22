@@ -49,10 +49,6 @@ dotnet tool install -g Microsoft.OpenApi.Kiota
 kiota generate -l CSharp -d https://api.example.com/openapi.json -o ./Client -n MyApi
 ```
 
-## Conclusion
-
-*Content to be written*
-
 ---
 
 *Using Kiota or another API client generator? Let me know in the comments!*

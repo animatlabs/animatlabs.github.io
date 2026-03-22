@@ -1,7 +1,7 @@
 ---
 title: "gRPC in .NET: High-Performance Service Communication"
 excerpt: >-
-  "When REST isn't fast enough. Here's how I use gRPC for inter-service communication in .NET."
+  "When REST isn't fast enough: gRPC for inter-service communication in .NET."
 categories:
   - Technical
   - .NET
@@ -380,7 +380,7 @@ public class LoggingInterceptor : Interceptor
 }
 ```
 
-## Conclusion
+## gRPC for internal services
 
 gRPC excels at service-to-service communication where performance and type safety matter. The contract-first approach with Protobuf ensures clients and servers stay in sync, and native streaming support enables patterns that are awkward with REST.
 

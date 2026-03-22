@@ -105,10 +105,3 @@ TARGET: 1,500-1,800 words
 - Best practices from experience
 -->
 
-## Conclusion
-
-<!-- TODO: Summarize key takeaways:
-- Pattern matching as a powerful tool
-- When it improves code quality
-- Future considerations
--->

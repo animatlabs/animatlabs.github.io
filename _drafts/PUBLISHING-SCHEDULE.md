@@ -2,9 +2,9 @@
 
 **65+ drafts | Weekly on Mondays | Feb 2026 - May 2027**
 
-> **Local-First Approach:** All posts can be developed and tested locally with Docker. No Azure, AWS, or cloud subscriptions required. See `docker-compose.azure-local.yml` for the complete local development stack.
+> **Local-First Approach:** All posts can be developed and tested locally with Docker. No Azure, AWS, or cloud subscriptions required. Each playground project includes its own `docker-compose.yml` for any required infrastructure.
 
-> **Content Strategy:** Every post has a unique angle -- opinionated take, real benchmarks, library discovery, problem-solving narrative, or fun/visual content. No generic docs rewrites. Posts are organized in content chains where each post drives traffic to related posts.
+> **Content Strategy:** Every post has a unique angle (opinionated take, real benchmarks, library discovery, problem-solving narrative, or fun/visual content). No generic docs rewrites. Posts are organized in content chains where each post drives traffic to related posts.
 
 ---
 
@@ -41,21 +41,20 @@ Posts are ordered by content chains: each post links to its neighbors. Alternate
 
 | Date | Post | Type | Chain | Deps |
 |------|------|------|-------|------|
-| ~~Apr 3~~ | ~~MassTransit Saga + WorkflowForge Compensation~~ | ~~MOVED to Mar 16 -- PUBLISHED~~ | | |
-| Apr 6 | Structured Logging with Serilog: The Production Setup | Production | Chain B (Production Stack) | None |
-| Apr 10 | Why .NET Monitoring Is Not Optional in Production | Production | Chain B (Production Stack) | Docker (Prometheus, Grafana, PostgreSQL) |
-| Apr 13 | Goodbye Swagger: Scalar is the .NET Default | Discovery | Standalone | None |
-| Apr 20 | CDC with Debezium: Real-Time Database Streaming (+ WF trigger) | CDC Pipeline | -- | Docker (Kafka, Debezium) |
-| Apr 27 | Kafka to Browser: SignalR Real-Time | Real-Time | -- | Docker (Kafka) |
+| Apr 6 | Serilog in Production: The Setup I Actually Use | Production | Chain B (Production Stack) | None |
+| Apr 10 | Health Checks and Metrics in .NET: A Production Setup | Production | Chain B (Production Stack) | Docker (Prometheus, Grafana, PostgreSQL) |
+| Apr 13 | Scalar Replaced Swagger in .NET 9. Here's the Migration | Discovery | Standalone | None |
+| Apr 20 | Event Sourcing Without the Framework: CDC + Debezium + .NET | CDC Pipeline | Chain D (CDC) | Docker (PG, Kafka, Debezium) |
+| Apr 27 | CDC Events to the Browser: Kafka + SignalR + SSE in .NET | Real-Time | Chain D (CDC) | Docker (Kafka) |
 
 ### May 2026
 
-| Date | Post | Type |
-|------|------|------|
-| May 4 | **Marten: PostgreSQL as Doc DB + Event Store** | NEW - Discovery |
-| May 11 | Wolverine: Replace MediatR + MassTransit (+ migration guide) | Discovery |
-| May 18 | FastEndpoints: Why I Stopped Using Minimal APIs | Discovery |
-| May 25 | AI Agent Pipeline with Rollback: Semantic Kernel + WorkflowForge | WF + AI (needs Ollama) |
+| Date | Post | Type | Playground | Status |
+|------|------|------|------------|--------|
+| May 4 | Transactional Outbox with CDC: Never Lose an Event | CDC Pipeline | `OutboxPattern/` (:5190) | READY |
+| May 4 | Marten: PostgreSQL as Doc DB + Event Store | Discovery | `MartenEventStore/` (:5192) | READY |
+| May 11 | I Replaced MediatR and MassTransit with Wolverine | Discovery | `WolverineMessaging/` (:5194) | READY |
+| May 18 | FastEndpoints: Why I Stopped Using Minimal APIs | Discovery | `FastEndpoints/` (:5196) | READY |
 
 ### June 2026
 
@@ -92,7 +91,7 @@ Posts are ordered by content chains: each post links to its neighbors. Alternate
 |------|------|------|
 | Sep 7 | **Supply Chain Security: SBOM & Package Signing** | NEW - Security |
 | Sep 14 | Chaos Engineering in .NET | SRE |
-| ~~Sep 21~~ | ~~Real-Time Dashboard: .NET + HTMX + SSE~~ | ~~CUT -- overlaps with Mar 23 HTMX+WF post~~ |
+| ~~Sep 21~~ | ~~Real-Time Dashboard: .NET + HTMX + SSE~~ | ~~CUT (overlaps with Mar 23 HTMX+WF post)~~ |
 | Sep 28 | BenchmarkDotNet Mastery | Performance |
 
 ### October 2026
@@ -126,7 +125,7 @@ These are Tier 2 posts for busy-week substitution or overflow scheduling.
 |------|------|------|
 | Dec 7 | Vertical Slice vs Clean Architecture: Hybrid Approach | Architecture |
 | Dec 14 | Minimal APIs vs FastEndpoints vs Controllers: When to Use Each | Comparison (replaces generic Minimal APIs) |
-| ~~Dec 21~~ | ~~Saga Pattern with Compensation~~ | ~~MERGED -- covered in MassTransit post~~ |
+| ~~Dec 21~~ | ~~Saga Pattern with Compensation~~ | ~~MERGED (covered in MassTransit post)~~ |
 | Dec 28 | EF Core 10 vs Dapper: Has the Gap Closed? | Comparison (fresh .NET 10 benchmarks) |
 
 ### January 2027
@@ -144,7 +143,7 @@ These are Tier 2 posts for busy-week substitution or overflow scheduling.
 |------|------|------|
 | Feb 1 | EF Core 10: What's New | Release Notes |
 | Feb 8 | .NET 10 Performance Improvements | Benchmarks |
-| ~~Feb 15~~ | ~~MassTransit in 2026~~ | ~~CUT -- covered in MassTransit+WF saga post~~ |
+| ~~Feb 15~~ | ~~MassTransit in 2026~~ | ~~CUT (covered in MassTransit+WF saga post)~~ |
 | Feb 22 | Zero Trust for Developers | Security |
 
 ### March 2027
@@ -198,12 +197,18 @@ Serilog → Monitoring
 - Post 1: .NET Resilience: When the Defaults Aren't Enough (+ WF extension integration)
 - Post 2: MassTransit saga with WF compensation (uses resilience concepts)
 
+### Chain D: CDC Pipeline
+CDC → Browser Streaming → Outbox
+- Post 1: Event Sourcing with CDC + Debezium + .NET (database WAL to typed domain events)
+- Post 2: CDC Events to the Browser: Kafka + SignalR + SSE (streams CDC events to browser)
+- Post 3: Transactional Outbox with CDC (reliable event publishing, May)
+
 ---
 
 ## Content Categories
 
 ### AI Series (4 posts) - DEFERRED until Ollama setup documented
-- Semantic Kernel + Ollama (local agents) -- playground exists, needs Ollama running
+- Semantic Kernel + Ollama (local agents, playground exists, needs Ollama running)
 - Microsoft.Extensions.AI (unified abstraction)
 - RAG in C# (retrieval-augmented generation)
 - AI Code Review Bot (50 lines)
@@ -281,11 +286,11 @@ Serilog → Monitoring
 
 ## Docker Services Available
 
-See `docker-compose.azure-local.yml` for:
+Internal infrastructure stack provides:
 - **Azure**: Azurite, Service Bus Emulator, SQL Server
 - **Data**: PostgreSQL (:5432)
 - **CDC**: Kafka, Zookeeper, Debezium, Kafka UI
-- **Messaging**: RabbitMQ (:5673 -- non-standard to avoid Service Bus conflict), Redis
+- **Messaging**: RabbitMQ (:5673, non-standard to avoid Service Bus conflict), Redis
 - **Observability**: Jaeger (:16686), Prometheus (:9090), Grafana (:3000)
 - **Security**: HashiCorp Vault
 

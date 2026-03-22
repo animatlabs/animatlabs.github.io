@@ -1,7 +1,7 @@
 ---
 title: ".NET Aspire: The New Cloud-Native Stack"
 excerpt: >-
-  "Aspire changes how we build distributed apps in .NET. Here's what it is and when to use it."
+  "Aspire changes how we build distributed apps in .NET. What it is and when it actually helps."
 categories:
   - Technical
   - .NET
@@ -73,10 +73,6 @@ REQUIRES: Hands-on experience with .NET Aspire, working examples
 <!-- TODO: Ideal use cases -->
 <!-- TODO: When NOT to use Aspire -->
 <!-- TODO: Comparison with alternatives -->
-
-## Conclusion
-
-**Aspire Resources:** [Official Docs](https://learn.microsoft.com/dotnet/aspire/){: .btn .btn--primary}
 
 ---
 

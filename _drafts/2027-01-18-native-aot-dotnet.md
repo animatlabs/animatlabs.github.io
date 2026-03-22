@@ -1,7 +1,7 @@
 ---
 title: "Native AOT in .NET: Faster Startup, Smaller Binaries"
 excerpt: >-
-  "Ahead-of-time compilation for .NET - here's when it makes sense and what you lose."
+  "Ahead-of-time compilation for .NET - when it makes sense and what you lose."
 categories:
   - Technical
   - .NET
@@ -78,7 +78,5 @@ dotnet publish -c Release -r win-x64
 | Microservices with cold starts | Yes |
 | Traditional web APIs | Maybe |
 | Reflection-heavy apps | No |
-
-## Conclusion
 
 **Benchmark code:** [GitHub](https://github.com/animat089/native-aot-benchmarks){: .btn .btn--primary}

@@ -55,10 +55,6 @@ public Task VerifyUserResponse()
 // Subsequent runs: compares output, fails if changed
 ```
 
-## Conclusion
-
-*Content to be written*
-
 ---
 
 *Using snapshot testing in your projects? Let me know in the comments!*

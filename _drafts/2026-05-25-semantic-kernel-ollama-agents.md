@@ -125,7 +125,7 @@ public sealed class ClassifyTopicStep(Kernel kernel) : WorkflowOperationBase
 }
 ```
 
-ResearchTopic and DraftContent follow the same pattern: call the LLM, store output, remove it in `RestoreAsync`. Here's ResearchTopic—it takes the topic and classification from the foundry, asks the LLM for bullet-point facts, and stores them. On compensate, it discards the research notes.
+ResearchTopic and DraftContent follow the same pattern: call the LLM, store output, remove it in `RestoreAsync`. ResearchTopic takes the topic and classification from the foundry, asks the LLM for bullet-point facts, and stores them. On compensate, it discards the research notes.
 
 ```csharp
 protected override async Task<object?> ForgeAsyncCore(...)

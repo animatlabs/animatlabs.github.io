@@ -104,10 +104,6 @@ Result: "Hello World!" (both edits preserved, no conflict)
 <!-- TODO: Good for: note apps, collaboration tools, mobile apps -->
 <!-- TODO: Not ideal for: real-time multiplayer, large data sets -->
 
-## Conclusion
-
-<!-- TODO: The future of user experience -->
-
 ---
 
 *Building offline-capable apps? Share your approach in the comments!*

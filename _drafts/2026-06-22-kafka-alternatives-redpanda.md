@@ -1,7 +1,7 @@
 ---
 title: "Kafka Alternatives: Redpanda, Pulsar, NATS Compared"
 excerpt: >-
-  "Kafka isn't the only game in town. Here's an honest comparison of Redpanda, Pulsar, and NATS for .NET developers."
+  "Kafka isn't the only game in town. An honest comparison of Redpanda, Pulsar, and NATS for .NET developers."
 categories:
   - Technical
   - .NET
@@ -94,7 +94,7 @@ using var producer = new ProducerBuilder<string, string>(config).Build();
 |---------|-------|----------|--------|------|
 | Kafka API Compatible | ✅ | ✅ | ❌ | ❌ |
 | No JVM | ❌ | ✅ | ❌ | ✅ |
-| No Zookeeper | ❌ | ✅ | ❌ | ✅ |
+| No Zookeeper | ✅ (KRaft) | ✅ | ❌ | ✅ |
 | Latency | Good | Better | Good | Best |
 | Multi-tenancy | Manual | Manual | Built-in | Manual |
 | Learning curve | High | Low (if Kafka) | High | Low |
@@ -105,10 +105,6 @@ using var producer = new ProducerBuilder<string, string>(config).Build();
 - **Redpanda**: Kafka compat with simpler ops
 - **Pulsar**: Multi-tenant, tiered storage needs
 - **NATS**: Simple messaging, low latency critical
-
-## Conclusion
-
-<!-- TODO: No single best choice, depends on requirements -->
 
 ---
 

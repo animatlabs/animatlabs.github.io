@@ -1,7 +1,7 @@
 ---
 title: "YARP: Build a Custom API Gateway in 50 Lines of C#"
 excerpt: >-
-  "YARP powers billions of daily requests at Microsoft. It's also the easiest way to build a custom API gateway in .NET. Here's a production-ready setup."
+  "YARP powers billions of daily requests at Microsoft. It's also the easiest way to build a custom API gateway in .NET. A production-ready setup walkthrough."
 categories:
   - Technical
   - .NET
@@ -408,7 +408,7 @@ services:
       - "5002:5002"
 ```
 
-## Conclusion
+## YARP as your default gateway
 
 YARP is the most underused tool in the .NET ecosystem. It's Microsoft's production reverse proxy, battle-tested at massive scale, and yet most teams reach for Nginx or write their own HTTP forwarding code.
 

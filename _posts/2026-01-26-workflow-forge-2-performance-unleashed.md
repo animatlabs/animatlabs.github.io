@@ -1,7 +1,7 @@
 ---
 title: "WorkflowForge 2.0: 540x Faster, New Extensions, and a Documentation Site"
 excerpt: >-
-  "We benchmarked WorkflowForge against Workflow Core and Elsa Workflows. The results? Up to 540x faster execution and 573x less memory. Here's the data."
+  "We benchmarked WorkflowForge against Workflow Core and Elsa Workflows. The results? Up to 540x faster execution and 573x less memory. The tables below have the full numbers."
 last_modified_at: 2026-01-26
 sitemap: true
 categories:
@@ -26,9 +26,11 @@ comments: true
 
 *"Your internal benchmarks look great, but how does WorkflowForge actually compare to other popular alternatives?"*
 
-Fair question. Internal metrics only tell half the story. So for version 2.0, I ran head-to-head benchmarks against the two most popular workflow frameworks in .NET—with BenchmarkDotNet, 50 iterations per scenario, and full transparency on methodology.
+Fair question. Internal metrics only tell half the story. So for version 2.0, I ran head-to-head benchmarks against the two most popular workflow frameworks in .NET, with BenchmarkDotNet, 50 iterations per scenario, and full transparency on methodology.
 
-The short answer: WorkflowForge operates in microseconds while the alternatives work in milliseconds. The gap widens as complexity increases.
+Honestly, I was curious whether the gap would shrink once I stopped cherry-picking scenarios.
+
+The short answer: WorkflowForge operates in microseconds while the alternatives work in milliseconds. The gap widens as complexity increases. Not even close on the heavy cases.
 
 Let me show you the numbers.
 
@@ -56,7 +58,7 @@ Let me show you the numbers.
 | State Machine (25 transitions) | 68μs | 20,624μs | 36,695μs | **303-540x** |
 | Parallel (16 ops) | 55μs | 2,437μs | 20,891μs | **44-380x** |
 
-The pattern is clear: simple workflows show 26-71x improvement, but state machines hit **540x faster**. Complexity amplifies the gap.
+The pattern is clear: simple workflows show 26-71x improvement, but state machines hit **540x faster**. Complexity amplifies the gap. Once you stack branching, persistence, and compensation on top of each other, the slower engines do not just get a little worse; they allocate and schedule their way into a completely different cost class than a library that keeps the hot path thin.
 
 ### Memory Allocation
 
@@ -170,7 +172,7 @@ Extensions now internalize third-party dependencies via ILRepack. Microsoft/Syst
 
 ## Breaking Changes
 
-Upgrading from 1.x? Here's what changed:
+Upgrading from 1.x? This changed:
 
 **Event interfaces split** (Single Responsibility Principle):
 - `IWorkflowEvents` → `IWorkflowLifecycleEvents`, `IOperationLifecycleEvents`, `ICompensationLifecycleEvents`
@@ -226,9 +228,9 @@ await smith.ForgeAsync(workflow);
 
 ## The Bottom Line
 
-WorkflowForge 2.0 isn't just about claiming performance—it's about proving it. The benchmarks are reproducible, the methodology is documented, and the code is open source.
+WorkflowForge 2.0 isn't just about claiming performance. It's about proving it. The benchmarks are reproducible, the methodology is documented, and the code is open source.
 
-If workflow performance matters for your .NET application—high-throughput processing, real-time orchestration, microservice coordination—run your own benchmarks. The numbers speak for themselves.
+If workflow performance matters for your .NET application (high-throughput processing, real-time orchestration, microservice coordination), run your own benchmarks. The numbers speak for themselves. I think that's the only way to trust a claim this loud.
 
 **Questions?** → [Open an Issue](https://github.com/animatlabs/workflow-forge/issues)
 

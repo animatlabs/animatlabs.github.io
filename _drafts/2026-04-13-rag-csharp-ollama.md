@@ -53,10 +53,6 @@ User Query → Embedding → Similarity Search → Context + LLM → Answer
 
 *Content to be written*
 
-## Conclusion
-
-*Content to be written*
-
 ---
 
 *Building something with RAG in .NET? Let me know in the comments!*

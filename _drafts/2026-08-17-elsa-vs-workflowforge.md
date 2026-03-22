@@ -1,7 +1,7 @@
 ---
 title: "Elsa Workflows 3.0 vs WorkflowForge: An Honest Comparison"
 excerpt: >-
-  "Two .NET workflow libraries, different philosophies. Here's an honest comparison from the creator of WorkflowForge."
+  "Two .NET workflow libraries, different philosophies. An honest comparison with real code."
 categories:
   - Technical
   - .NET
@@ -54,10 +54,6 @@ PROMOTION STRATEGY: Post to Reddit r/dotnet, r/csharp. Comparisons get high enga
 | Learning Curve | Moderate | Low |
 
 ## When to Use Each
-
-*Content to be written*
-
-## Conclusion
 
 *Content to be written*
 

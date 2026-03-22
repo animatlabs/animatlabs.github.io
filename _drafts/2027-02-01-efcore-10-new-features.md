@@ -1,7 +1,7 @@
 ---
 title: "EF Core 8: New Features You Should Actually Use"
 excerpt: >-
-  "JSON columns, bulk updates, raw SQL improvements - here are the EF Core 8 features worth adopting."
+  "JSON columns, bulk updates, raw SQL improvements - the EF Core 8 features worth adopting."
 categories:
   - Technical
   - .NET
@@ -213,13 +213,6 @@ Share your personal experience:
 2. **JSON Columns** - Evaluate case-by-case, great for flexible schemas
 3. **Raw SQL Improvements** - Use when you need them, but prefer LINQ when possible
 4. **Lazy Loading Improvements** - Use sparingly, prefer explicit loading
-
-## Conclusion
-
-<!-- 
-TODO: Summarize with your personal recommendation
-What's your takeaway? What should readers do next?
--->
 
 **You can access the example code from my** [GitHub Repo](https://github.com/animat089/playground){: .btn .btn--primary}
 

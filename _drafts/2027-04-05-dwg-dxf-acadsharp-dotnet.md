@@ -390,7 +390,7 @@ This is part 2 of the **Geometry & CAD in C#** series:
 3. [Interactive Geometry Viewer with Blazor WASM](/technical/.net/.net-core/blazor-wasm-geometry-viewer/) -- browser-based visualization
 4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/) -- geometric algorithms
 
-## Conclusion
+## CAD files without AutoCAD
 
 ACadSharp proves you don't need AutoCAD to work with CAD files. For data extraction, automated reporting, format conversion, or building custom viewers, it's a capable, free, and actively maintained library.
 

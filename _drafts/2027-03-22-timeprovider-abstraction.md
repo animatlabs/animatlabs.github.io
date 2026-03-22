@@ -80,8 +80,6 @@ ORIGINALITY CHECKLIST:
 // TODO: Show test updates
 ```
 
-## Conclusion
-
 ---
 
 *Migrated to TimeProvider? Share your experience!*

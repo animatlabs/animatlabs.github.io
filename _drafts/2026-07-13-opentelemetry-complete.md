@@ -1,7 +1,7 @@
 ---
 title: "OpenTelemetry: The Complete .NET Guide"
 excerpt: >-
-  "Traces, metrics, and logs unified. OpenTelemetry is the observability standard—here's how to implement it in .NET."
+  "Traces, metrics, and logs unified. OpenTelemetry is the observability standard—how to implement it in .NET."
 categories:
   - Technical
   - .NET
@@ -149,10 +149,6 @@ jaeger:
 ```csharp
 // TODO: OTLP exporter configuration
 ```
-
-## Conclusion
-
-<!-- TODO: OpenTelemetry is the future of observability -->
 
 ---
 

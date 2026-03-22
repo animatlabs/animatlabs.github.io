@@ -1,7 +1,7 @@
 ---
 title: "Chaos Engineering for .NET: Finding Failures Before Production Does"
 excerpt: >-
-  "Break things intentionally to build resilience. Here's how to do chaos engineering in .NET."
+  "Break things intentionally to build resilience. Chaos engineering in .NET without burning down production."
 categories:
   - Technical
   - .NET
@@ -104,15 +104,6 @@ TARGET: 1,500-1,800 words
 - Monitoring and alerting during chaos experiments
 - How to stop chaos experiments quickly
 - Documenting chaos experiments and findings
--->
-
-## Conclusion
-
-<!-- TODO: Summarize key takeaways:
-- Chaos engineering as a tool for building resilience
-- Start small and gradually increase complexity
-- Always have safety mechanisms in place
-- Use chaos engineering to validate your resilience patterns
 -->
 
 ---

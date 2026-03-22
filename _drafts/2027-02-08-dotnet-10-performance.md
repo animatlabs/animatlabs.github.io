@@ -73,8 +73,6 @@ REQUIRES: Your actual benchmark data comparing .NET 8 vs .NET 9
 
 <!-- TODO: Your recommendations for upgrading, breaking changes to watch for, compatibility notes -->
 
-## Conclusion
-
 **Benchmark code:** [GitHub](https://github.com/animat089/dotnet-benchmarks){: .btn .btn--primary}
 
 ---

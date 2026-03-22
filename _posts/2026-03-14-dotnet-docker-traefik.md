@@ -1,7 +1,7 @@
 ---
 title: "Run .NET Behind Traefik: Fix Port Conflicts Forever"
 excerpt: >-
-  "Tired of port conflicts when running multiple .NET services? Here's how I use Traefik to route everything through port 80/443."
+  "I kept a spreadsheet of port numbers. Five services, Redis, PostgreSQL. Someone would clone the repo and crash on port 5000. Traefik killed that problem."
 categories:
   - Technical
   - .NET
@@ -14,7 +14,7 @@ tags:
   - DevOps
   - Reverse Proxy
 author: animat089
-last_modified_at: 2026-03-14
+last_modified_at: 2026-03-21
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
@@ -23,19 +23,17 @@ comments: true
 
 ## I Kept a Port Spreadsheet
 
-Five .NET services, a React frontend, Redis, and PostgreSQL. I had a text file tracking which port belonged to which. Service A on 5000, Service B on 5001, the frontend on 3000.
+Five .NET services, a React frontend, Redis, and PostgreSQL. I had a text file. Service A on 5000. Service B on 5001. Frontend on 3000.
 
-Someone would clone the repo, run `dotnet run`, and Service A would crash because their machine already had something on 5000.
+Someone would clone the repo, run `dotnet run`, and Service A would crash because their machine already had something on 5000. Every. Single. Time.
 
-I added instructions to the README: "Change the port in launchSettings.json." Nobody read them. I changed the ports. Someone else changed them back.
+I added instructions to the README: "Change the port in launchSettings.json." Nobody read them. I changed the ports. Someone else changed them back. I gave up.
 
-Traefik fixed all of this. Every service runs on the same internal port. Routing happens by hostname. Here's the setup I use.
+Traefik fixed all of this. Every service runs on the same internal port, and routing happens by hostname instead of port number.
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/TraefikDotNet){: .btn .btn--primary}
 
 ## The docker-compose
-
-This is the full thing. Traefik plus two .NET services:
 
 ```yaml
 services:
@@ -79,16 +77,18 @@ networks:
     driver: bridge
 ```
 
-`docker-compose up --build` and you get:
-- `http://api.localhost` -- API
-- `http://web.localhost` -- Web frontend
-- `http://localhost:8080` -- Traefik dashboard
+That's the full thing. Traefik plus two .NET services. `docker-compose up --build` and you get:
+- `http://api.localhost` (API)
+- `http://web.localhost` (Web frontend)
+- `http://localhost:8080` (Traefik dashboard)
 
-Neither service exposes a port to the host. Traefik does all external routing. Third service? Add another block with a different hostname. Traefik picks it up automatically.
+Neither service publishes a port to the host. Third service? Add another block with a different hostname. Traefik picks it up. You don't touch any ports.
+
+All images are free and open-source (Traefik is MIT). The compose commands work with Docker, Podman, or Rancher Desktop.
 
 ## The Dockerfile
 
-Every .NET service uses the same pattern. Here's `ApiService/Dockerfile`:
+Both services share the same Dockerfile pattern. `ApiService/Dockerfile`:
 
 ```dockerfile
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
@@ -111,32 +111,25 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ApiService.dll"]
 ```
 
-The `WebService/Dockerfile` is identical -- swap `ApiService` for `WebService`. Both expose 8080. Multi-stage keeps the image small -- the final layer is runtime-only, no SDK.
+`WebService/Dockerfile` is identical except you swap `ApiService` for `WebService`. Both expose 8080. Multi-stage build keeps the final image small because the SDK never ships to the last layer.
 
 ## How Traefik Routes
 
-Three concepts.
+Three concepts. That's it.
 
-**Entrypoints** are the ports Traefik listens on. We have one: `web` on port 80.
+**Entrypoints** are the ports Traefik listens on. We defined `web` on port 80.
 
-**Routers** match incoming requests to a backend. Each router has a rule. Ours is `Host(`api.localhost`)` -- match the Host header.
+**Routers** match incoming requests. The rule `Host(`api.localhost`)` matches on the HTTP Host header.
 
-**Services** are the backends. The `loadbalancer.server.port` label tells Traefik which port inside the container to forward to.
+**Services** are backends. `loadbalancer.server.port=8080` tells Traefik which port *inside the container* to forward to.
 
-When you request `http://api.localhost/orders`:
+So when you hit `http://api.localhost/orders`, the request goes to Traefik on port 80, the Host header matches `api.localhost`, and Traefik forwards to `api-service:8080` internally. Response comes back the same way.
 
-1. Request hits Traefik on port 80
-2. Host header says `api.localhost`
-3. Router matches, forwards to `api-service:8080`
-4. Response comes back through Traefik
-
-No port published on the host. No coordination between services. Add another service, give it a hostname, done.
-
-Rules can combine matchers: `Host(`api.localhost`) && PathPrefix(`/v2`)`. Useful when you need path-based routing on top of hostname routing.
+No port published on the host. No coordination spreadsheet. You can also combine matchers if you need path-based routing: `Host(`api.localhost`) && PathPrefix(`/v2`)`.
 
 ## HTTPS With Let's Encrypt
 
-For staging or production, Traefik handles certs automatically:
+For staging or production, Traefik handles certs. You don't install certbot, you don't set up cron jobs, you don't think about renewal.
 
 ```yaml
 services:
@@ -157,7 +150,7 @@ services:
       - ./letsencrypt:/letsencrypt
 ```
 
-Service labels change slightly:
+And the service labels:
 
 ```yaml
 labels:
@@ -166,17 +159,17 @@ labels:
   - "traefik.http.routers.api.tls.certresolver=le"
 ```
 
-Traefik issues the cert, renews it before expiry, and redirects HTTP to HTTPS. I don't think about certificates anymore.
+Issues the cert. Renews before expiry. Redirects HTTP to HTTPS. I set this up once six months ago and haven't touched it since.
 
 ## Debugging
 
-Most Traefik problems are one of three things.
+Most Traefik problems fall into three buckets.
 
-**502 Bad Gateway.** The container crashed or the port label is wrong. Check `docker ps` -- is the container running? Check the Traefik dashboard at `localhost:8080` -- is the router green or red? Most common cause: `loadbalancer.server.port` says 5000 but the container runs on 8080.
+**502 Bad Gateway.** Either the container crashed or `loadbalancer.server.port` is wrong. I've burned time on this one more than I'd like to admit. Check `docker ps` first. Is the container actually running? Then check the Traefik dashboard at `localhost:8080` and see if the router shows green or red. Nine times out of ten, the port label says 5000 but the app listens on 8080.
 
-**404 on every route.** Missing `traefik.enable=true`. Traefik defaults to not exposing containers (`exposedbydefault=false`), so you need the label on each service.
+**404 on everything.** You forgot `traefik.enable=true`. Because we set `exposedbydefault=false` (which you should), every service needs that label explicitly. Easy to miss, annoying to debug.
 
-**Backtick problem.** The Host rule needs backticks, not quotes:
+**Backtick vs quote.** The Host rule needs backticks, not single quotes:
 
 ```yaml
 # Broken
@@ -186,25 +179,21 @@ Most Traefik problems are one of three things.
 - "traefik.http.routers.api.rule=Host(`api.localhost`)"
 ```
 
-This one bites everyone once.
+This gets everyone once. I wish the error message were better.
 
-**Container-to-container calls.** Containers on the same Docker network reach each other by service name:
+**Container-to-container calls.** If service A needs to call service B, use the service name from docker-compose directly:
 
 ```csharp
 var client = new HttpClient { BaseAddress = new Uri("http://api-service:8080") };
 ```
 
-Internal traffic doesn't go through Traefik. Use the service name from docker-compose as the hostname.
+That traffic stays inside the Docker network. It doesn't go through Traefik.
 
-## My Local Dev Setup
+## How I Actually Use It
 
-I don't run everything in Docker during development. Too slow for hot reload.
+I don't run everything in Docker during development. Too slow for hot reload. What I do: start Traefik once with `docker-compose up -d traefik`, then run individual services with `dotnet watch`. When I need the full containerized setup (integration testing, demo), `docker-compose up --build` brings everything up.
 
-My workflow: start Traefik once with `docker-compose up -d traefik`. Run individual services with `dotnet watch`. When I need the full containerized setup for integration testing, `docker-compose up --build` and everything comes up.
-
-For staging, I add TLS certs and health checks. For production, I add rate limiting and access logs. Same Traefik config, different labels.
-
-## Run It
+For staging I add TLS and health checks. For production, rate limiting and access logs. Same config, different labels. I haven't changed the core docker-compose in months.
 
 The playground has two .NET services behind Traefik:
 
@@ -219,4 +208,15 @@ Open `http://api.localhost`, `http://web.localhost`, and `http://localhost:8080`
 
 ---
 
-*How do you handle port management across multiple services? Still using a spreadsheet?*
+<!-- LINKEDIN PROMO
+
+I kept a text file tracking which port belonged to which service. Five .NET services, React, Redis, PostgreSQL. Someone would clone the repo, run dotnet run, and crash because port 5000 was already taken.
+
+Traefik solved this. Every service runs on the same internal port. Routing happens by hostname (api.localhost, web.localhost). Docker labels handle all the configuration. No port coordination, no spreadsheet.
+
+The setup: one docker-compose with Traefik v3, two .NET 9 services, hostname-based routing. HTTPS with Let's Encrypt is a few more labels. Debugging section covers the three problems everyone hits (502s, 404s, and the backtick gotcha).
+
+Working playground with two .NET services: [link]
+
+#dotnet #docker #traefik #devops
+-->

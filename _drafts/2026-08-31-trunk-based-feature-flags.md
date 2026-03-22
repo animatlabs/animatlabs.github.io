@@ -129,10 +129,6 @@ public IActionResult Dashboard()
 // TODO: Test both paths, override flags in tests
 ```
 
-## Conclusion
-
-<!-- TODO: Deploy anytime, release when ready -->
-
 ---
 
 *Using feature flags in your deployment strategy? Share your experience in the comments!*
