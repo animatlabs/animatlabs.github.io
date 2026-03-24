@@ -65,7 +65,7 @@ Orders over $500 simulate a payment gateway timeout. When that happens, Workflow
 
 ## This Is a Single-Service Demo
 
-Important: this demo runs in **one process** (OrderService). There are no separate Inventory, Payments, or Shipping services.
+This demo runs in **one process** (OrderService). No separate Inventory, Payments, or Shipping services.
 
 The step-level events (ReserveStock, ChargePayment, CreateShipment) are published to the bus but **no consumers** handle them. They're fire-and-forget; the workflow steps do the work directly and publish for visibility or future use.
 
@@ -275,18 +275,3 @@ dotnet run --project AnimatLabs.WorkflowForge.MassTransitSaga.OrderService
 The app auto-submits two orders. Watch the logs for the $999 failure and the compensation cascade running in reverse.
 
 {% include cta-workflowforge.html %}
-
----
-
-<!-- LINKEDIN PROMO
-
-Saga pattern tutorials love showing the happy path. The compensation code (what actually runs when payment fails and you need to release stock, issue refunds, and undo previous steps) usually gets a hand-wave.
-
-Built a working demo: MassTransit handles message routing, WorkflowForge 2.1.1 handles the rollback. Single-service setup with InMemory transport (swap to RabbitMQ with one line change). Orders over $500 simulate a payment gateway timeout, triggering reverse compensation.
-
-The key: RestoreAsync methods on each workflow step. ChargePaymentStep checks TransactionId before refunding. If payment never succeeded, nothing to reverse. That's the kind of detail that breaks production sagas.
-
-Working code: [link]
-
-#dotnet #masstransit #saga #workflowforge
--->

@@ -330,7 +330,7 @@ error: Response status code does not indicate success:
 
 Nine of thirteen packages failed. The four that succeeded happened not to have the `DebugType=embedded` override.
 
-The fix was straightforward: remove `DebugType=embedded` from every individual `.csproj` and let all projects inherit `portable` from `Directory.Build.props`. One property, nine projects, fourteen files.
+Fix: remove `DebugType=embedded` from every individual `.csproj` and let all projects inherit `portable` from `Directory.Build.props`. One property, nine projects, fourteen files.
 
 The consequence was not. NuGet.org does not allow re-pushing the same package version. The thirteen `.nupkg` files had already been accepted. So we had to bump every project to 2.1.1, update version references across documentation and CI, add a CHANGELOG entry, and deprecate the thirteen partially-published 2.1.0 packages individually.
 

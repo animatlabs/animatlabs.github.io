@@ -388,4 +388,4 @@ One long rant worth the pixels: if your team keeps copy-pasting the same mapper 
 
 ---
 
-*Building something interesting with source generators? Found a use case I didn't cover? Let me know in the comments!*
+*If you've built a generator for a different pattern, I'd be curious to see it.*

@@ -234,20 +234,3 @@ The patterns above are what I've settled on after running these in production fo
 The snippets above are standalone. Copy them into any .NET 8+ project with `dotnet add package Polly` (or `Microsoft.Extensions.Http.Resilience` for the `IHttpClientFactory` integration). For WorkflowForge, add `WorkflowForge.Extensions.Resilience.Polly`.
 
 {% include cta-workflowforge.html %}
-
----
-
-<!-- LINKEDIN PROMO
-
-Most .NET apps I've worked on had zero resilience until something broke in production. No retries, no circuit breakers, no timeouts.
-
-Polly v8 changed how I approach this. One line (AddStandardResilienceHandler) covers 80% of HTTP clients with sensible defaults. For the other 20% like payment gateways, strict SLAs, and non-HTTP calls, custom pipelines with per-client configuration.
-
-Walked through the setup I actually run in production: retries with jitter to avoid thundering herd, circuit breakers with MinimumThroughput (the setting most people miss), two-level timeouts, and how to compose them. Also covered WorkflowForge's Polly extension for workflow-level resilience.
-
-All code is inline and copy-pasteable into any .NET 8+ project.
-
-Full post: [link]
-
-#dotnet #polly #resilience #microservices
--->

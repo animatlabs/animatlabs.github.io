@@ -261,20 +261,3 @@ Open `http://localhost:5075`. Two buttons: one happy path, one failure. On failu
 | Playground | [WorkflowForge/HtmxDashboard](https://github.com/animat089/playground/tree/main/WorkflowForge/AnimatLabs.WorkflowForge.HtmxDashboard) |
 
 {% include cta-workflowforge.html %}
-
----
-
-<!-- LINKEDIN PROMO
-
-Needed a workflow status page. Button, steps, success/rollback. React + WebSockets was overkill for one-way server-to-client data.
-
-HTMX's SSE extension opens an EventSource from HTML attributes. Server sends HTML fragments, HTMX swaps them in. Paired it with WorkflowForge 2.1.1: five-step order workflow, automatic compensation on failure.
-
-The whole thing works without a single script tag. Channels bridge WorkflowForge events to the SSE stream. When ChargePayment fails, ReserveStock and ValidateOrder compensate in reverse, streamed live to the browser.
-
-Working playground with two buttons: happy path and failure path.
-
-Full post: [link]
-
-#dotnet #htmx #workflowforge #sse
--->

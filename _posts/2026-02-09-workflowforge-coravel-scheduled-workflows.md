@@ -608,6 +608,6 @@ Each tool does one thing well. No overlap, no conflict.
 
 ---
 
-*Using scheduled workflows in your .NET apps? Tried WorkflowForge? Let me know in the comments!*
+*If you've tried a different scheduling approach with WorkflowForge, I'd be curious how it compared.*
 
 {% include cta-workflowforge.html %}

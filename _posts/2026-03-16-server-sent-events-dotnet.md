@@ -1,7 +1,7 @@
 ---
 title: "Real-Time Events in C# with Server-Sent Events"
 excerpt: >-
-  "SSE gives you real-time server-to-client streaming in 15 lines of C#. No SignalR hub, no JavaScript library, no WebSocket handshake."
+  "Server-Sent Events gives you real-time server-to-client streaming in 15 lines of C#. No SignalR hub, no JavaScript library, no WebSocket handshake."
 categories:
   - Technical
   - .NET
@@ -67,7 +67,7 @@ static async IAsyncEnumerable<DateTime> StreamClock(
 }
 ```
 
-`IAsyncEnumerable` keeps the stream lazy. Each tick becomes a `data:` line, the `\n\n` is the event boundary. Important: flush after each write or the client won't see anything until the buffer fills.
+`IAsyncEnumerable` keeps the stream lazy. Each tick becomes a `data:` line, `\n\n` ends the event. Flush after each write or the client sees nothing until the buffer fills (I forgot this the first time and stared at a blank page for five minutes).
 
 On the browser side, `EventSource` is native. No library:
 
@@ -121,7 +121,7 @@ One connection, multiple handlers.
 
 ## Reconnection with Event IDs
 
-This is the part that makes SSE actually production-ready. The server sends `id:` with each event. When the connection drops, the browser automatically reconnects and sends `Last-Event-ID` in the request header so the server can pick up where it left off.
+The server sends `id:` with each event. Connection drops, the browser reconnects and sends `Last-Event-ID` in the header. Server picks up where it left off. No custom retry logic.
 
 {% raw %}
 ```csharp
@@ -157,7 +157,7 @@ app.MapGet("/events/metrics", async (HttpContext ctx) =>
 ```
 {% endraw %}
 
-The client code is straightforward. JSON in `data:` is a string, so you parse it:
+Client side is just JSON parsing:
 
 ```javascript
 const metrics = new EventSource('/events/metrics');
@@ -180,9 +180,9 @@ The browser handles the reconnection loop and sends `Last-Event-ID` automaticall
 | You want built-in reconnect | You need rooms, presence | You need binary frames |
 | HTTP/2 multiplexing is fine | You're already in the ecosystem | You're building a game or trading feed |
 
-SSE wins for dashboards, notifications, live logs, progress bars. SignalR wins for chat, collaborative editing, anything with lots of client→server traffic. WebSockets win when you need low-level control or binary data.
+Dashboards, notifications, live logs, progress bars? Server-Sent Events. Chat, collaborative editing, anything where clients push back heavily? SignalR. If you need binary frames or a custom wire protocol, drop to WebSockets.
 
-No tech is wrong. Pick by direction of data flow and what your infra allows.
+Really comes down to data direction and what your infra team will allow through the proxy.
 
 ## Gotchas
 
@@ -204,22 +204,3 @@ No NuGet packages, no hub classes: just a GET endpoint and a loop. Full code and
 Follow-up piece: SSE plus HTMX for a workflow dashboard where the server pushes HTML fragments. No custom JavaScript. I wanted that article to exist mostly so I'd stop re-explaining EventSource to myself every six months.
 
 ---
-
-<!-- LINKEDIN PROMO
-
-Added SignalR to a project that only needed server-to-client updates. 200 lines of hub code, connection management, a JS dependency, for a dashboard that never sends data back.
-
-SSE does it in 15 lines. HTTP, text/event-stream content type, keep the connection open, write data lines. The browser's EventSource API handles parsing and automatic reconnection.
-
-Walked through three patterns in C#:
-- Simple stream (IAsyncEnumerable clock)
-- Named events (multiple event types on one connection)
-- Event IDs (reconnection without losing your place)
-
-No NuGet packages. No hub abstractions. Native browser API. Works behind corporate proxies where WebSockets sometimes don't.
-
-Working demo: [link]
-
-#dotnet #sse #realtime #aspnetcore
--->
-
