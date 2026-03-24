@@ -28,7 +28,7 @@ HTMX has an SSE extension that opens an `EventSource` from attributes. The serve
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/WorkflowForge/AnimatLabs.WorkflowForge.HtmxDashboard){: .btn .btn--primary}
 
-> If you're new to SSE in .NET, I wrote about the [three SSE patterns from scratch](/2026/03/16/server-sent-events-dotnet/) in the previous post.
+> If you're new to SSE in .NET, I wrote about the [three SSE patterns from scratch](https://animatlabs.com/technical/.net/server-sent-events-dotnet/) in the previous post.
 
 ## The Flow
 
