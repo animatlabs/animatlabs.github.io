@@ -163,7 +163,7 @@ Both engines ship updates. WorkflowForge is faster; Workflow Core has more persi
 |----------|---------------|---------------|
 | GitHub | [animatlabs/workflow-forge](https://github.com/animatlabs/workflow-forge) | [danielgerlag/workflow-core](https://github.com/danielgerlag/workflow-core) |
 | NuGet | [WorkflowForge](https://www.nuget.org/packages/WorkflowForge) | [WorkflowCore](https://www.nuget.org/packages/WorkflowCore) |
-| Docs | [workflow-forge.animatlabs.com](https://workflow-forge.animatlabs.com) | [GitHub Wiki](https://github.com/danielgerlag/workflow-core/wiki) |
+| Docs | [animatlabs.com/workflow-forge](https://animatlabs.com/workflow-forge) | [GitHub Wiki](https://github.com/danielgerlag/workflow-core/wiki) |
 
 ---
 

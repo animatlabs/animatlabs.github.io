@@ -126,7 +126,7 @@ WorkflowForge builds inline, no class per workflow. Elsa needs a class that inhe
 |----------|---------------|------|
 | GitHub | [animatlabs/workflow-forge](https://github.com/animatlabs/workflow-forge) | [elsa-workflows/elsa-core](https://github.com/elsa-workflows/elsa-core) |
 | NuGet | [WorkflowForge](https://www.nuget.org/packages/WorkflowForge) | [Elsa](https://www.nuget.org/packages/Elsa) |
-| Docs | [workflow-forge.animatlabs.com](https://workflow-forge.animatlabs.com) | [v3.elsa-workflows.io](https://v3.elsa-workflows.io) |
+| Docs | [animatlabs.com/workflow-forge](https://animatlabs.com/workflow-forge) | [v3.elsa-workflows.io](https://v3.elsa-workflows.io) |
 
 ---
 

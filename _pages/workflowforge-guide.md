@@ -56,4 +56,4 @@ How WorkflowForge compares to the other .NET workflow engines.
 |----------|------|
 | GitHub | [animatlabs/workflow-forge](https://github.com/animatlabs/workflow-forge) |
 | NuGet | [WorkflowForge on NuGet](https://www.nuget.org/packages/WorkflowForge) |
-| Documentation | [workflow-forge.animatlabs.com](https://workflow-forge.animatlabs.com) |
+| Documentation | [animatlabs.com/workflow-forge](https://animatlabs.com/workflow-forge) |
