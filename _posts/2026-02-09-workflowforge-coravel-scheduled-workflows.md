@@ -210,7 +210,6 @@ public sealed class FetchUnprocessedOrdersOperation : WorkflowOperationBase
     }
 
     public override string Name => "FetchUnprocessedOrders";
-    public override bool SupportsRestore => true;
 
     protected override async Task<object?> ForgeAsyncCore(
         object? inputData, IWorkflowFoundry foundry, CancellationToken cancellationToken)
@@ -251,7 +250,6 @@ public sealed class ProcessPaymentsOperation : WorkflowOperationBase
     }
 
     public override string Name => "ProcessPayments";
-    public override bool SupportsRestore => true;
 
     protected override async Task<object?> ForgeAsyncCore(
         object? inputData, IWorkflowFoundry foundry, CancellationToken cancellationToken)
@@ -307,7 +305,6 @@ public sealed class UpdateInventoryOperation : WorkflowOperationBase
     }
 
     public override string Name => "UpdateInventory";
-    public override bool SupportsRestore => true;
 
     protected override async Task<object?> ForgeAsyncCore(
         object? inputData, IWorkflowFoundry foundry, CancellationToken cancellationToken)
@@ -354,7 +351,6 @@ This operation exists purely to demonstrate compensation. When `DemoFailure` is 
 public sealed class MaybeFailOperation : WorkflowOperationBase
 {
     public override string Name => "MaybeFail";
-    public override bool SupportsRestore => true;
 
     protected override Task<object?> ForgeAsyncCore(
         object? inputData, IWorkflowFoundry foundry, CancellationToken cancellationToken)
@@ -391,7 +387,6 @@ public sealed class SendConfirmationEmailsOperation : WorkflowOperationBase
     }
 
     public override string Name => "SendConfirmationEmails";
-    public override bool SupportsRestore => true;
 
     protected override async Task<object?> ForgeAsyncCore(
         object? inputData, IWorkflowFoundry foundry, CancellationToken cancellationToken)
@@ -417,7 +412,7 @@ public sealed class SendConfirmationEmailsOperation : WorkflowOperationBase
 }
 ```
 
-> **Why do non-mutating operations set `SupportsRestore = true`?** WorkflowForge only compensates when the workflow reports it supports restore, and that's computed from all operations. If any operation says `false`, the entire workflow skips compensation. So even no-op restore implementations must opt in to enable the saga for the operations that really need it.
+> **Why do non-mutating operations override `RestoreAsync`?** WorkflowForge triggers compensation when any operation that overrides `RestoreAsync` has completed before a failure. Even no-op restore implementations (like `MaybeFail` and `SendConfirmationEmails`) should override it so the engine knows they participated in the workflow's compensation chain.
 
 ---
 
