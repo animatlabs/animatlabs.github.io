@@ -1,7 +1,7 @@
 ---
 title: "n8n vs Code: When to Build vs Buy Workflow Automation"
 excerpt: >-
-  "n8n has 60k+ GitHub stars. But should you use a visual workflow tool or build your own? A framework for deciding."
+  n8n has 60k+ GitHub stars. But should you use a visual workflow tool or build your own? A framework for deciding.
 categories:
   - Technical
   - Architecture

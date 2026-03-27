@@ -1,7 +1,7 @@
 ---
 title: "Build a Real-Time Dashboard: .NET + HTMX + Server-Sent Events"
 excerpt: >-
-  "No React. No SignalR. Just HTMX and SSE for a real-time dashboard that updates live. Simple, fast, and surprisingly powerful."
+  No React. No SignalR. Just HTMX and SSE for a real-time dashboard that updates live. Simple, fast, and surprisingly powerful.
 categories:
   - Technical
   - .NET

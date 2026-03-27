@@ -1,7 +1,7 @@
 ---
-title: "WorkflowForge: A forge for workflows"
+title: "WorkflowForge: Lightweight .NET Workflow Engine with Zero Dependencies"
 excerpt: >-
-  "Tired of workflow frameworks that consume memory and slow down applications? WorkflowForge delivers microsecond operations with zero core dependencies, proven concurrency scaling, and a developer experience built for code, not drag-and-drop designers. Now available on NuGet with production-ready extensions."
+  WorkflowForge delivers microsecond workflow operations with zero core dependencies, proven concurrency scaling, and a code-first developer experience. Available on NuGet with production-ready extensions.
 categories:
   - Technical
   - .NET  
@@ -21,6 +21,13 @@ sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
+faq:
+  - q: "What is WorkflowForge?"
+    a: "A code-first .NET workflow library: zero dependencies in the core package, operations measured in microseconds on the benchmarks I ran. Grab it on NuGet."
+  - q: "How does WorkflowForge compare to Elsa Workflows?"
+    a: "On our BenchmarkDotNet runs, WorkflowForge was dramatically faster and lighter than Elsa—think orders of magnitude, not a few percent. Elsa leans visual designer; WorkflowForge is for defining flows in C#. Pick based on that, not the headline numbers alone."
+  - q: "Does WorkflowForge support compensation and rollback?"
+    a: "Yes—attach compensations to steps and they run in reverse if something fails. That's the saga-style rollback without bolting on another orchestrator."
 ---
 
 ## TL;DR: WorkflowForge in 30 Seconds
@@ -234,7 +241,7 @@ dotnet run
 - **Samples 5-8**: Control flow and error handling strategies
 - **Samples 9-12**: Configuration management and middleware
 - **Samples 13-17**: Extension integration and observability
-- **Sample 18**: Comprehensive production scenario
+- **Sample 18**: Full production scenario
 
 Each example builds progressively with clear explanations and real-time output.
 
@@ -260,7 +267,7 @@ Each example builds progressively with clear explanations and real-time output.
 
 ### Developer Experience
 - Fluent API designed for code completion
-- Comprehensive documentation with step-by-step guides
+- Full documentation with step-by-step guides
 - 18 progressive examples covering common scenarios
 - Industrial metaphor that maps to real-world processes
 
@@ -321,3 +328,12 @@ dotnet add package WorkflowForge
 **WorkflowForge** - *Industrial strength workflows for modern .NET*
 
 {% include cta-workflowforge.html %}
+
+---
+
+## Related Reading
+
+- [WorkflowForge 2.0 benchmarks](/technical/.net/workflow/workflow-forge-2-performance-unleashed/)
+- [WorkflowForge with Coravel](/technical/.net/workflow/workflowforge-coravel-scheduled-workflows/)
+- [MassTransit saga with WorkflowForge](/technical/.net/workflow/masstransit-workflowforge-saga/)
+- [HTMX dashboard in .NET](/technical/.net/workflow/htmx-dotnet/)

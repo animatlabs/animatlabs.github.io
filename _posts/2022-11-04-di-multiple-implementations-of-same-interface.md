@@ -1,7 +1,7 @@
 ---
-title: ".NET Apps: DIs with multiple implementations of the same interface"
+title: "Dependency Injection in .NET: Register Multiple Implementations of the Same Interface"
 excerpt: >-
-  "Enabling dependency injections of multiple implementations of the same interface in .NET Apps. 2 ways to implement multiple implementations of the same interface."
+  Two practical approaches to registering and resolving multiple implementations of the same interface using .NET dependency injection.
 categories:
   - Technical
   - .NET
@@ -143,7 +143,7 @@ So, this problem is not something we need a hack for but is already available wi
 
 ### Using a List Type/ServiceProvider
 
-Instead of the way we inserted the type dependencies one by one, we will need to insert those in an enumerable of the type of the dependencies or directly with the the help of service provider.
+Instead of the way we inserted the type dependencies one by one, we will need to insert those in an enumerable of the type of the dependencies or directly with the help of service provider.
 
 ```c#
 public Function_A_DI_List(IEnumerable<IService> services)
@@ -231,7 +231,7 @@ internal class Startup : FunctionsStartup
 }
 ```
 
-Now, all the required setup is done and we can move towards defining the classes where we wish to utilize the same.
+Now, all the required setup is done and we can move towards defining the classes where we want to use the same.
 
 ```c#
 public Function_B_DI_Resolver(IServiceResolver serviceResolver)
@@ -244,6 +244,14 @@ public Function_B_DI_Resolver(IServiceResolver serviceResolver)
 
 As we can see from the code, it is cleaner, extensible and testable, with which we get almost all that we could have hoped for.
 
-## Conclusion
+## Which Pattern Fits?
 
 There could be other possible ways to achieve the same, there are the ways that I generally see and use as of right now given the time and complexity required to implement the solutions. The latter solution gives me the option of unit testing, therefore it is my preferred way of coding for commercial apps and setups.
+
+---
+
+## Related
+
+- [Azure Functions DI and auto-scaling](/technical/.net/function-apps/function-app-dependency-injection-auto-scaling/)
+- [Clean Architecture with MediatR](/technical/.net/architecture/clean-architecture/)
+- [Result pattern in C#](/technical/.net/.net-core/better-result-handling-with-result-object/)

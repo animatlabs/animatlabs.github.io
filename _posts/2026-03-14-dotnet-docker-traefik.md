@@ -1,7 +1,7 @@
 ---
-title: "Run .NET Behind Traefik: Fix Port Conflicts Forever"
+title: "Traefik Reverse Proxy for .NET Docker Services: Eliminate Port Conflicts"
 excerpt: >-
-  "I kept a lookup of port numbers. Five services, Redis, PostgreSQL. Someone would clone the repo and crash on port 5000. Traefik killed that problem."
+  Configure Traefik as a reverse proxy for multiple .NET Docker services. Eliminate port conflicts, add automatic HTTPS, and simplify local development.
 categories:
   - Technical
   - .NET
@@ -14,7 +14,7 @@ tags:
   - DevOps
   - Reverse Proxy
 author: animat089
-last_modified_at: 2026-03-21
+last_modified_at: 2026-03-26
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
@@ -203,3 +203,9 @@ Open `http://api.localhost`, `http://web.localhost`, and `http://localhost:8080`
 **Playground:** [TraefikDotNet](https://github.com/animat089/playground/tree/main/TraefikDotNet)
 
 ---
+
+## Related
+
+- [WSL2 on Windows](/technical/infra/wsl2/wsl2-installation-windows/)
+- [Docker on WSL2 with Visual Studio](/technical/infra/wsl2/wsl2-visual-studio-docker-without-docker-desktop/)
+- [Shipping a quality .NET OSS release](/technical/.net/open-source/shipping-quality-dotnet-oss-release/)

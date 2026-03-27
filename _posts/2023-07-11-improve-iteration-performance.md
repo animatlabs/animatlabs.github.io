@@ -1,7 +1,7 @@
 ---
-title: ".NET/C#: Faster ways to iterate collections"
+title: "C# Collection Iteration Performance: Benchmarking For, Foreach, LINQ, and Span"
 excerpt: >-
-  "Exploring the different ways to achieve optimization in performance on iterations in .NET"
+  Benchmarking different collection iteration methods in .NET including for, foreach, LINQ, and Span to find the fastest approach.
 categories:
   - Technical
   - .NET
@@ -20,7 +20,7 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
-When we discuss about any programming language, perhaps the first thing we look into after variables is iterations. Although there are many types of iterations available over several types, lets explore a few available with .NET 6 and also explore the code for the same. For benchmarking, we will be using a third-party library called `BechmarkDotNet`.
+When we discuss about any programming language, perhaps the first thing we look into after variables is iterations. Although there are many types of iterations available over several types, lets explore a few available with .NET 6 and also explore the code for the same. For benchmarking, we will be using a third-party library called `BenchmarkDotNet`.
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/Benchmarking/Iterations){: .btn .btn--primary}
 
@@ -336,6 +336,14 @@ Now, let's look into all the code written for the loops with Enumerables
     }
     ```
 
-## Conclusion
+## What the Numbers Tell Us
 
-Given, now we have seen the perspective of the that it is not just the looping mechanism but also the collection type that plays a vital role in the process. Assuming that this will help you in understanding the process better and utilizing the information to write better code!
+Given, now we have seen the perspective of the that it is not just the looping mechanism but also the collection type that plays a vital role in the process. Assuming that this will help you in understanding the process better and using the information to write better code!
+
+---
+
+## See Also
+
+- [Object mapping performance](/technical/.net/.net-core/mapping-performance/)
+- [Native mapping techniques](/technical/.net/.net-core/native-mapping-operations/)
+- [Three string operations worth knowing](/technical/.net/.net-core/three-string-operations-should-know/)

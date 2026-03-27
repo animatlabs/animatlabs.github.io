@@ -1,7 +1,7 @@
 ---
 title: "Pattern Matching Recipes: 10 Real Problems Solved in C#"
 excerpt: >-
-  "Skip the syntax tour. Here are 10 real-world problems where pattern matching replaces messy if-else chains."
+  Skip the syntax tour. Here are 10 real-world problems where pattern matching replaces messy if-else chains.
 categories:
   - Technical
   - .NET
@@ -102,6 +102,6 @@ TARGET: 1,500-1,800 words
 - Performance considerations
 - Readability vs conciseness trade-offs
 - Common pitfalls to avoid
-- Best practices from experience
+- Things I've learned from experience
 -->
 

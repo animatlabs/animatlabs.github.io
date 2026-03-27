@@ -1,7 +1,7 @@
 ---
 title: "Spectre.Console: Terminal Output That Doesn't Look Like 1995"
 excerpt: >-
-  "11k GitHub stars, and most .NET devs I talk to have never heard of it. Tables, trees, charts, spinners: all in the terminal. I built a Project Health Checker demo to show what Spectre.Console can do."
+  11k GitHub stars, and most .NET devs I talk to have never heard of it. Tables, trees, charts, spinners: all in the terminal. I built a Project Health Checker demo to show what Spectre.Console can do.
 categories:
   - Technical
   - .NET

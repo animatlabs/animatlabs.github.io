@@ -1,7 +1,7 @@
 ---
 title: "Rate Limiting, Throttling, and Circuit Breaking: The .NET Resilience Kit"
 excerpt: >-
-  "Your API needs rate limiting, throttling, and circuit breaking. How they fit together in ASP.NET Core + Polly."
+  Your API needs rate limiting, throttling, and circuit breaking. How they fit together in ASP.NET Core + Polly.
 categories:
   - Technical
   - .NET
@@ -53,7 +53,7 @@ Include:
 <!-- 
 TODO: Explain ASP.NET Core's built-in rate limiting (introduced in .NET 7+)
 Include:
-- What it provides out of the box
+- What it provides by default
 - No external dependencies required
 - How it compares to third-party solutions
 - Basic setup example
@@ -293,12 +293,12 @@ TODO: Share your personal opinion on rate limiting strategies
 Include:
 - Which policies to use for different scenarios
 - What you've used in production
-- Best practices
+- What works in practice
 - Common mistakes to avoid
 - Performance considerations
 -->
 
-### Best Practices
+### What Works in Practice
 
 1. **Start with Fixed Window** - Simple and effective for most cases
 2. **Use Sliding Window for Smooth Traffic** - Better user experience

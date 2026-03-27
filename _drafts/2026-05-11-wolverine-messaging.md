@@ -1,7 +1,7 @@
 ---
 title: "I Replaced MediatR and MassTransit with Wolverine"
 excerpt: >-
-  "One library for in-process mediation AND async messaging. Wolverine unifies what used to take two frameworks."
+  One library for in-process mediation AND async messaging. Wolverine unifies what used to take two frameworks.
 categories:
   - Technical
   - .NET

@@ -1,7 +1,7 @@
 ---
 title: "Local-First: The Architecture Pattern Nobody Taught You"
 excerpt: >-
-  "What if your app worked offline by default and synced seamlessly when online? Local-first architecture with CRDTs makes it possible."
+  What if your app worked offline by default and synced smoothly when online? Local-first architecture with CRDTs makes it possible.
 categories:
   - Technical
   - .NET

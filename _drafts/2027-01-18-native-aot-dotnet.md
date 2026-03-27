@@ -1,7 +1,7 @@
 ---
 title: "Native AOT in .NET: Faster Startup, Smaller Binaries"
 excerpt: >-
-  "Ahead-of-time compilation for .NET - when it makes sense and what you lose."
+  Ahead-of-time compilation for .NET - when it makes sense and what you lose.
 categories:
   - Technical
   - .NET

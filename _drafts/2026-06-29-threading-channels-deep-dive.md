@@ -1,7 +1,7 @@
 ---
 title: "System.Threading.Channels: The Most Underused Feature in .NET"
 excerpt: >-
-  "You're spinning up RabbitMQ for problems that Channels solve in 3 lines. Most .NET developers are sleeping on this."
+  You're spinning up RabbitMQ for problems that Channels solve in 3 lines. Most .NET developers are sleeping on this.
 categories:
   - Technical
   - .NET

@@ -1,7 +1,7 @@
 ---
 title: "Podman: Docker Without the Daemon (and Why It Matters)"
 excerpt: >-
-  "Docker Desktop licensing changed. ingress-nginx is retiring. Podman is daemonless, rootless, and .NET Aspire now supports it."
+  Docker Desktop licensing changed. ingress-nginx is retiring. Podman is daemonless, rootless, and .NET Aspire now supports it.
 categories:
   - Technical
   - DevOps

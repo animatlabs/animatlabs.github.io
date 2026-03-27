@@ -1,7 +1,7 @@
 ---
 title: "Chaos Engineering for .NET: Finding Failures Before Production Does"
 excerpt: >-
-  "Break things intentionally to build resilience. Chaos engineering in .NET without burning down production."
+  Break things intentionally to build resilience. Chaos engineering in .NET without burning down production.
 categories:
   - Technical
   - .NET
@@ -78,7 +78,7 @@ TARGET: 1,500-1,800 words
 - Controlling chaos injection (percentage, conditions)
 - Environment-based chaos (only in staging/dev)
 - Monitoring and observability for chaos experiments
-- Best practices for running chaos experiments safely
+- Guidelines for running chaos experiments safely
 -->
 
 ```csharp
@@ -95,7 +95,7 @@ TARGET: 1,500-1,800 words
 - Distributed system chaos patterns
 -->
 
-## Safety and Best Practices
+## Safety Guidelines
 
 <!-- TODO: Cover safety considerations:
 - Never run chaos in production without safeguards

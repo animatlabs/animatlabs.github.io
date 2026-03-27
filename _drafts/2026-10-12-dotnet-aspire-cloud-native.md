@@ -1,7 +1,7 @@
 ---
 title: ".NET Aspire: The New Cloud-Native Stack"
 excerpt: >-
-  "Aspire changes how we build distributed apps in .NET. What it is and when it actually helps."
+  Aspire changes how we build distributed apps in .NET. What it is and when it actually helps.
 categories:
   - Technical
   - .NET

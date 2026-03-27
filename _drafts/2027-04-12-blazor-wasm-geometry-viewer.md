@@ -1,7 +1,7 @@
 ---
 title: "Build an Interactive Geometry Viewer with Blazor WebAssembly"
 excerpt: >-
-  "A browser-based CAD viewer built entirely in C# -- upload DXF files, render geometry, pan/zoom/click. No server, no plugins, pure WebAssembly."
+  A browser-based CAD viewer built entirely in C#. Upload DXF files, render geometry, pan/zoom/click. No server, no plugins, pure WebAssembly.
 categories:
   - Technical
   - .NET
@@ -52,7 +52,7 @@ LOCAL DEV: Fully client-side. No server, no Docker needed. Deploys to GitHub Pag
 
 ## Why Blazor WASM for a Geometry Viewer?
 
-Most geometry viewers are either desktop-only (WPF, WinForms) or built with JavaScript. Blazor WebAssembly lets us write the entire thing in C# -- file parsing, coordinate math, rendering -- and deploy it as a static site. No server, no plugins, runs in any modern browser.
+Most geometry viewers are either desktop-only (WPF, WinForms) or built with JavaScript. Blazor WebAssembly lets us write the entire thing in C# (file parsing, coordinate math, rendering) and deploy it as a static site. No server, no plugins, runs in any modern browser.
 
 This post ties together everything from the Geometry & CAD series into a single, deployable application.
 
@@ -502,7 +502,7 @@ public class RenderService
 
 ## Deploying to GitHub Pages
 
-Since Blazor WASM compiles to static files, deploying to GitHub Pages is straightforward:
+Since Blazor WASM compiles to static files, deploying to GitHub Pages is simple:
 
 ```yaml
 # .github/workflows/deploy-viewer.yml
@@ -558,14 +558,14 @@ private bool ShouldRender(Entity entity, float scale)
 ## What's Next
 
 This is part 3 of the **Geometry & CAD in C#** series:
-1. [IFC Files with xBIM](/technical/.net/.net-core/ifc-parsing-xbim-csharp/) -- parsing building information models
-2. [DWG/DXF Files with ACadSharp](/technical/.net/.net-core/dwg-dxf-acadsharp-dotnet/) -- reading AutoCAD files
+1. [IFC Files with xBIM](/technical/.net/.net-core/ifc-parsing-xbim-csharp/): parsing building information models
+2. [DWG/DXF Files with ACadSharp](/technical/.net/.net-core/dwg-dxf-acadsharp-dotnet/): reading AutoCAD files
 3. **Interactive Geometry Viewer with Blazor WASM** (this post)
-4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/) -- geometric algorithms
+4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/): geometric algorithms
 
 ## Geometry in the browser with Blazor WASM
 
-Building a geometry viewer in Blazor WebAssembly shows that .NET isn't just for backends and APIs. With SkiaSharp for rendering and ACadSharp for file parsing, you get a fully functional CAD viewer running entirely in the browser -- no server, no plugins, deployable as a static site.
+Building a geometry viewer in Blazor WebAssembly shows that .NET isn't just for backends and APIs. With SkiaSharp for rendering and ACadSharp for file parsing, you get a fully functional CAD viewer running entirely in the browser: no server, no plugins, deployable as a static site.
 
 The complete source code is available on GitHub. Fork it, extend it, make it yours.
 

@@ -1,7 +1,7 @@
 ---
-title: ".NET Apps: Reactive Programming"
+title: "Reactive Programming in .NET: Build Event-Driven Apps with System.Reactive"
 excerpt: >-
-  "Reactive programming in .NET - Efficiently using the Rx library"
+  Reactive programming in .NET using the System.Reactive (Rx) library for building responsive, event-driven applications.
 categories:
   - Technical
   - .NET
@@ -36,7 +36,7 @@ Although there could possibly be many use cases where reactive programming could
 ### Simple
 
 One popular library for reactive programming in C# is Reactive Extensions (Rx).
-Here's a simple example using Rx in C# to filter a stream of numbers and display only even numbers...
+A simple example using Rx in C# filters a stream of numbers and displays only even numbers...
 
 ```c#
 using System.Reactive.Linq;
@@ -131,6 +131,13 @@ Processing data: File watcher Test
 Processed data: FILE WATCHER TEST
 ```
 
-## Conclusion
+## Where Rx Shines
 
 As we can see there are multiple ways in which reactive programming can be used and could perhaps prove very vital for our systems. Hope, you enjoy reading more about it, happy coding!!
+
+---
+
+## Related
+
+- [Server-Sent Events in ASP.NET Core](/technical/.net/server-sent-events-dotnet/)
+- [Redis distributed locking in .NET](/technical/.net/.net-core/redis-distributed-locking/)

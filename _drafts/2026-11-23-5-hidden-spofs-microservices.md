@@ -1,7 +1,7 @@
 ---
 title: "5 Hidden Single Points of Failure in Your .NET Microservices"
 excerpt: >-
-  "Your microservices architecture isn't as resilient as you think. Here are 5 SPOFs I've seen take down production systems."
+  Your microservices architecture isn't as resilient as you think. Here are 5 SPOFs I've seen take down production systems.
 categories:
   - Technical
   - .NET

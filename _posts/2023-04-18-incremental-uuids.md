@@ -1,7 +1,7 @@
 ---
-title: "Decoding GUID vs. UUID: Unveiling Unique Identifiers in C# and .NET, and Harnessing the Power of Incremental Generation"
+title: "GUID vs UUID in .NET: Incremental ID Generation for Better Database Performance"
 excerpt: >-
-  "Unveiling the distinction between GUID and UUID in C# and .NET, this captivating article explores their origins, representation, and platform compatibility. Delving deeper, we examine the potential of incremental GUIDs to address performance and index fragmentation issues. With step-by-step guidance, learn how to flawlessly generate unique and sequentially increasing UUIDs in a distributed system. Empower your applications with the unparalleled power of unique identifiers and achieve new levels of performance and scalability."
+  Understanding the difference between GUID and UUID in C# and .NET, and how incremental UUID generation reduces index fragmentation in distributed systems.
 categories:
   - Technical
   - .NET
@@ -208,8 +208,15 @@ Remember to call the *Initialize* method once, providing the appropriate Redis c
 
 By incorporating a distributed lock mechanism using Redis, you can ensure that multiple instances of the incremental UUID generator in a distributed system generate unique and strictly increasing UUIDs, even in a concurrent environment.
 
-## Conclusion
+## Picking the Right ID Strategy
 
 GUIDs and UUIDs are commonly used to create unique identifiers in the C# and .NET world. GUIDs are typically used on Windows-based systems, while UUIDs ensure cross-platform compatibility. However, both types have advantages and considerations. Developers may consider using incremental GUIDs in scenarios where performance and index fragmentation are concerns. Techniques such as CombGuid or custom applications can be used to create tags that grow incrementally while maintaining uniqueness.
 
 Understanding the difference between GUIDs and UUIDs and how and when  GUIDs are generated helps developers make informed decisions when dealing with unique identifiers in  C# and .NET applications. Note that the choice between GUIDs and UUIDs and the use of additional GUIDs should be determined based on the specific needs and constraints of your application. By understanding these concepts and applying them effectively, a developer can create and correctly use unique identifiers in their C# and .NET projects.
+
+---
+
+## Related Reading
+
+- [Hashing internal IDs](/technical/.net/.net-core/secure-alternate-to-exposing-identifiers/)
+- [EF Core performance optimization](/technical/.net/.net-core/ef-core-performance/)

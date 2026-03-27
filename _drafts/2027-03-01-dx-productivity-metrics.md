@@ -1,7 +1,7 @@
 ---
 title: "Measuring Developer Productivity Without the BS"
 excerpt: >-
-  "Lines of code is garbage. What actually works: the DX Core 4 framework and metrics that drive improvement."
+  Lines of code is garbage. What actually works: the DX Core 4 framework and metrics that drive improvement.
 categories:
   - Technical
   - Developer Experience

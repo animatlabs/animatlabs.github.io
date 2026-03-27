@@ -1,7 +1,7 @@
 ---
-title: "WSL2: Setting up Linux on Windows"
+title: "WSL2 Installation Guide: Set Up Linux on Windows 10 and 11"
 excerpt: >-
-  "Setting up Windows Subsystem for Linux (WSL) on Windows 10/11"
+  Step-by-step guide to installing and configuring Windows Subsystem for Linux (WSL2) on Windows 10 and 11.
 categories:
   - Technical
   - Infra
@@ -109,7 +109,7 @@ For my setup, I would be using Windows 11 and setting the WSL2, you may choose t
    If the version of the OS is, **not 2**, you can change the same using the following command:
 
    ```ps
-   wsl set-version Ubutnu 2
+   wsl set-version Ubuntu 2
    ```
 
    You might face the following issue when trying to update the WSL version in windows 10, _**WSL 2 requires an update to its kernel component. For information please visit https://aka.ms/wsl2kernel**_. If so happens, you need to do the following:
@@ -175,3 +175,10 @@ If for some reason we need to uninstall/remove any os from the machine, we need 
    ```ps
    wsl --unregister Ubuntu
    ```
+
+---
+
+## Related
+
+- [Docker on WSL2 with Visual Studio](/technical/infra/wsl2/wsl2-visual-studio-docker-without-docker-desktop/)
+- [Traefik with .NET Docker services](/technical/.net/infra/dotnet-docker-traefik/)

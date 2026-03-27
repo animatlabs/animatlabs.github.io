@@ -1,7 +1,7 @@
 ---
 title: "Kiota: Microsoft's Auto-Generated API Clients You've Never Heard Of"
 excerpt: >-
-  "Give Kiota an OpenAPI spec, get a strongly-typed C# client. No more hand-writing HttpClient code for every endpoint."
+  Give Kiota an OpenAPI spec, get a strongly-typed C# client. No more hand-writing HttpClient code for every endpoint.
 categories:
   - Technical
   - .NET

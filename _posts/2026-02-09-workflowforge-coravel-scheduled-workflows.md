@@ -1,7 +1,7 @@
 ---
-title: "Scheduled Workflows in .NET: WorkflowForge Meets Coravel"
+title: "Scheduled Workflows in .NET: WorkflowForge with Coravel Job Scheduling"
 excerpt: >-
-  "Coravel handles when to run. WorkflowForge handles what to run. Together they create lightweight scheduled workflows with automatic compensation, no Hangfire required."
+  Coravel handles when to run, WorkflowForge handles what to run. Together they create lightweight scheduled workflows with automatic compensation, no Hangfire required.
 categories:
   - Technical
   - .NET  
@@ -16,7 +16,7 @@ tags:
   - Compensation
   - Saga Pattern
 author: animat089
-last_modified_at: 2026-02-09
+last_modified_at: 2026-03-26
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
@@ -602,12 +602,18 @@ Each tool does one thing well. No overlap, no conflict.
 | WorkflowForge | [GitHub](https://github.com/animatlabs/workflow-forge) \| [NuGet](https://www.nuget.org/packages/WorkflowForge) \| [Docs](https://animatlabs.com/workflow-forge) |
 | Coravel | [GitHub](https://github.com/jamesmh/coravel) \| [Docs](https://docs.coravel.net) |
 | This Sample | [Playground Repo](https://github.com/animat089/playground/tree/main/WorkflowForge) |
-| Benchmarks | [540x faster than alternatives](https://animatlabs.com/workflow-forge/performance/competitive-analysis/) |
-
-**You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/WorkflowForge){: .btn .btn--primary}
+| Benchmarks | [511x faster than alternatives](https://animatlabs.com/workflow-forge/performance/competitive-analysis/) |
 
 ---
 
 *If you've tried a different scheduling approach with WorkflowForge, I'd be curious how it compared.*
 
 {% include cta-workflowforge.html %}
+
+---
+
+## See Also
+
+- [WorkflowForge introduction](/technical/.net/workflow/workflow-forge-introduction/)
+- [WorkflowForge 2.0 benchmarks](/technical/.net/workflow/workflow-forge-2-performance-unleashed/)
+- [MassTransit saga with WorkflowForge](/technical/.net/workflow/masstransit-workflowforge-saga/)

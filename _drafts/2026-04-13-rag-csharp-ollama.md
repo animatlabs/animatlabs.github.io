@@ -1,7 +1,7 @@
 ---
 title: "RAG in C#: Build a Code-Aware Assistant with Ollama"
 excerpt: >-
-  "RAG isn't just for Python. Build a retrieval-augmented assistant in C# that understands your codebase - running entirely on your machine."
+  RAG isn't just for Python. Build a retrieval-augmented assistant in C# that understands your codebase - running entirely on your machine.
 categories:
   - Technical
   - .NET

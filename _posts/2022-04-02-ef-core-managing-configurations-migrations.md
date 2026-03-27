@@ -1,7 +1,7 @@
 ---
-title: "EF Core: Managing entities, configurations and migrations"
+title: "EF Core Code-First: Organize Entities, Configurations, and Migrations in .NET 6"
 excerpt: >-
-  "Managing and separating migrations and entities in EF core in different folders with .NET 6"
+  Managing and separating migrations, entities, and configurations in EF Core using clean folder structures with .NET 6.
 categories:
   - Technical
   - .NET
@@ -109,7 +109,7 @@ public class HogwartsDbContext : DbContext
 
 > I prefer loading all the configurations at once via the assembly, but we could load each of them one by one.
 
-Now, since we have loaded the all available configurations in the assembly, we need to define those for the entities as well. We can see above in the `Student` entity, we have used a `GUID` as an identifier and wish to auto-create that when the record for the entity is created. So, leveraging the `IEntityTypeConfiguration<T>` interface available to us, we can now do something like the following thereby segregating it all into modular, manageable, and readable configurations.
+Now, since we have loaded the all available configurations in the assembly, we need to define those for the entities as well. We can see above in the `Student` entity, we have used a `GUID` as an identifier and wish to auto-create that when the record for the entity is created. So, using the `IEntityTypeConfiguration<T>` interface available to us, we can now do something like the following thereby segregating it all into modular, manageable, and readable configurations.
 
 ```cs
 public class StudentConfiguration : IEntityTypeConfiguration<Student>
@@ -148,7 +148,7 @@ Now, comes the twist from the general practices we follow and the most crucial p
 
 #### Database Context Factory
 
-The next step would be the only most important thing, setting up a database context factory for each project. We would be leveraging the following things in the recent versions of EF Core for achieving our objectives:
+The next step would be the only most important thing, setting up a database context factory for each project. We would be using the following things in the recent versions of EF Core for achieving our objectives:
 
 - Provision for an interface `IDesignTimeDbContextFactory<DbContext>` which lets us define a context factory.
 - Extension for the `UseSqlServer` method to have a non-mandatory connection string parameter
@@ -296,3 +296,10 @@ Almost nothing comes without pros and cons, and they should be weighed in before
 
 - [Manage Migrations Separately](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/projects?tabs=dotnet-core-cli)
 - [Design-time Database Context Factory](https://docs.microsoft.com/en-us/ef/core/cli/dbcontext-creation?tabs=dotnet-core-cli#from-a-design-time-factory)
+
+---
+
+## More on This Topic
+
+- [EF Core: custom SQL, SPs, and UDFs](/technical/.net/ef-core/ef-core-managing-sp-udf-custom-sql/)
+- [EF Core performance optimization](/technical/.net/.net-core/ef-core-performance/)

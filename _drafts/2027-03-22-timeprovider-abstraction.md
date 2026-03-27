@@ -1,7 +1,7 @@
 ---
 title: "TimeProvider: How Microsoft Finally Fixed Time-Based Testing"
 excerpt: >-
-  "DateTime.Now in tests is a nightmare. TimeProvider is the built-in fix .NET developers waited a decade for."
+  DateTime.Now in tests is a nightmare. TimeProvider is the built-in fix .NET developers waited a decade for.
 categories:
   - Technical
   - .NET
@@ -28,7 +28,7 @@ ORIGINALITY CHECKLIST:
 - [ ] Usage patterns: dependency injection, direct usage
 - [ ] Testing with FakeTimeProvider: examples and scenarios
 - [ ] Refactoring guide: migrating from DateTime.Now/UtcNow
-- [ ] Performance considerations and best practices
+- [ ] Performance considerations and things I've learned
 - [ ] Real-world examples showing before/after
 -->
 

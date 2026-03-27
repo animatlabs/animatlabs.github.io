@@ -1,7 +1,7 @@
 ---
-title: "HTMX + WorkflowForge: A Real-Time Dashboard Without Writing JavaScript"
+title: "Build a Real-Time HTMX Dashboard in .NET Without JavaScript"
 excerpt: >-
-  "HTMX's SSE extension opens an EventSource from HTML attributes. Pair it with WorkflowForge and you get a live workflow dashboard: steps stream in, failures trigger compensation, all server-rendered."
+  Build a live workflow dashboard with HTMX SSE extension and WorkflowForge. Steps stream in, failures trigger compensation, all server-rendered with zero JavaScript.
 categories:
   - Technical
   - .NET
@@ -15,16 +15,23 @@ tags:
   - ASP.NET Core
   - Compensation
 author: animat089
-last_modified_at: 2026-03-23
+last_modified_at: 2026-03-26
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
+faq:
+  - q: "Can I build a real-time dashboard in .NET without JavaScript?"
+    a: "For the UI updates, yes: HTMX's SSE extension pulls HTML over EventSource and patches the DOM. You still load HTMX itself, but you don't write custom JS for the stream."
+  - q: "How does HTMX SSE work with ASP.NET Core?"
+    a: "Attributes like `sse-connect` / `sse-swap` tell HTMX to open the stream; your minimal API or controller returns `text/event-stream` with HTML chunks. HTMX swaps them in—no hand-rolled `EventSource` code in your repo."
+  - q: "What is WorkflowForge compensation in the HTMX dashboard?"
+    a: "If a step blows up, WorkflowForge runs compensations newest-first. Here we just pipe those steps out as SSE so the page shows the rollback live—same saga idea, rendered as HTML fragments."
 ---
 
 I needed a workflow status page. Click a button, watch steps execute, show success or rollback. React plus WebSockets was my first instinct. Then I looked at the actual requirements: one-way data, server renders the UI, no client state. Overkill.
 
-HTMX has an SSE extension that opens an `EventSource` from attributes. The server sends HTML fragments, HTMX swaps them into the page. I paired it with WorkflowForge 2.1.1 for a five-step order workflow with automatic compensation. **Zero** `<script>` tags. Not bragging. Still surprised it worked on the first try.
+HTMX has an SSE extension that opens an `EventSource` from attributes. The server sends HTML fragments, HTMX swaps them into the page. I paired it with WorkflowForge 2.1.1 for a five-step order workflow with automatic compensation. **Zero** custom JavaScript. 
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/WorkflowForge/AnimatLabs.WorkflowForge.HtmxDashboard){: .btn .btn--primary}
 
@@ -48,7 +55,7 @@ Browser                                 Server
   │<──────── event: done ──────────────────┤
 ```
 
-Button click fetches an HTML fragment with SSE attributes. HTMX opens the stream and the server pushes step updates as HTML. Click "Run with Failure" and ChargePayment throws. WorkflowForge compensates ReserveStock and ValidateOrder, all streamed live.
+Button click fetches an HTML fragment with SSE attributes. HTMX opens the stream and the server pushes step updates as HTML. Click "Run with Failure" and ChargePayment throws. WorkflowForge then runs compensations in reverse order for every step that had completed up to the failure—including `ChargePayment`'s own `RestoreAsync` (which logs that there is no charge to reverse when the gateway never completed), then `ReserveStock`, then `ValidateOrder` - all streamed live.
 
 ## The HTML
 
@@ -101,6 +108,7 @@ app.MapGet("/workflow/stream", async (HttpContext ctx, bool fail = false) =>
     ctx.Response.ContentType = "text/event-stream";
     ctx.Response.Headers.CacheControl = "no-cache";
     ctx.Response.Headers.Connection = "keep-alive";
+    ctx.Response.Headers["X-Accel-Buffering"] = "no";
 
     var sink = new ChannelEventSink();
     var ct = ctx.RequestAborted;
@@ -204,7 +212,7 @@ public static IWorkflow Build(IWorkflowEventSink sink, bool shouldFail)
 }
 ```
 
-Each operation implements `ForgeAsyncCore` (do the work) and `RestoreAsync` (undo it). When any step throws, WorkflowForge calls `RestoreAsync` in reverse. The `ChargePaymentOperation` has a `shouldFail` flag that simulates a payment gateway timeout:
+Each operation implements `ForgeAsyncCore` (do the work) and `RestoreAsync` (undo it). When any step throws, WorkflowForge walks backward and invokes `RestoreAsync` for each completed step in reverse order (including the step that failed, when it has cleanup or a no-op path). The `ChargePaymentOperation` has a `shouldFail` flag that simulates a payment gateway timeout:
 
 ```csharp
 protected override async Task<object?> ForgeAsyncCore(
@@ -252,7 +260,7 @@ cd playground/WorkflowForge/AnimatLabs.WorkflowForge.HtmxDashboard
 dotnet run
 ```
 
-Open `http://localhost:5075`. Two buttons: one happy path, one failure. On failure, compensation runs in reverse and you can see each step stream in.
+Open `http://localhost:5075`. Two buttons: one happy path, one failure. On failure, compensations run newest-first across all completed steps (including `ChargePayment`'s rollback hook), and you can see each step stream in.
 
 | What | Where |
 |------|-------|
@@ -261,3 +269,11 @@ Open `http://localhost:5075`. Two buttons: one happy path, one failure. On failu
 | Playground | [WorkflowForge/HtmxDashboard](https://github.com/animat089/playground/tree/main/WorkflowForge/AnimatLabs.WorkflowForge.HtmxDashboard) |
 
 {% include cta-workflowforge.html %}
+
+---
+
+## More on This Topic
+
+- [Server-Sent Events in ASP.NET Core](/technical/.net/server-sent-events-dotnet/)
+- [WorkflowForge introduction](/technical/.net/workflow/workflow-forge-introduction/)
+- [MassTransit saga with WorkflowForge](/technical/.net/workflow/masstransit-workflowforge-saga/)

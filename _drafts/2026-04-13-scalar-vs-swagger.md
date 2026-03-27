@@ -1,7 +1,7 @@
 ---
 title: "Scalar Replaced Swagger in .NET 9. The Migration Guide"
 excerpt: >-
-  "Swashbuckle went unmaintained. .NET 9 ships Scalar as the default API docs UI. Half the bundle, dark mode, code samples in six languages. Migration is three lines."
+  Swashbuckle went unmaintained. .NET 9 ships Scalar as the default API docs UI. Half the bundle, dark mode, code samples in six languages. Migration is three lines.
 categories:
   - Technical
   - .NET

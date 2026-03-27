@@ -1,7 +1,7 @@
 ---
 title: "Stop Mocking, Start Testing: Testcontainers in .NET"
 excerpt: >-
-  "Why mock a database when you can spin up the real thing in Docker? Testcontainers makes integration testing trivial."
+  Why mock a database when you can spin up the real thing in Docker? Testcontainers makes integration testing trivial.
 categories:
   - Technical
   - .NET
@@ -37,7 +37,7 @@ OUTLINE:
 4. Database testing (PostgreSQL, SQL Server)
 5. Testing with Kafka, Redis
 6. CI/CD integration
-7. Best practices
+7. Production tips
 
 CODE EXAMPLES:
 - PostgreSQL container setup
@@ -134,9 +134,9 @@ private MsSqlContainer _sqlServer = new MsSqlBuilder()
 
 ## CI/CD
 
-Testcontainers works seamlessly on GitHub Actions and Azure DevOps—Docker is available on hosted agents.
+Testcontainers works smoothly on GitHub Actions and Azure DevOps; Docker is available on hosted agents.
 
-## Best Practices
+## Production Tips
 
 <!-- TODO: Use random ports, pin image versions, parallel safety -->
 

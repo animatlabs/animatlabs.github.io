@@ -1,8 +1,8 @@
 ---
-title: "WorkflowForge 2.0: 540x Faster, New Extensions, and a Documentation Site"
+title: "WorkflowForge 2.0 Benchmarks: 511x Faster Than Workflow Core and Elsa in .NET"
 excerpt: >-
-  "We benchmarked WorkflowForge against Workflow Core and Elsa Workflows. The results? Up to 540x faster execution and 573x less memory. The tables below have the full numbers."
-last_modified_at: 2026-01-26
+  We benchmarked WorkflowForge 2.0 against Workflow Core and Elsa Workflows. Up to 511x faster execution and 573x less memory usage, with new extensions and a documentation site.
+last_modified_at: 2026-03-26
 sitemap: true
 categories:
   - Technical
@@ -20,6 +20,13 @@ author: animat089
 toc: true
 toc_label: "Table of Contents"
 comments: true
+faq:
+  - q: "How fast is WorkflowForge compared to other .NET workflow engines?"
+    a: "In our BenchmarkDotNet suite against Workflow Core and Elsa, WorkflowForge 2.0 landed between roughly 26× and 511× faster depending on the scenario—the state-machine case was the eye-watering end of that range."
+  - q: "How much memory does WorkflowForge use versus Elsa and Workflow Core?"
+    a: "Same story: tiny allocations on our runs (baseline ~3.5 KB vs tens to a megabyte for the others). Parallel scenarios were hundreds of times leaner—again, check the benchmark tables for your workload."
+  - q: "What is new in WorkflowForge 2.0?"
+    a: "More packages (13 vs 6), lifecycle hooks, bulk APIs, a `FakeWorkflowFoundry` testing package, and vendored deps so version conflicts hurt less. Details are in the post tables."
 ---
 
 ## The Question Everyone Asked
@@ -55,10 +62,10 @@ Let me show you the numbers.
 | Concurrent (8 workers) | 356μs | 38,833μs | 94,018μs | **109-264x** |
 | Error Handling | 111μs | 1,228μs | 7,150μs | **11-64x** |
 | Creation Overhead | 13μs | 814μs | 2,107μs | **63-162x** |
-| State Machine (25 transitions) | 68μs | 20,624μs | 36,695μs | **303-540x** |
+| State Machine (25 transitions) | 68μs | 20,624μs | 36,695μs | **303-511x** |
 | Parallel (16 ops) | 55μs | 2,437μs | 20,891μs | **44-380x** |
 
-The pattern is clear: simple workflows show 26-71x improvement, but state machines hit **540x faster**. Complexity amplifies the gap. Once you stack branching, persistence, and compensation on top of each other, the slower engines do not just get a little worse; they allocate and schedule their way into a completely different cost class than a library that keeps the hot path thin.
+The pattern is clear: simple workflows show 26-71x improvement, but state machines hit **511x faster**. Complexity amplifies the gap. Once you stack branching, persistence, and compensation on top of each other, the slower engines do not just get a little worse; they allocate and schedule their way into a completely different cost class than a library that keeps the hot path thin.
 
 ### Memory Allocation
 
@@ -237,3 +244,13 @@ If workflow performance matters for your .NET application (high-throughput proce
 Happy forging.
 
 {% include cta-workflowforge.html %}
+
+---
+
+## More on This Topic
+
+- [WorkflowForge introduction](/technical/.net/workflow/workflow-forge-introduction/)
+- [WorkflowForge with Coravel](/technical/.net/workflow/workflowforge-coravel-scheduled-workflows/)
+- [Shipping a quality .NET OSS release](/technical/.net/open-source/shipping-quality-dotnet-oss-release/)
+- [WorkflowForge vs Elsa](/workflowforge-vs-elsa/)
+- [WorkflowForge vs Workflow Core](/workflowforge-vs-workflow-core/)

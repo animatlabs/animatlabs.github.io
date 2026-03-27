@@ -263,7 +263,7 @@ Ordering is a separate headache. Per-aggregate ordering is achievable when all e
 
 You stop lying to yourself about atomicity between the database and the bus. Failures surface as "transaction did not commit" instead of silent drift. You can replay from Kafka without guessing which domain version produced a message, because the outbox row and the order row committed together.
 
-Rollback behavior is straightforward. If validation fails after you have staged the `Order` but before `CommitAsync`, nothing reaches Kafka. If the bus is down, your API can still take the order as long as the database is healthy; events flow when CDC catches up. That decoupling is the whole point.
+Rollback behavior is simple. If validation fails after you have staged the `Order` but before `CommitAsync`, nothing reaches Kafka. If the bus is down, your API can still take the order as long as the database is healthy; events flow when CDC catches up. That decoupling is the whole point.
 
 You still monitor replication lag and consumer lag. The outbox does not delete distributed systems problems. It removes an entire class of consistency bugs between your write model and your first hop into messaging.
 

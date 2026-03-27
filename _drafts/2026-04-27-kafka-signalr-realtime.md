@@ -1,7 +1,7 @@
 ---
 title: "CDC Events to the Browser: Kafka + SignalR + SSE in .NET"
 excerpt: >-
-  "Insert a row in PostgreSQL, see it in the browser within a second. A BackgroundService bridges Kafka to both SignalR and SSE so you can pick what fits."
+  Insert a row in PostgreSQL, see it in the browser within a second. A BackgroundService bridges Kafka to both SignalR and SSE so you can pick what fits.
 categories:
   - Technical
   - .NET

@@ -1,7 +1,7 @@
 ---
 title: "Reading AutoCAD Files in .NET: DWG and DXF with ACadSharp"
 excerpt: >-
-  "Parse real DWG and DXF files without AutoCAD installed -- extract layers, entities, text, and dimensions. All in C# with a 636-star MIT library."
+  Parse real DWG and DXF files without AutoCAD installed. Extract layers, entities, text, and dimensions. All in C# with a 636-star MIT library.
 categories:
   - Technical
   - .NET
@@ -50,9 +50,9 @@ LOCAL DEV: No cloud services. Sample DXF files easily created or downloaded.
 
 ## The Problem: AutoCAD Files Are Everywhere
 
-DWG and DXF files are the lingua franca of engineering drawings. Architects, mechanical engineers, electrical designers -- they all produce DWG files. And sooner or later, a developer gets asked: "Can you extract data from these drawings?"
+DWG and DXF files are the lingua franca of engineering drawings. Architects, mechanical engineers, electrical designers: they all produce DWG files. And sooner or later, a developer gets asked: "Can you extract data from these drawings?"
 
-The traditional answer involves expensive AutoCAD licenses or proprietary SDKs. ACadSharp changes that -- it's a free, MIT-licensed .NET library that reads and writes DWG/DXF files with zero dependencies on Autodesk software.
+The traditional answer involves expensive AutoCAD licenses or proprietary SDKs. ACadSharp changes that: it's a free, MIT-licensed .NET library that reads and writes DWG/DXF files with zero dependencies on Autodesk software.
 
 ## Setting Up ACadSharp
 
@@ -385,10 +385,10 @@ var wallLines = document.Entities
 ## What's Next
 
 This is part 2 of the **Geometry & CAD in C#** series:
-1. [IFC Files with xBIM](/technical/.net/.net-core/ifc-parsing-xbim-csharp/) -- parsing building information models
+1. [IFC Files with xBIM](/technical/.net/.net-core/ifc-parsing-xbim-csharp/): parsing building information models
 2. **DWG/DXF Files with ACadSharp** (this post)
-3. [Interactive Geometry Viewer with Blazor WASM](/technical/.net/.net-core/blazor-wasm-geometry-viewer/) -- browser-based visualization
-4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/) -- geometric algorithms
+3. [Interactive Geometry Viewer with Blazor WASM](/technical/.net/.net-core/blazor-wasm-geometry-viewer/): browser-based visualization
+4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/): geometric algorithms
 
 ## CAD files without AutoCAD
 

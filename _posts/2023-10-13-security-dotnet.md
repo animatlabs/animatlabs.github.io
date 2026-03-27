@@ -1,7 +1,7 @@
 ---
-title: "Mastering .NET Security: In-Depth Guide with Code Samples"
+title: "ASP.NET Core Security Guide: Authentication, Encryption, and Secure Coding"
 excerpt: >-
-  "Introduce the significance of security in software development."
+  A practical guide to .NET security covering authentication, authorization, encryption, input validation, and secure coding with code samples.
 categories:
   - Technical
   - .NET
@@ -19,15 +19,11 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
-## Introduction
-
-- Introduce the significance of security in software development.
-- Highlight the structure of this guide, which will delve into .NET security practices with detailed code examples.
+Security is one of those topics that nobody prioritizes until something breaks. I've seen production systems with plain-text connection strings in config files and admin endpoints behind nothing but a query parameter. This guide walks through the areas that matter most in ASP.NET Core, with code you can actually drop into a project.
 
 ## Authentication and Authorization
 
-- Explain the concepts of authentication and authorization.
-- Show code examples of setting up Identity in ASP.NET Core, customizing user roles, and implementing claims-based authorization.
+Authentication answers "who are you?" and authorization answers "what are you allowed to do?" ASP.NET Core Identity handles both. You wire it up in `Program.cs` (or `Startup.cs` if you're on the older hosting model), and from there you can layer in role checks or policy-based authorization depending on how granular you need to get.
 
 ```csharp
 // Setting up Identity in ASP.NET Core
@@ -45,8 +41,7 @@ public IActionResult AdminDashboard()
 
 ## Input Validation
 
-- Discuss the various forms of user input vulnerabilities, including SQL injection, XSS, and CSRF.
-- Present code examples illustrating input validation techniques using data annotations and FluentValidation in ASP.NET Core.
+Every external input is suspect. Form fields, query strings, headers, uploaded file names. Trusting any of them without validation is how SQL injection and XSS happen. Data annotations handle the simple cases; FluentValidation gives you more control when rules get complex.
 
 ```csharp
 // Using data annotations for input validation
@@ -67,8 +62,7 @@ public class ProductValidator : AbstractValidator<Product>
 
 ## Cross-Site Request Forgery (CSRF) Protection
 
-- Define CSRF attacks and their implications.
-- Offer code examples demonstrating how to generate and validate anti-forgery tokens in ASP.NET Core, including customization for specific scenarios.
+CSRF tricks a logged-in user's browser into making requests they didn't intend. The classic example: a hidden form on an attacker's page that submits a POST to your app while the victim's session cookie is still valid. ASP.NET Core has built-in anti-forgery token support. You generate the token in the form and validate it on the server side.
 
 ```csharp
 // Generating anti-forgery tokens
@@ -85,8 +79,7 @@ public IActionResult SubmitOrder(Order order)
 
 ## SQL Injection Prevention
 
-- Detail the risks of SQL injection attacks and potential data exposure.
-- Provide code examples for using parameterized queries and Entity Framework Core to mitigate SQL injection risks.
+SQL injection has been in the OWASP Top 10 for over two decades and it still shows up in production code. The fix is simple: never concatenate user input into a query string. Use parameterized queries or let EF Core handle it. Both approaches ensure the database treats input as data, not executable SQL.
 
 ```csharp
 // Using parameterized queries
@@ -100,8 +93,7 @@ var users = dbContext.Users.FromSqlRaw("SELECT * FROM Users WHERE Username = {0}
 
 ## Cross-Site Scripting (XSS) Mitigation
 
-- Explain the threats posed by XSS attacks and their impact on applications.
-- Present code examples that showcase output encoding strategies and the implementation of a Content Security Policy (CSP) in ASP.NET Core.
+XSS is the mirror image of SQL injection, but for HTML. An attacker injects a script that runs in another user's browser. The defense has two layers: encode all dynamic output so the browser treats it as text, and add a Content Security Policy to limit where scripts can load from.
 
 ```csharp
 // Output encoding in Razor Views
@@ -116,8 +108,7 @@ app.UseCsp(options => options
 
 ## Secure Password Storage
 
-- Discuss best practices for securely storing and handling user passwords.
-- Walk through code examples demonstrating password hashing and salting using libraries like BCrypt, and show how to enforce strong password policies.
+Storing passwords in plain text is an obvious no. But MD5 or SHA-256 without salting isn't much better. BCrypt (or Argon2, if you want the newer option) handles hashing and salting in one call. On top of that, ASP.NET Core Identity lets you enforce password policies so users can't set "password123" and call it a day.
 
 ```csharp
 // Hashing and salting passwords using BCrypt
@@ -133,8 +124,7 @@ services.Configure<IdentityOptions>(options =>
 
 ## HTTPS and Data Encryption
 
-- Explore the importance of securing data both in transit and at rest.
-- Provide code examples for configuring HTTPS in ASP.NET Core applications and discuss database-level encryption for sensitive data.
+Data in transit needs TLS. Data at rest needs encryption. ASP.NET Core pushes you toward HTTPS by default with HSTS (HTTP Strict Transport Security) in production. For the database side, most engines support transparent data encryption. Both together mean even if someone intercepts traffic or copies disk files, the data is useless without the keys.
 
 ```csharp
 // Configuring HTTPS in ASP.NET Core
@@ -156,8 +146,7 @@ ALTER DATABASE YourDatabaseName SET ENCRYPTION ON;
 
 ## API Security
 
-- Elaborate on API security, including token-based authentication and OAuth.
-- Offer code examples for implementing token-based authentication, role-based authorization, and API versioning in ASP.NET Core.
+APIs need their own security layer since there's no browser session or cookie jar to fall back on. JWT (JSON Web Tokens) is the standard approach. The client sends a token in the `Authorization` header, and the server validates it on every request. You configure the expected issuer, audience, and signing key; anything that doesn't match gets rejected.
 
 ```csharp
 // Token-based authentication with JWT in ASP.NET Core
@@ -179,8 +168,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 ## Logging and Monitoring
 
-- Highlight the role of logging and monitoring in identifying security breaches.
-- Showcase code examples for implementing secure logging with Serilog and setting up monitoring using Application Insights.
+You can have perfect input validation and still get compromised if nobody is watching the logs. Serilog gives you structured logging that's easy to query, and Application Insights (or any APM tool) gives you the dashboards and alerts. The key rule: log the event, not the sensitive data. No passwords, tokens, or PII in log output.
 
 ```csharp
 // Setting up Serilog in ASP.NET Core
@@ -199,8 +187,13 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-## Conclusion
+## Security Is Never Done
 
-- Summarize the key security practices discussed in the guide.
-- Emphasize the importance of ongoing vigilance and the need to stay updated on emerging security threats.
-- Encourage readers to apply these security practices in their .NET projects.
+None of this is "set and forget." Packages get CVEs, authentication standards evolve, and attackers find new angles. Run `dotnet list package --vulnerable` regularly. Review OWASP updates. Audit your dependencies. The patterns in this guide cover the fundamentals, but the real work is keeping them current as your project grows.
+
+---
+
+## More on This Topic
+
+- [Data Protection APIs](/technical/.net/.net-core/data-protection-apis/)
+- [Hashing internal IDs](/technical/.net/.net-core/secure-alternate-to-exposing-identifiers/)

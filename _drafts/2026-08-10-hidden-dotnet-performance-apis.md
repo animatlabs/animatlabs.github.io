@@ -1,7 +1,7 @@
 ---
 title: "5 Hidden .NET Performance APIs You're Not Using"
 excerpt: >-
-  "FrozenDictionary, SearchValues, CollectionsMarshal, StringValues, and more. These ship with .NET but almost nobody uses them."
+  FrozenDictionary, SearchValues, CollectionsMarshal, StringValues, and more. These ship with .NET but almost nobody uses them.
 categories:
   - Technical
   - .NET

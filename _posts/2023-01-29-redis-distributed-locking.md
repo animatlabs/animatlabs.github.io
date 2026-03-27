@@ -1,7 +1,7 @@
 ---
-title: ".NET Apps: Redis Distributed Locking"
+title: "Redis Distributed Locking in .NET: Ensure Data Consistency Across Microservices"
 excerpt: >-
-  "Distributed locking in centralized cache management system like redis which helps maintain integrity and consistency throughout all microservices."
+  Distributed locking with Redis and RedLock.net to maintain data integrity and consistency across microservices in .NET.
 redirect_from:
   - /technical/.net/apps/redis-distribulted-locking/
 categories:
@@ -122,10 +122,17 @@ In the above example, we are using a package called `RedLock.Net`, which accepts
 
 There are two variations of the acquire lock functionality, which we could think of, one which accepts the resource to lock as well as the expiry time of the lock and another which apart from the two earlier also accepts the wait and retry times; which essentially means that in case of failure to acquire the lock, the system will keep retrying after every `retry` TimeSpan until `wait` TimeSpan is over. Unlocking again here is fairly simple that releases the lock over the resource without any hassles.
 
-## Conclusion
+## When You Actually Need This
 
 In conclusion, the RedLock algorithm is a distributed locking algorithm that is designed to provide a simple and reliable way to implement distributed locks in Redis. The RedLock.net library provides an easy-to-use implementation of the Redlock algorithm in .NET core, taking care of handling the clock drift and all other complexities of the algorithm.
 
 ## References
 
 - [official Redis Documentation](https://redis.io/docs/manual/patterns/distributed-locks/)
+
+---
+
+## More on This Topic
+
+- [Reactive programming with System.Reactive](/technical/.net/reactive-programming/)
+- [Polly v8 resilience patterns](/technical/.net/.net-core/polly-v8-resilience-patterns/)

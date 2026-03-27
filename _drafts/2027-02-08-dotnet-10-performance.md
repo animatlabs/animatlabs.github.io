@@ -1,7 +1,7 @@
 ---
 title: ".NET 9 Performance Improvements: Benchmarked"
 excerpt: >-
-  "What's actually faster in .NET 9? I benchmarked the key improvements so you don't have to."
+  What's actually faster in .NET 9? I benchmarked the key improvements so you don't have to.
 categories:
   - Technical
   - .NET

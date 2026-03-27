@@ -1,7 +1,7 @@
 ---
-title: "Power of Clean Architecture: Guide to Building Future-Proof Software Systems"
+title: "Clean Architecture in .NET Core with MediatR: A Practical Guide"
 excerpt: >-
-  "Discover the essence of Clean Architecture. In this comprehensive guide, with a focus on .NET Core and MediatR, we will learn how to build scalable, maintainable, and testable applications. Explore code structure best practices and unleash the power of Clean Architecture for future-proof software systems."
+  A practical guide to implementing Clean Architecture in .NET Core with MediatR, covering project structure, dependency rules, and testable design patterns.
 categories:
   - Technical
   - .NET
@@ -23,6 +23,13 @@ sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
+faq:
+  - q: "What is Clean Architecture in .NET Core?"
+    a: "Layers around a core domain: separate projects for Domain, Application, Infrastructure, Presentation, with dependencies pointing inward so frameworks and DB details stay at the edges."
+  - q: "Why use MediatR with Clean Architecture?"
+    a: "It keeps controllers dumb: one request object, one handler. I use it for CQRS-style commands/queries and fat application-layer tests without spinning up ASP.NET or SQL."
+  - q: "What are the layers in Clean Architecture?"
+    a: "Domain at the center (entities, rules), then Application (use cases), Infrastructure (DB, HTTP, implementations), Presentation (API/UI). Rule I care about: dependencies point inward, never the other way."
 ---
 
 ## Introduction
@@ -39,7 +46,7 @@ The purpose of Clean Architecture is to enable the development of software syste
 
 ### Intended Audience of Clean Architecture
 
-Clean Architecture is valuable for all software developers, especially those working on complex projects or with long-term maintenance requirements. Freshers and newbies will greatly benefit from understanding and applying Clean Architecture principles early in their careers. By adopting Clean Architecture, developers can build scalable, maintainable, and robust applications that adhere to best practices.
+Clean Architecture is valuable for all software developers, especially those working on complex projects or with long-term maintenance requirements. Freshers and newbies will greatly benefit from understanding and applying Clean Architecture principles early in their careers. By adopting Clean Architecture, developers can build scalable, maintainable, and solid applications that follow proven patterns.
 
 ### When to Use Clean Architecture
 
@@ -91,9 +98,9 @@ Organize the codebase into layers such as Presentation, Application, Domain, and
 
 Adhere to the SOLID principles, which include Single Responsibility Principle, Open-Closed Principle, Liskov Substitution Principle, Interface Segregation Principle, and Dependency Inversion Principle. These principles guide the design of individual components within the layers, ensuring flexibility and maintainability.
 
-### Utilize Dependency Injection
+### Use Dependency Injection
 
-Leverage the built-in dependency injection container in .NET Core to manage dependencies between components. Use interfaces and dependency injection to achieve loose coupling and enable easy swapping of implementations.
+Use the built-in dependency injection container in .NET Core to manage dependencies between components. Use interfaces and dependency injection to achieve loose coupling and enable easy swapping of implementations.
 
 ```csharp
 // Startup.cs
@@ -106,7 +113,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ### Apply Mediator Pattern with MediatR
 
-Utilize MediatR, a popular library in the .NET ecosystem, to implement the Mediator pattern within the Application layer. MediatR acts as a message bus, decoupling components and simplifying communication between them.
+Use MediatR, a popular library in the .NET ecosystem, to implement the Mediator pattern within the Application layer. MediatR acts as a message bus, decoupling components and simplifying communication between them.
 
 ```csharp
 // Application Layer
@@ -130,7 +137,7 @@ public class PlaceOrderUseCase
 
 ### Write Tests
 
-Emphasize writing unit tests for individual components to ensure their correctness and facilitate future modifications. Use frameworks like NUnit or xUnit to create automated tests that cover different layers of the application.
+Emphasize writing unit tests for individual components to ensure their correctness and support future modifications. Use frameworks like NUnit or xUnit to create automated tests that cover different layers of the application.
 
 ## Benefits of Clean Architecture
 
@@ -140,7 +147,7 @@ Clean Architecture offers several benefits, including:
 
 - **Scalability:** Clean Architecture allows applications to scale by adding or modifying components within specific layers. This flexibility enables teams to adapt to evolving business needs and handle increased complexity.
 
-- **Testability:** Clean Architecture promotes testability by isolating the business logic from external dependencies. Components can be tested independently, ensuring the correctness of individual units and facilitating comprehensive test coverage.
+- **Testability:** Clean Architecture promotes testability by isolating the business logic from external dependencies. Components can be tested independently, ensuring the correctness of individual units and enabling thorough test coverage.
 
 ## Tips for Getting Started with Clean Architecture
 
@@ -154,12 +161,20 @@ Adopting Clean Architecture can initially seem overwhelming, especially for thos
 
 - **Collaborate and Seek Feedback:** Engage with experienced developers or architects who have practical knowledge of Clean Architecture. Collaborate with them on projects or seek feedback on your implementations. Their insights and guidance can help you refine your understanding and avoid common pitfalls.
 
-- **Stay Updated:** Stay current with the latest trends, advancements, and best practices in Clean Architecture. Follow relevant blogs, attend conferences, and engage in online communities to broaden your knowledge and learn from industry experts.
+- **Stay Updated:** Stay current with the latest trends and advancements in Clean Architecture. Follow relevant blogs, attend conferences, and engage in online communities to broaden your knowledge and learn from industry experts.
 
 - **Continuous Learning:** Clean Architecture is a journey rather than a destination. Embrace a mindset of continuous learning and improvement. Regularly review and reflect on your codebase, identify areas for optimization, and evolve your understanding and implementation of Clean Architecture.
 
-By following these tips, you can gradually build your proficiency in Clean Architecture and leverage its benefits in your software development journey.
+By following these tips, you can gradually build your proficiency in Clean Architecture and use its strengths in your software development journey.
 
-## Conclusion
+## Building on These Foundations
 
-Clean Architecture is a valuable approach for building maintainable, scalable, and testable software systems. By understanding the purpose, intended audience, and implementation guidelines of Clean Architecture, freshers and newbies can adopt this architectural approach with confidence. Clean Architecture, implemented in .NET Core, offers numerous benefits and fosters codebases that can evolve over time. By following the principles of Clean Architecture, developers can create robust and adaptable applications that meet the ever-changing needs of businesses.
+Clean Architecture is a valuable approach for building maintainable, scalable, and testable software systems. By understanding the purpose, intended audience, and implementation guidelines of Clean Architecture, freshers and newbies can adopt this architectural approach with confidence. Clean Architecture, implemented in .NET Core, offers numerous benefits and fosters codebases that can evolve over time. By following the principles of Clean Architecture, developers can create reliable and adaptable applications that meet the ever-changing needs of businesses.
+
+---
+
+## See Also
+
+- [Multiple implementations of the same interface](/technical/.net/.net-core/di-multiple-implementations-of-same-interface/)
+- [Result pattern in C#](/technical/.net/.net-core/better-result-handling-with-result-object/)
+- [Aspect-oriented programming in C#](/technical/.net/.net-core/aspect-oriented-programming/)

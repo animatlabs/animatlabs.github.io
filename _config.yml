@@ -20,6 +20,26 @@ minimal_mistakes_skin: default
 search: true
 repository: animatlabs/animatlabs.github.io
 
+# Author (used by jekyll-seo-tag for article:author and og:profile)
+author:
+  name: "Animesh Agarwal"
+  email: "animesh@animatlabs.com"
+  url: "https://animatlabs.com/about/"
+  avatar: "/assets/images/bio-photo.jpg"
+
+# Twitter Cards (jekyll-seo-tag emits twitter:card, twitter:site, twitter:creator)
+twitter:
+  username: animat089
+  card: summary
+
+# Social profiles (jekyll-seo-tag emits sameAs for author identity / knowledge panel)
+social:
+  name: "Animesh Agarwal"
+  links:
+    - "https://linkedin.com/in/089ani"
+    - "https://github.com/animat089"
+    - "mailto:animesh@animatlabs.com"
+
 # Analytics
 analytics:
   provider               : "google-gtag"

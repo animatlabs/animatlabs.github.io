@@ -1,7 +1,7 @@
 ---
-title: "3 things you should know about Strings"
+title: "3 C# String Operations Every .NET Developer Should Know for Better Performance"
 excerpt: >-
-  "We work with strings every day in our applications. We often don't see the mistakes we're making, or we don't see ways to potentially optimize the code. And there are many of them."
+  Three essential string handling techniques in C# that improve performance and avoid common mistakes in .NET applications.
 categories:
   - Technical
   - .NET
@@ -25,7 +25,7 @@ We work with strings every day in our applications. We often don't see the mista
 
 1. Use **StringBuilder** for concatenation
 2. Use **StringComparison** for performance
-3. Leverage **Span** for memory efficiency
+3. Use **Span** for memory efficiency
 
 ## Processing Strings
 
@@ -73,7 +73,7 @@ bool areEqual = string.Equals(string1, string2, StringComparison.OrdinalIgnoreCa
 // areEqual is true because the comparison is case-insensitive.
 ```
 
-### Leverage Span for memory efficiency
+### Use Span for memory efficiency
 
 Span is a stack-allocated type that can point to continuous memory regions representing slices of arrays, strings, or unmanaged memory. It provides the ability to work with a slice of data without allocating new memory for that slice.
 This is particularly useful for strings because, as previously mentioned, strings are immutable in .NET. Key Advantages of Span:
@@ -106,10 +106,17 @@ public class SpanVsSubstring
 
 The performance for both the versions varies by far using substring takes ~6ns whereas with span it takes ~0.01ns and there is no memory usage at all from ~32bytes used in substring.
 
-## Conclusion
+## Small Changes, Big Impact
 
 Incorporating these techniques into your .NET applications can significantly improve string handling performance, both in terms of speed and memory efficiency. Always test these approaches in the context of your specific application to measure their impact.
 
 ## References
 
 - [Stefan's Blog talking about the same](https://stefandjokic.tech/posts/3-things-you-should-know-about-strings)
+
+---
+
+## More on This Topic
+
+- [C# 12 highlights](/technical/.net/.net-core/interesting-enhancements-cs12/)
+- [Collection iteration performance](/technical/.net/.net-core/improve-iteration-performance/)

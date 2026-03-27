@@ -1,7 +1,7 @@
 ---
-title: "EF Core: Managing Custom SQLs, SPs, and UDFs with migrations"
+title: "EF Core Migrations: Manage Stored Procedures, UDFs, and Custom SQL in .NET"
 excerpt: >-
-  "Managing the custom SQL statements, stored procedures, and user-defined functions with migrations"
+  Managing custom SQL statements, stored procedures, and user-defined functions within EF Core code-first migrations.
 categories:
   - Technical
   - .NET
@@ -308,6 +308,13 @@ using var dbContext = new HogwartsDbContext(contextOptions);
 }
 ```
 
-## Conclusion
+## Making EF Core Work Harder
 
 We have tried to look into how we include scripts, generate migrations and then execute those within the bounds of EF Core. In commercial projects, since as there are many cases where any of these conditions might be unavoidable. Hope this helps... :)
+
+---
+
+## Related Reading
+
+- [EF Core configurations and migrations](/technical/.net/ef-core/ef-core-managing-configurations-migrations/)
+- [EF Core performance optimization](/technical/.net/.net-core/ef-core-performance/)

@@ -1,7 +1,7 @@
 ---
 title: "FastEndpoints: Why I Stopped Using Minimal APIs"
 excerpt: >-
-  "Same performance as Minimal APIs, better developer experience. FastEndpoints brings structure without the MVC overhead."
+  Same performance as Minimal APIs, better developer experience. FastEndpoints brings structure without the MVC overhead.
 categories:
   - Technical
   - .NET

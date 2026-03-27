@@ -1,7 +1,7 @@
 ---
 title: "AI-Powered Code Review Bot in 50 Lines of C#"
 excerpt: >-
-  "Build a code review assistant with Semantic Kernel that analyzes PRs, suggests improvements, and catches bugs. All in 50 lines."
+  Build a code review assistant with Semantic Kernel that analyzes PRs, suggests improvements, and catches bugs. All in 50 lines.
 categories:
   - Technical
   - .NET

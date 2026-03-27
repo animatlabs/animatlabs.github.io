@@ -1,7 +1,7 @@
 ---
 title: "BenchmarkDotNet Mastery: Beyond the Basics"
 excerpt: >-
-  "You've seen [Benchmark] but there's so much more. Memory diagnosers, custom configs, and comparison techniques."
+  You've seen [Benchmark] but there's so much more. Memory diagnosers, custom configs, and comparison techniques.
 categories:
   - Technical
   - .NET

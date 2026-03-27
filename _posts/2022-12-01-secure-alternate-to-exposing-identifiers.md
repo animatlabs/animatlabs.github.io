@@ -1,7 +1,7 @@
 ---
-title: ".NET Apps: Hashing the IDs - Securing internal IDs"
+title: "Secure Your .NET APIs: Hash Internal IDs to Prevent Enumeration Attacks"
 excerpt: >-
-  "We tend to expose the internal IDs in a system, therefore trying to prevent exposing the same via hashing"
+  Prevent exposing internal database IDs in your .NET APIs by using hash-based ID obfuscation techniques.
 categories:
   - Technical
   - .NET
@@ -231,7 +231,7 @@ Now, let's try to get the user details by the encoded id, and see what it return
 
 Since, the focus of the discussion above was security, we have not discussed the performance of this as of yet. From various studies (probably to be shared later), we see it adds a couple of nano seconds to the call along with a couple of bytes of memory. So, not a massive impact but in the future versions this might get faster and support more functionalities.
 
-## Conclusion
+## Beyond Sequential IDs
 
 With this, we are successfully able to mask the Ids and make them unpredictable. The process adds close to nothing on the latency, therefore where we have such a use case and security is important, we could safely think about such a library.
 
@@ -239,3 +239,11 @@ With this, we are successfully able to mask the Ids and make them unpredictable.
 
 - [HashIds.NET Repository](https://github.com/ullmark/hashids.net)
 - [Guid are cool, but this is cooler - Nick Chapsas](https://www.youtube.com/watch?v=tSuwe7FowzE)
+
+---
+
+## See Also
+
+- [Data Protection APIs](/technical/.net/.net-core/data-protection-apis/)
+- [ASP.NET Core security](/technical/.net/.net-core/security-dotnet/)
+- [Incremental UUIDs in .NET](/technical/.net/.net-core/incremental-uuids/)

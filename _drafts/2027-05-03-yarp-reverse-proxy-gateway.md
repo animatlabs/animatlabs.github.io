@@ -1,7 +1,7 @@
 ---
 title: "YARP: Build a Custom API Gateway in 50 Lines of C#"
 excerpt: >-
-  "YARP powers billions of daily requests at Microsoft. It's also the easiest way to build a custom API gateway in .NET. A production-ready setup walkthrough."
+  YARP powers billions of daily requests at Microsoft. It's also the easiest way to build a custom API gateway in .NET. A production-ready setup walkthrough.
 categories:
   - Technical
   - .NET
@@ -60,7 +60,7 @@ LOCAL DEV: Docker Compose for backend services. No cloud needed.
 
 ## What is YARP?
 
-YARP (Yet Another Reverse Proxy) is Microsoft's toolkit for building fast, customizable reverse proxies in .NET. It powers Azure App Services, Microsoft 365, and Azure AI -- handling billions of requests daily.
+YARP (Yet Another Reverse Proxy) is Microsoft's toolkit for building fast, customizable reverse proxies in .NET. It powers Azure App Services, Microsoft 365, and Azure AI, handling billions of requests daily.
 
 Despite this pedigree, most .NET developers reach for Nginx or Traefik when they need a reverse proxy. That's a mistake. YARP gives you the full power of ASP.NET Core middleware with the performance of a dedicated proxy.
 
@@ -360,7 +360,7 @@ app.MapReverseProxy(pipeline =>
 **Choose YARP when:**
 - You're already in the .NET ecosystem
 - You need custom routing/transform logic in C#
-- You want to leverage ASP.NET Core middleware
+- You want to use ASP.NET Core middleware
 - You need programmatic control over routing decisions
 
 ## Monitoring with OpenTelemetry

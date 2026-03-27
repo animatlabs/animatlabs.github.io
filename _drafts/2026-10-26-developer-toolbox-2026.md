@@ -1,7 +1,7 @@
 ---
 title: "My Developer Toolbox 2026: Tools I Actually Use Daily"
 excerpt: >-
-  "Not a sponsored list. These are the tools I actually open every day - from IDE to deployment. My honest setup for 2026."
+  Not a sponsored list. These are the tools I actually open every day - from IDE to deployment. My honest setup for 2026.
 categories:
   - Technical
   - Productivity

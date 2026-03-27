@@ -34,8 +34,10 @@
     "@type": "WebPage",
     "@id": "{{ page.url | absolute_url }}"
   },
-  "image": "{{ site.url }}{{ site.og_image }}",
-  "url": "{{ page.url | absolute_url }}"
+  "image": "{% if page.header.image %}{{ page.header.image | absolute_url }}{% elsif page.header.overlay_image %}{{ page.header.overlay_image | absolute_url }}{% elsif page.header.teaser %}{{ page.header.teaser | absolute_url }}{% else %}{{ site.url }}{{ site.og_image }}{% endif %}",
+  "url": "{{ page.url | absolute_url }}",
+  "wordCount": {{ page.content | number_of_words }}{% if page.tags.size > 0 %},
+  "keywords": {{ page.tags | jsonify }}{% endif %}
 }
 </script>
 {% endif %}
@@ -78,6 +80,54 @@
   "sameAs": [
     "https://linkedin.com/in/089ani",
     "https://github.com/animat089"
+  ]
+}
+</script>
+{% endif %}
+
+{% comment %} SoftwareApplication Schema for WorkflowForge {% endcomment %}
+{% if page.url == '/workflowforge-guide/' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "WorkflowForge",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": ".NET",
+  "url": "https://github.com/animatlabs/workflow-forge",
+  "downloadUrl": "https://www.nuget.org/packages/WorkflowForge",
+  "author": {
+    "@type": "Person",
+    "name": "{{ site.data.authors[page.author].name | default: site.author.name }}",
+    "url": "{{ site.url }}/about/"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+{% endif %}
+
+{% comment %} FAQPage Schema (fires when page.faq exists in front matter) {% endcomment %}
+{% if page.faq %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for item in page.faq %}
+    {% unless forloop.first %},{% endunless %}
+    {
+      "@type": "Question",
+      "name": {{ item.q | jsonify }},
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": {{ item.a | jsonify }}
+      }
+    }
+    {% endfor %}
   ]
 }
 </script>

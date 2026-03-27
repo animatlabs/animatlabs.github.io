@@ -1,7 +1,7 @@
 ---
 title: "Elsa Workflows 3.0 vs WorkflowForge: An Honest Comparison"
 excerpt: >-
-  "Two .NET workflow libraries, different philosophies. An honest comparison with real code."
+  Two .NET workflow libraries, different philosophies. An honest comparison with real code.
 categories:
   - Technical
   - .NET

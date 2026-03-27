@@ -1,7 +1,7 @@
 ---
 title: "Domain Events: Decoupling Your .NET Code"
 excerpt: >-
-  "Domain events enable loose coupling without the complexity of full event sourcing."
+  Domain events enable loose coupling without the complexity of full event sourcing.
 categories:
   - Technical
   - .NET

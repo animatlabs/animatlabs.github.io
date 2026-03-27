@@ -1,7 +1,7 @@
 ---
 title: "Microsoft.Extensions.AI: One Interface to Rule All LLMs"
 excerpt: >-
-  "Switch between OpenAI, Ollama, Azure, and Anthropic without changing a line of application code. Microsoft's unified AI abstraction is here."
+  Switch between OpenAI, Ollama, Azure, and Anthropic without changing a line of application code. Microsoft's unified AI abstraction is here.
 categories:
   - Technical
   - .NET

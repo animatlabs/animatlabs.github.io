@@ -1,7 +1,7 @@
 ---
-title: "WSL2: Running containerized solutions on Visual Studio without Docker Desktop"
+title: "Run Docker on WSL2 with Visual Studio: No Docker Desktop Required"
 excerpt: >-
-  "Setting up docker on WSL2 and integrating it with Visual Studio to run and debug the containerized applications"
+  Setting up Docker on WSL2 and integrating it with Visual Studio to run and debug containerized applications without Docker Desktop.
 categories:
   - Technical
   - Infra
@@ -25,13 +25,13 @@ comments: true
 
 With the advent of containerization, Docker and Docker Desktop came in and provided GUI-based simple solutions for most of the problems that a developer would face in setting up a local development environment. But with the news that broke out last year (2021) that Docker Desktop will no longer be free for an Enterprise setup, although it is still free for personal use.
 
-Therefore, looking out for alternate strategies as of right now, in this article we would be looking forward to setup Visual Studio with WSL2. So, that we could leverage the same without Docker Desktop in Visual Studio 2022 on a Windows machine.
+Therefore, looking out for alternate strategies as of right now, in this article we would be looking forward to setup Visual Studio with WSL2. So, that we could use the same without Docker Desktop in Visual Studio 2022 on a Windows machine.
 
 **Note:** If you have not set up WSL, you can [refer to this article](../wsl2-installation-windows/) for setting it up before we continue.
 
 ## Configuration
 
-Over here we are going to leverage the caveat that only Docker Desktop needs a license to be used in a commercial setup and not the actual docker services which we will be hosting in our WSL setup. Noting, that it was always possible in Docker Desktop to integrate it with WSL but we generally never choose to do so! So, let's begin with configuring docker in our WSL2 setup on Ubuntu.
+Over here we are going to take advantage of the caveat that only Docker Desktop needs a license to be used in a commercial setup and not the actual docker services which we will be hosting in our WSL setup. Noting, that it was always possible in Docker Desktop to integrate it with WSL but we generally never choose to do so! So, let's begin with configuring docker in our WSL2 setup on Ubuntu.
 
 ### Configure Docker
 
@@ -58,7 +58,7 @@ Over here we are going to leverage the caveat that only Docker Desktop needs a l
 4. Install Docker Engine and packages that go along with it
 
     ```bash
-    sudo apt-get update && /
+    sudo apt-get update && \
     sudo apt-get install docker-ce docker-ce-cli containerd.io -y
     ```
 
@@ -168,3 +168,10 @@ To be able to run and build the services on docker, we need to install dotnet on
     {% include figure image_path="/assets/images/posts/2022-04-07/SuccessfulRun.jpg" alt="Successful Run" caption="Successful Run" %}
 
 Now, we have successfully set up WSL2 and can run containerized solutions via visual studio directly over there. _**Happy containerizing without Docker Desktop on Windows!!**_
+
+---
+
+## See Also
+
+- [WSL2 on Windows](/technical/infra/wsl2/wsl2-installation-windows/)
+- [Traefik with .NET Docker services](/technical/.net/infra/dotnet-docker-traefik/)

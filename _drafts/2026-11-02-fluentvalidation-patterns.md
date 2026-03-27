@@ -1,7 +1,7 @@
 ---
 title: "Validation in .NET 2026: FluentValidation vs DataAnnotations vs Manual"
 excerpt: >-
-  "Three approaches, three trade-offs. Which validation strategy actually fits your project?"
+  Three approaches, three trade-offs. Which validation strategy actually fits your project?
 categories:
   - Technical
   - .NET
@@ -71,7 +71,7 @@ ORIGINALITY CHECKLIST:
 // TODO: Add validator testing examples
 ```
 
-## Best Practices
+## What Works in Practice
 
 <!-- TODO: Organizing validators, performance considerations, when to validate -->
 

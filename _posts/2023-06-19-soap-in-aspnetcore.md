@@ -1,7 +1,7 @@
 ---
-title: "Demystifying SOAP Services in the world of .NET Core"
+title: "SOAP Services in ASP.NET Core: CoreWCF and SoapCore Implementation Guide"
 excerpt: >-
-  "Exploring the new ways of achieving Soap based Apis in aspnet-core..."
+  Exploring modern approaches to building and consuming SOAP-based APIs in ASP.NET Core using CoreWCF and SoapCore.
 categories:
   - Technical
   - .NET
@@ -13,7 +13,7 @@ tags:
   - SOAP
   - CoreWcf
   - SoapCore
-  - Asmxass
+  - Asmx
   - Wcf
   - .NET-Framework
 author: animat089
@@ -26,7 +26,7 @@ comments: true
 
 When we talk about an API in form of protocols, there are generally 2 options that come to our mind, one being, obviously, REST (Representational State Transfer) and the other being SOAP (Simple Object Access Protocol); others being RPC and GraphQL APIs.
 
-In this article, we are going to explore the various ways in which we can create SOAP APIs in the legacy, .net framework, and the latest and the greatest, which is .NET 6.0 as fo right now. Similar would be the case, if for some commercial requirement we had an opportunity to upgrade and ASMX service to newer counterparts. Although in the recent times the usage of REST APIs has gained a lot of popularity in the modern systems but SOAP API systems are still prevalent and used across domains and integrations.
+In this article, we are going to explore the various ways in which we can create SOAP APIs in the legacy, .net framework, and the latest and the greatest, which is .NET 6.0 as of right now. Similar would be the case, if for some commercial requirement we had an opportunity to upgrade an ASMX service to newer counterparts. Although in the recent times the usage of REST APIs has gained a lot of popularity in the modern systems but SOAP API systems are still prevalent and used across domains and integrations.
 
 Basically, when .net core/.net 6.0 was released, it did not have any support for soap-based APIs but with the ever developing world of .net we now have possible ways of mimicking the same, So let's jump into the actuals...
 
@@ -349,6 +349,13 @@ app.UseServiceModel(builder =>
 app.Run();
 ```
 
-## Conclusion
+## SOAP in a REST World
 
 Therefore, what we witness over here is that with .NET Core as well, we can achieve SOAP based endpoint showing almost the same behavior, it is just that we need to do some workaround encapsulating the response types into their specific type class objects so that the consumers do not have to make any significant changes on their side. But, still it is very well doable...happy coding and happy modernizations!!
+
+---
+
+## Related
+
+- [Refit API clients](/technical/.net/.net-core/refit-api-sdk/)
+- [Polly v8 resilience patterns](/technical/.net/.net-core/polly-v8-resilience-patterns/)

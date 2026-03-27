@@ -1,7 +1,7 @@
 ---
 title: "EF Core 8: New Features You Should Actually Use"
 excerpt: >-
-  "JSON columns, bulk updates, raw SQL improvements - the EF Core 8 features worth adopting."
+  JSON columns, bulk updates, raw SQL improvements - the EF Core 8 features worth adopting.
 categories:
   - Technical
   - .NET
@@ -39,7 +39,7 @@ TODO: Write your intro here. Avoid generic phrases like "In this article, we wil
 
 AUTHENTIC OPENER EXAMPLE:
 "After upgrading to EF Core 8 at [domain], I discovered that 3 new features solved problems 
-I'd been working around for months. Here's what actually matters."
+I'd been working around for months. These are the ones that actually matter."
 
 Include:
 - A real scenario from your work (Autodesk, virtual construction, etc.)

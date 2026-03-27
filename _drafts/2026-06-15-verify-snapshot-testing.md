@@ -1,7 +1,7 @@
 ---
 title: "Verify.NET: Snapshot Testing That Actually Works"
 excerpt: >-
-  "Stop writing 50 assertions per test. Verify captures the output once, and alerts you when it changes. 3.4k stars and growing."
+  Stop writing 50 assertions per test. Verify captures the output once, and alerts you when it changes. 3.4k stars and growing.
 categories:
   - Technical
   - .NET

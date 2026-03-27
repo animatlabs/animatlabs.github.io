@@ -1,7 +1,7 @@
 ---
-title: "Real-Time Events in C# with Server-Sent Events"
+title: "Server-Sent Events in ASP.NET Core: Real-Time Streaming Without SignalR"
 excerpt: >-
-  "Server-Sent Events gives you real-time server-to-client streaming in 15 lines of C#. No SignalR hub, no JavaScript library, no WebSocket handshake."
+  Server-Sent Events gives you real-time server-to-client streaming in 15 lines of C#. No SignalR hub, no JavaScript library, no WebSocket handshake.
 categories:
   - Technical
   - .NET
@@ -13,11 +13,18 @@ tags:
   - Real-Time
   - ASP.NET Core
 author: animat089
-last_modified_at: 2026-03-21
+last_modified_at: 2026-03-26
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
+faq:
+  - q: "What are Server-Sent Events in ASP.NET Core?"
+    a: "SSE is the browser's one-way stream over plain HTTP: the server keeps a GET response open and sends `text/event-stream` events. No WebSocket upgrade, no SignalR hub—just an endpoint that writes lines."
+  - q: "When should I use SSE instead of SignalR in .NET?"
+    a: "When the client only listens. If nothing ever pushes from the browser, I skip SignalR: no hub, no JS client, roughly a dozen lines of C# on a GET. SignalR is for when you actually need duplex chat-style traffic."
+  - q: "Does SSE support automatic reconnection?"
+    a: "Yes—`EventSource` reconnects on its own. You can tune retries and use `Last-Event-ID` on the server so the client resumes mid-stream."
 ---
 
 I added SignalR to a project that only needed server-to-client updates. 200 lines of hub code, connection management, and a JavaScript dependency. All of that for a dashboard that never sends data back. SSE does it in 15 lines. I still ask "does the client ever push?" before I touch SignalR.
@@ -204,3 +211,8 @@ No NuGet packages, no hub classes: just a GET endpoint and a loop. Full code and
 Follow-up piece: SSE plus HTMX for a workflow dashboard where the server pushes HTML fragments. No custom JavaScript. I wanted that article to exist mostly so I'd stop re-explaining EventSource to myself every six months.
 
 ---
+
+## Related Reading
+
+- [HTMX dashboard in .NET](/technical/.net/workflow/htmx-dotnet/)
+- [Reactive programming with System.Reactive](/technical/.net/reactive-programming/)

@@ -1,7 +1,7 @@
 ---
 title: "AI Agent Pipeline with Rollback: Semantic Kernel + WorkflowForge"
 excerpt: >-
-  "I built an AI agent that researches, drafts, and publishes content. Then I made it fail on purpose. Semantic Kernel handles the thinking. WorkflowForge handles the undo."
+  I built an AI agent that researches, drafts, and publishes content. Then I made it fail on purpose. Semantic Kernel handles the thinking. WorkflowForge handles the undo.
 categories:
   - Technical
   - .NET

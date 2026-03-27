@@ -1,7 +1,7 @@
 ---
 title: "Minimal APIs: When Controllers Are Overkill"
 excerpt: >-
-  "Controllers aren't always the answer. When Minimal APIs actually shine, and how to structure them for production."
+  Controllers aren't always the answer. When Minimal APIs actually shine, and how to structure them for production.
 categories:
   - Technical
   - .NET

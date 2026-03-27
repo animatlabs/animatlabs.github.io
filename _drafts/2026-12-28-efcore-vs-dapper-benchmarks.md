@@ -1,7 +1,7 @@
 ---
 title: "EF Core vs Dapper: Real Benchmarks for Real Scenarios"
 excerpt: >-
-  "I benchmarked EF Core against Dapper in scenarios that actually matter. The benchmarks tell a different story."
+  I benchmarked EF Core against Dapper in scenarios that actually matter. The benchmarks tell a different story.
 categories:
   - Technical
   - .NET

@@ -1,7 +1,7 @@
 ---
-title: "What It Actually Takes to Ship a Quality .NET OSS Release"
+title: "Ship a Quality .NET Open Source Release: CI/CD, SBOM, and NuGet Publishing Pipeline"
 excerpt: >-
-  "SonarCloud, Sigstore attestation, CycloneDX SBOM, multi-TFM testing, environment-gated NuGet publish: every piece of infrastructure that went into taking a .NET OSS project from local dotnet pack to a production-grade release pipeline. Including the parts that broke."
+  SonarCloud, Sigstore attestation, CycloneDX SBOM, multi-TFM testing, and environment-gated NuGet publishing. Every piece of infrastructure for a production-grade .NET OSS release pipeline.
 categories:
   - Technical
   - .NET
@@ -13,7 +13,7 @@ tags:
   - NuGet
   - WorkflowForge
 author: animat089
-last_modified_at: 2026-03-21
+last_modified_at: 2026-03-26
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
@@ -256,17 +256,17 @@ Every `.nupkg`, `.snupkg`, and SBOM file gets a cryptographic attestation before
 
 ```yaml
 - name: Attest NuGet Package Provenance
-  uses: actions/attest-build-provenance@a2bbfa...ecd0c4c32  # v4.1.0
+  uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32  # v4.1.0
   with:
     subject-path: './packages/*.nupkg'
 
 - name: Attest Symbol Package Provenance
-  uses: actions/attest-build-provenance@a2bbfa...ecd0c4c32  # v4.1.0
+  uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32  # v4.1.0
   with:
     subject-path: './packages/*.snupkg'
 
 - name: Attest SBOM
-  uses: actions/attest-build-provenance@a2bbfa...ecd0c4c32  # v4.1.0
+  uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32  # v4.1.0
   with:
     subject-path: './packages/bom.json'
 ```
@@ -421,3 +421,11 @@ None of this is individually complex. The complexity is in getting all of it wor
 | CHANGELOG | [CHANGELOG.md](https://github.com/animatlabs/workflow-forge/blob/main/CHANGELOG.md) |
 
 {% include cta-workflowforge.html %}
+
+---
+
+## Related Reading
+
+- [WorkflowForge 2.0 benchmarks](/technical/.net/workflow/workflow-forge-2-performance-unleashed/)
+- [Traefik with .NET Docker services](/technical/.net/infra/dotnet-docker-traefik/)
+- [Polly v8 resilience patterns](/technical/.net/.net-core/polly-v8-resilience-patterns/)

@@ -1,7 +1,7 @@
 ---
 title: "Computational Geometry with C#: Visualizing Math.NET Spatial"
 excerpt: >-
-  "Something different - let's build geometric visualizations with Math.NET Spatial and NetTopologySuite. Because code can be beautiful."
+  Something different - let's build geometric visualizations with Math.NET Spatial and NetTopologySuite. Because code can be beautiful.
 categories:
   - Technical
   - .NET

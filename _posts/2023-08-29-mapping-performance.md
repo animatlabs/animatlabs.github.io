@@ -1,7 +1,7 @@
 ---
-title: ".NET: Exploring various object transformation mappers including XSLT"
+title: "Object Mapping in .NET: Comparing AutoMapper, Mapster, XSLT, and Manual Approaches"
 excerpt: >-
-  "Exploring various object transformation mappers including XSLT"
+  Exploring and benchmarking various object transformation and mapping strategies in .NET including AutoMapper, Mapster, XSLT, and manual mapping.
 categories:
   - Technical
   - .NET
@@ -23,15 +23,15 @@ comments: true
 
 Based on the requirements of the organization/project, we may end up choosing the tech on how do we wish to map objects in a commercial project. Now to a many, this might seem to be a thing like what are you saying. How, can this we such a big thing?...It can be, just explore with me the possibilities I present here and lets take it from there.
 
-There are may object to object mapping libraries available in the world as of right now, One such example is `AutoMapper`; there are other libraries in the community like `Mapster` to do the same. On the other hand, there are other parsing and transforming solutions like `XSLT` (Extensible Stylesheet Language Transformations). 
+There are many object to object mapping libraries available in the world as of right now, One such example is `AutoMapper`; there are other libraries in the community like `Mapster` to do the same. On the other hand, there are other parsing and transforming solutions like `XSLT` (Extensible Stylesheet Language Transformations). 
 
-> In the world of .NET the inbuilt library only supports `XSL v1.0` with `XSLTCompiledTransform`, there are other paid libraries like that from Saxon that work with the latest and the greatest and provide other functionalities like `XSpec` (unit-testing for XSLT) testing seamlessly.
+> In the world of .NET the inbuilt library only supports `XSL v1.0` with `XSLTCompiledTransform`, there are other paid libraries like that from Saxon that work with the latest and the greatest and provide other functionalities like `XSpec` (unit-testing for XSLT) testing smoothly.
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/Benchmarking/Mapping){: .btn .btn--primary}
 
 ## Results First - Let's blow your mind...
 
-To set the context, let's take a case of an API that needs to read an XML and then map it to another object and then revert return a string response downstream. Here, we would be looking at the conventional ways to solve the solution like general object-object mapping and then delve into other patterns as well. Now, looking for the strategies to be followed given we have an XML file that we need to map the object from there are only given set of ways we do the transformations:
+To set the context, let's take a case of an API that needs to read an XML and then map it to another object and then revert return a string response downstream. Here, we would be looking at the conventional ways to solve the solution like general object-object mapping and then look at other patterns as well. Now, looking for the strategies to be followed given we have an XML file that we need to map the object from there are only given set of ways we do the transformations:
 
 1. XMLDocument - Extract the required props using XPath for the values required
 2. ModelToModel - Deserialize input to C# classes and map those classes
@@ -49,7 +49,7 @@ To set the context, let's take a case of an API that needs to read an XML and th
 | XsltJsonMapping      |  8.359 us | 0.1631 us | 0.2062 us |  37.46 KB |
 | XsltTextMapping      |  3.338 us | 0.0383 us | 0.0320 us |  17.66 KB |
 
-> What we observer here is that both speed and memory wise, direct model to model mapping beats everyone to the game. The methods had been setup to not read the required files but just to map and generate a string result!
+> What we observe here is that both speed and memory wise, direct model to model mapping beats everyone to the game. The methods had been setup to not read the required files but just to map and generate a string result!
 
 ## Looking into the implementations
 
@@ -488,6 +488,14 @@ public void XsltTextMapping()
 }
 ```
 
-## Conclusion
+## Choosing Your Mapper
 
 This article provides with the basic details on how we can map and takes into account the performance only at the mapping level and not the setup part of it. This is intended to explain and explore the available ways to map and how they might perform, but overall I am trying to encourage to explore the how and why to choose a tech stack to be dependent on a data-based decision rather than just like that! Happy and performant coding!
+
+---
+
+## Related Reading
+
+- [Collection iteration performance](/technical/.net/.net-core/improve-iteration-performance/)
+- [Native mapping techniques](/technical/.net/.net-core/native-mapping-operations/)
+- [EF Core performance optimization](/technical/.net/.net-core/ef-core-performance/)

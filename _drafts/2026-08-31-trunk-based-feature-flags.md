@@ -1,7 +1,7 @@
 ---
 title: "Feature Flags: The Key to Fearless Deployments"
 excerpt: >-
-  "Deploy incomplete features to production. Roll out to 1% of users. Kill problematic code without redeploying. Feature flags make it possible."
+  Deploy incomplete features to production. Roll out to 1% of users. Kill problematic code without redeploying. Feature flags make it possible.
 categories:
   - Technical
   - .NET

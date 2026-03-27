@@ -1,7 +1,7 @@
 ---
-title: "MassTransit Saga + WorkflowForge Compensation: Real Rollback Code"
+title: "MassTransit Saga Pattern in .NET: Implement Compensation and Rollback with WorkflowForge"
 excerpt: >-
-  "Everyone talks about the saga pattern. Nobody shows the compensation code. Single-service demo: MassTransit delivers the messages; WorkflowForge rolls back the failures."
+  Implement the saga pattern in .NET with MassTransit for messaging and WorkflowForge for automatic compensation. Includes working rollback code, not just diagrams.
 categories:
   - Technical
   - .NET
@@ -15,11 +15,18 @@ tags:
   - Messaging
   - RabbitMQ
 author: animat089
-last_modified_at: 2026-03-21
+last_modified_at: 2026-03-26
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
+faq:
+  - q: "What is the saga pattern in .NET?"
+    a: "You chain local commits instead of a two-phase lock across services. When a later step fails, you run compensating actions backward—release the inventory, void the charge—until you're consistent enough for the business."
+  - q: "How does MassTransit implement the saga pattern?"
+    a: "MassTransit gives you message-driven sagas (state machine style): correlate messages, persist saga state, move transitions when events arrive. Compensation is whatever you code when a message says something blew up."
+  - q: "What is compensation in WorkflowForge?"
+    a: "Per-step undo hooks. If step N fails, WorkflowForge walks backward calling those compensations—real methods, not a slide with a box labeled 'rollback.' That's the glue I used next to MassTransit in the demo."
 ---
 
 I spent a while looking for a .NET saga example that actually showed the compensation code. Not a diagram, not a blog post that stops at "and then you'd roll back the previous steps." Actual running code where a payment fails and stock gets released.
@@ -103,7 +110,8 @@ public sealed class OrderSubmittedConsumer(IBus bus, ILogger<OrderSubmittedConsu
         logger.LogInformation("Received order {OrderId} for ${Amount}", order.OrderId, order.Amount);
 
         var shouldFail = order.Amount > 500;
-        var workflow = OrderSagaWorkflow.Build(bus, shouldFail);
+        var massTransitBus = new MassTransitBus(bus);
+        var workflow = OrderSagaWorkflow.Build(massTransitBus, shouldFail);
 
         using var foundry = WF.CreateFoundry(
             workflowName: workflow.Name,
@@ -131,6 +139,23 @@ public sealed class OrderSubmittedConsumer(IBus bus, ILogger<OrderSubmittedConsu
 }
 ```
 
+Workflow steps depend on `IMessageBus` (async publish). The OrderService project adapts MassTransit's `IBus` with a thin wrapper:
+
+```csharp
+public interface IMessageBus
+{
+    Task PublishAsync<T>(T message, CancellationToken ct) where T : class;
+}
+
+public sealed class MassTransitBus(IBus bus) : IMessageBus
+{
+    public Task PublishAsync<T>(T message, CancellationToken ct) where T : class
+        => bus.Publish(message, ct);
+}
+```
+
+`IMessageBus` lives in the shared `Workflows.Sample` library; `MassTransitBus` lives next to the consumer in `AnimatLabs.WorkflowForge.MassTransitSaga.OrderService`.
+
 ## The Workflow
 
 Each step extends `WorkflowOperationBase`. Forge does the work. Restore does the rollback.
@@ -138,7 +163,7 @@ Each step extends `WorkflowOperationBase`. Forge does the work. Restore does the
 ```csharp
 public static class OrderSagaWorkflow
 {
-    public static IWorkflow Build(IBus bus, bool simulatePaymentFailure = false)
+    public static IWorkflow Build(IMessageBus bus, bool simulatePaymentFailure = false)
     {
         return WF
             .CreateWorkflow("OrderSaga")
@@ -153,7 +178,7 @@ public static class OrderSagaWorkflow
 ## The Steps
 
 ```csharp
-public sealed class ReserveStockStep(IBus bus) : WorkflowOperationBase
+public sealed class ReserveStockStep(IMessageBus bus) : WorkflowOperationBase
 {
     public override string Name => "ReserveStock";
 
@@ -163,7 +188,7 @@ public sealed class ReserveStockStep(IBus bus) : WorkflowOperationBase
         var orderId = foundry.GetPropertyOrDefault<Guid>(SagaKeys.OrderId);
         foundry.Logger.LogInformation("[ReserveStock] Reserving stock for order {OrderId}", orderId);
 
-        await bus.Publish(new ReserveStock(orderId, 1), ct).ConfigureAwait(false);
+        await bus.PublishAsync(new ReserveStock(orderId, 1), ct).ConfigureAwait(false);
         await Task.Delay(500, ct).ConfigureAwait(false);
 
         foundry.Logger.LogInformation("[ReserveStock] Stock reserved for order {OrderId}", orderId);
@@ -182,7 +207,7 @@ public sealed class ReserveStockStep(IBus bus) : WorkflowOperationBase
 ```
 
 ```csharp
-public sealed class ChargePaymentStep(IBus bus, bool simulateFailure) : WorkflowOperationBase
+public sealed class ChargePaymentStep(IMessageBus bus, bool simulateFailure) : WorkflowOperationBase
 {
     public override string Name => "ChargePayment";
 
@@ -193,7 +218,7 @@ public sealed class ChargePaymentStep(IBus bus, bool simulateFailure) : Workflow
         var amount = foundry.GetPropertyOrDefault<decimal>(SagaKeys.Amount);
         foundry.Logger.LogInformation("[ChargePayment] Charging ${Amount} for order {OrderId}", amount, orderId);
 
-        await bus.Publish(new ChargePayment(orderId, amount), ct).ConfigureAwait(false);
+        await bus.PublishAsync(new ChargePayment(orderId, amount), ct).ConfigureAwait(false);
         await Task.Delay(800, ct).ConfigureAwait(false);
 
         if (simulateFailure)
@@ -275,3 +300,12 @@ dotnet run --project AnimatLabs.WorkflowForge.MassTransitSaga.OrderService
 The app auto-submits two orders. Watch the logs for the $999 failure and the compensation cascade running in reverse.
 
 {% include cta-workflowforge.html %}
+
+---
+
+## See Also
+
+- [WorkflowForge introduction](/technical/.net/workflow/workflow-forge-introduction/)
+- [WorkflowForge with Coravel](/technical/.net/workflow/workflowforge-coravel-scheduled-workflows/)
+- [HTMX dashboard in .NET](/technical/.net/workflow/htmx-dotnet/)
+- [Polly v8 resilience patterns](/technical/.net/.net-core/polly-v8-resilience-patterns/)

@@ -1,7 +1,7 @@
 ---
 title: "Records, Structs, or Classes: A Decision Framework for C#"
 excerpt: >-
-  "Record class, record struct, readonly struct, class - C# has 6+ ways to define types. A practical framework for choosing."
+  Record class, record struct, readonly struct, class - C# has 6+ ways to define types. A practical framework for choosing.
 categories:
   - Technical
   - .NET
@@ -93,7 +93,7 @@ TARGET: 1,500-1,800 words
 - Decision criteria for choosing records vs classes
 - Common patterns and use cases
 - Migration strategies
-- Best practices
+- What works in practice
 - Anti-patterns to avoid
 - Real-world examples
 -->

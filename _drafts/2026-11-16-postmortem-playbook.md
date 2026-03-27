@@ -1,7 +1,7 @@
 ---
 title: "Postmortem Playbook for .NET Teams"
 excerpt: >-
-  "How to run postmortems that actually prevent repeat incidents - with templates you can use today."
+  How to run postmortems that actually prevent repeat incidents - with templates you can use today.
 categories:
   - Technical
   - .NET
@@ -146,7 +146,7 @@ This is where postmortems create value. Each finding should translate into concr
 | Detection | Add alert for connection pool utilization > 80% |
 | Prevention | Add static analysis rule to flag direct SqlConnection usage |
 | Process | Add data access review to PR checklist |
-| Documentation | Document connection pooling best practices |
+| Documentation | Document connection pooling guidelines |
 | Testing | Add load test that validates connection handling under stress |
 
 **Anti-patterns to avoid:**

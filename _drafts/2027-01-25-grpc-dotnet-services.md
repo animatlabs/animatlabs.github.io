@@ -1,7 +1,7 @@
 ---
 title: "gRPC in .NET: High-Performance Service Communication"
 excerpt: >-
-  "When REST isn't fast enough: gRPC for inter-service communication in .NET."
+  When REST isn't fast enough: gRPC for inter-service communication in .NET.
 categories:
   - Technical
   - .NET
@@ -26,7 +26,7 @@ comments: true
 
 gRPC and REST serve different purposes. REST is ubiquitous, human-readable, and works everywhere. gRPC is faster, more efficient, and designed for service-to-service communication.
 
-Here's my decision framework:
+My decision framework:
 
 | Criteria | REST | gRPC |
 |----------|------|------|
@@ -190,7 +190,7 @@ app.MapGrpcService<OrderServiceImpl>();
 
 ### Client Usage
 
-The generated client makes calling the service straightforward:
+The generated client makes calling the service simple:
 
 ```csharp
 using var channel = GrpcChannel.ForAddress("https://localhost:5001");
@@ -333,7 +333,7 @@ Deadlines propagate automatically. If Service A calls Service B with a 5-second 
 
 ## My Recommendations
 
-After using gRPC in production, here's what works:
+After using gRPC in production, a few things stood out:
 
 **Do:**
 - Use gRPC for internal service communication where performance matters

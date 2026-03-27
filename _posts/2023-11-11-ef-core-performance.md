@@ -1,7 +1,7 @@
 ---
-title: "Optimizing Entity Framework Core: A Guide to Enhancing Performance"
+title: "EF Core Performance Optimization: AsNoTracking, Compiled Queries, and Concurrency in .NET"
 excerpt: >-
-  "In optimizing Entity Framework Core, managing concurrency with [ConcurrencyCheck] ensures data integrity during simultaneous edits. Effective connection management, achieved via consistent connection strings and per-request DbContext lifecycle, is crucial for resource efficiency. These strategies are key to enhancing EF Core's performance in .NET applications, ensuring robust and responsive data operations."
+  Practical strategies for optimizing Entity Framework Core performance including AsNoTracking, compiled queries, connection pooling, and concurrency management in .NET.
 categories:
   - Technical
   - .NET
@@ -18,11 +18,18 @@ sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
+faq:
+  - q: "How do I improve EF Core query performance?"
+    a: "Start with `AsNoTracking` on reads, `Select` projections instead of materializing whole graphs, compiled queries for hot paths, split queries when `Include` fans out, and indexes that match your filters. Stop pulling navigations you don't need."
+  - q: "What does AsNoTracking do in Entity Framework Core?"
+    a: "EF skips the change tracker for those rows—no identity snapshot, less memory and CPU. Use it when you're not going to `SaveChanges` on those instances."
+  - q: "How do I handle concurrency in EF Core?"
+    a: "Mark a column as a concurrency token (`[ConcurrencyCheck]` or `IsConcurrencyToken`). On save, if the row changed underneath you, EF throws `DbUpdateConcurrencyException` and you decide whether to merge, retry, or bail."
 ---
 
-Entity Framework Core (EF Core) is a powerful and flexible ORM widely used in .NET applications for data access. However, as with any technology, understanding how to optimize its use is crucial for building high-performance applications. This blog post delves into practical strategies for enhancing EF Core's performance, complete with examples for each technique.
+Entity Framework Core (EF Core) is a powerful and flexible ORM widely used in .NET applications for data access. However, as with any technology, understanding how to optimize its use is crucial for building high-performance applications. This blog post covers practical strategies for enhancing EF Core's performance, complete with examples for each technique.
 
-## Utilizing AsNoTracking for Read-Only Scenarios
+## Using AsNoTracking for Read-Only Scenarios
 
 ### Explanation
 
@@ -71,7 +78,7 @@ Prefer:
 var filteredList = context.Products.Where(p => p.Price > 100).ToList();
 ```
 
-## Leveraging Raw SQL for Complex Queries
+## Using Raw SQL for Complex Queries
 
 ### Explanation
 
@@ -173,7 +180,7 @@ var categories = memoryCache.GetOrCreate("categories", entry => {
 });
 ```
 
-## Utilizing Compiled Queries
+## Using Compiled Queries
 
 ### Explanation
 
@@ -283,7 +290,7 @@ Effective management of database connections is crucial for performance, especia
 
 In .NET Core and EF Core, connection pooling is handled by the database provider, such as SQL Server, and is enabled by default. However, it's essential to ensure that your connection strings are consistent, as connection pools are segregated based on the connection string.
 
-Here's an example of how you might configure a SQL Server connection in your `DbContext`:
+An example of how you might configure a SQL Server connection in your `DbContext`:
 
 ```csharp
 protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -309,6 +316,14 @@ public void ConfigureServices(IServiceCollection services)
 
 This setup ensures that each web request gets a fresh DbContext instance, which aligns well with the connection pooling mechanism, leading to efficient use of database connections.
 
-## Conclusion
+## Performance Wins Add Up
 
 In conclusion, optimizing EF Core involves a combination of efficient coding practices, strategic query writing, and database-level optimizations. By applying these strategies, developers can ensure their applications run efficiently, making the most out of the capabilities of Entity Framework Core.
+
+---
+
+## Related
+
+- [EF Core configurations and migrations](/technical/.net/ef-core/ef-core-managing-configurations-migrations/)
+- [EF Core: custom SQL, SPs, and UDFs](/technical/.net/ef-core/ef-core-managing-sp-udf-custom-sql/)
+- [Collection iteration performance](/technical/.net/.net-core/improve-iteration-performance/)

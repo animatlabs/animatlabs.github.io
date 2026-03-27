@@ -1,7 +1,7 @@
 ---
 title: "Vertical Slice vs Clean Architecture: The 2026 Verdict"
 excerpt: >-
-  "The architecture debate that won't die. When to use each, and why the hybrid usually wins."
+  The architecture debate that won't die. When to use each, and why the hybrid usually wins.
 categories:
   - Technical
   - .NET

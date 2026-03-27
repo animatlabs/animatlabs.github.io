@@ -1,7 +1,7 @@
 ---
 title: "Health Checks and Metrics in .NET: A Production Setup"
 excerpt: >-
-  "Liveness, readiness, Prometheus, Grafana, custom business metrics. The monitoring setup I use and the docker-compose to run it all locally."
+  Liveness, readiness, Prometheus, Grafana, custom business metrics. The monitoring setup I use and the docker-compose to run it all locally.
 categories:
   - Technical
   - .NET

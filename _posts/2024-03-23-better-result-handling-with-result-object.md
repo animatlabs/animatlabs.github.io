@@ -1,7 +1,7 @@
 ---
-title: "Better result handling with Result<T>"
+title: "Result Pattern in C#: Replace Exceptions with Result<T> for Cleaner Error Handling"
 excerpt: >-
-  "Exceptions shouldn't be used to control normal program flow. It can be challenging to follow the logic of a program that jumps from one exception handler to another, as opposed to one that follows a more straightforward, linear flow."
+  Stop using exceptions for control flow. The Result pattern in C# provides a cleaner, more maintainable approach to error handling in .NET applications.
 categories:
   - Technical
   - .NET
@@ -20,7 +20,7 @@ comments: true
 
 ## Introduction
 
-Exceptions should be rare...**Why?**...Throwing and catching exceptions **is slow** relative to other code flow patterns. Because of this, exceptions shouldn't be used to control normal program flow.**Also**...Code that relies heavily on exceptions for control flow can become **difficult to read and maintain** . It can be challenging to follow the logic of a program that jumps from one exception handler to another, as opposed to one that follows a more straightforward, linear flow.
+Exceptions should be rare...**Why?**...Throwing and catching exceptions **is slow** relative to other code flow patterns. Because of this, exceptions shouldn't be used to control normal program flow.**Also**...Code that relies heavily on exceptions for control flow can become **difficult to read and maintain** . It can be challenging to follow the logic of a program that jumps from one exception handler to another, as opposed to one that follows a simpler, linear flow.
 
 **Also**...Improperly handled exceptions can lead to resource leaks. Exceptions are designed to **handle unexpected and rare events** . Using them for regular control flow, like handling business logic or validations, is generally considered a bad practice because it misrepresents the intention of the exception mechanism.
 
@@ -141,11 +141,11 @@ So, instead of an ordinary string, we can return a more structured value (this m
 
 The Result pattern clearly indicates that user input validation is a part of the normal flow and not an exceptional circumstance.
 
-- **Easier Error Handling:** It guides the caller to handle both success and failure cases explicitly, making the code more robust.
+- **Easier Error Handling:** It guides the caller to handle both success and failure cases explicitly, making the code more reliable.
 - **Enhanced Performance:** Avoiding exceptions for regular control flow scenarios like input validation is more performance-efficient.
 - **Flexibility and Extensibility:** The Result pattern can easily be extended or modified to include additional details about the failure or even success scenarios, without changing the method signature.
 
-## Conclusion
+## Exceptions vs Results
 
 We should reserve exceptions for truly unforeseen events. They are best suited for situations where the error is beyond your immediate handling capabilities. For everything else, the clarity and structure offered by the Result pattern are far more beneficial.
 
@@ -153,6 +153,14 @@ Embracing the Result class in your code allows you to:
 
 - Clearly indicate that a method might not always succeed.
 - Neatly wrap up an error occurring within your application.
-- Offer a streamlined, functional approach to managing errors.
+- Offer a cleaner, functional approach to managing errors.
 
 What's more, you can systematically catalog all the errors in your application using the Error class. This is incredibly useful, providing a clear guide on which errors to anticipate and handle.
+
+---
+
+## Related
+
+- [Clean Architecture with MediatR](/technical/.net/architecture/clean-architecture/)
+- [Aspect-oriented programming in C#](/technical/.net/.net-core/aspect-oriented-programming/)
+- [Multiple implementations of the same interface](/technical/.net/.net-core/di-multiple-implementations-of-same-interface/)

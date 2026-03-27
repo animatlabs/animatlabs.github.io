@@ -1,7 +1,7 @@
 ---
 title: "Humanizer: The .NET Library That Should Be in Every Project"
 excerpt: >-
-  "Stop writing manual string formatting code. Humanizer turns enums, dates, numbers, and file sizes into human-readable text with a single method call."
+  Stop writing manual string formatting code. Humanizer turns enums, dates, numbers, and file sizes into human-readable text with a single method call.
 categories:
   - Technical
   - .NET

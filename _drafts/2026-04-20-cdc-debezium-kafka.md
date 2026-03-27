@@ -1,7 +1,7 @@
 ---
 title: "Event Sourcing Without the Framework: CDC + Debezium + .NET"
 excerpt: >-
-  "You do not need EventStoreDB or Marten to get event sourcing benefits. Debezium reads the PostgreSQL transaction log, streams row changes through Kafka, and your .NET app consumes typed domain events."
+  You do not need EventStoreDB or Marten to get event sourcing benefits. Debezium reads the PostgreSQL transaction log, streams row changes through Kafka, and your .NET app consumes typed domain events.
 categories:
   - Technical
   - .NET

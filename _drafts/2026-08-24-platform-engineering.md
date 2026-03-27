@@ -1,7 +1,7 @@
 ---
 title: "Platform Engineering: Build Your Internal Developer Platform"
 excerpt: >-
-  "DevOps promised freedom. Platform Engineering delivers it. Building an Internal Developer Platform that developers actually use."
+  DevOps promised freedom. Platform Engineering delivers it. Building an Internal Developer Platform that developers actually use.
 categories:
   - Technical
   - DevOps

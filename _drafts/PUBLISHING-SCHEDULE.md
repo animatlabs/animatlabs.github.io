@@ -43,7 +43,7 @@ Posts are ordered by content chains: each post links to its neighbors. Alternate
 |------|------|------|-------|------|
 | Apr 6 | Serilog in Production: The Setup I Actually Use | Production | Chain B (Production Stack) | None |
 | Apr 10 | Health Checks and Metrics in .NET: A Production Setup | Production | Chain B (Production Stack) | Docker (Prometheus, Grafana, PostgreSQL) |
-| Apr 13 | Scalar Replaced Swagger in .NET 9. Here's the Migration | Discovery | Standalone | None |
+| Apr 13 | Scalar Replaced Swagger in .NET 9: Migration Path | Discovery | Standalone | None |
 | Apr 20 | Event Sourcing Without the Framework: CDC + Debezium + .NET | CDC Pipeline | Chain D (CDC) | Docker (PG, Kafka, Debezium) |
 | Apr 27 | CDC Events to the Browser: Kafka + SignalR + SSE in .NET | Real-Time | Chain D (CDC) | Docker (Kafka) |
 
@@ -71,7 +71,7 @@ Posts are ordered by content chains: each post links to its neighbors. Alternate
 | Date | Post | Type |
 |------|------|------|
 | Jul 6 | **Computational Geometry with Math.NET Spatial** | NEW - Fun |
-| Jul 13 | OpenTelemetry: The Complete .NET Guide (+ WF instrumentation) | Comprehensive |
+| Jul 13 | OpenTelemetry: The Complete .NET Guide (+ WF instrumentation) | Observability stack |
 | Jul 20 | **Kiota: Microsoft's API Client Generator** | NEW - Discovery |
 | Jul 27 | Local-First: CRDTs and Offline-First Apps | Architecture |
 

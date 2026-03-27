@@ -1,7 +1,7 @@
 ---
 title: "Kafka Alternatives: Redpanda, Pulsar, NATS Compared"
 excerpt: >-
-  "Kafka isn't the only game in town. An honest comparison of Redpanda, Pulsar, and NATS for .NET developers."
+  Kafka isn't the only game in town. An honest comparison of Redpanda, Pulsar, and NATS for .NET developers.
 categories:
   - Technical
   - .NET

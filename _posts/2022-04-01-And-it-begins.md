@@ -1,7 +1,7 @@
 ---
 title: "And it begins!!"
 excerpt: >-
-  "Finally, releasing the much-awaited initiative..."
+  Finally, releasing the much-awaited initiative of sharing learnings with the larger community.
 categories:
   - Blog
 author: animat089

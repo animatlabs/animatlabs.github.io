@@ -1,7 +1,7 @@
 ---
 title: "Serilog in Production: The Setup I Actually Use"
 excerpt: >-
-  "Most .NET Serilog tutorials stop at Console and File sinks. Production setup: appsettings-driven, correlation IDs, PII redaction, async sinks, and graceful shutdown."
+  Most .NET Serilog tutorials stop at Console and File sinks. Production setup: appsettings-driven, correlation IDs, PII redaction, async sinks, and graceful shutdown.
 categories:
   - Technical
   - .NET

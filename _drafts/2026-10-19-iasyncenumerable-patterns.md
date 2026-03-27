@@ -1,7 +1,7 @@
 ---
 title: "Stop Loading Everything Into Memory: IAsyncEnumerable Patterns"
 excerpt: >-
-  "Your API loads 100k rows into a List, serializes them, and wonders why it OOMs. IAsyncEnumerable fixes this. The patterns that work."
+  Your API loads 100k rows into a List, serializes them, and wonders why it OOMs. IAsyncEnumerable fixes this. The patterns that work.
 categories:
   - Technical
   - .NET
@@ -26,7 +26,7 @@ TARGET: 1,200-1,500 words
 ORIGINALITY CHECKLIST:
 - [ ] Clear explanation of when to use IAsyncEnumerable
 - [ ] Implementation patterns: async generators, database streaming, API pagination
-- [ ] Cancellation support and best practices
+- [ ] Cancellation support and production patterns
 - [ ] Common pitfalls: blocking, memory leaks, improper disposal
 - [ ] LINQ operations with IAsyncEnumerable
 - [ ] Real-world examples: database queries, file processing, API clients
@@ -61,7 +61,7 @@ ORIGINALITY CHECKLIST:
 
 <!-- TODO: Passing CancellationToken to async enumerators -->
 <!-- TODO: Cancellation in LINQ operations -->
-<!-- TODO: Best practices for cancellation support -->
+<!-- TODO: Production patterns for cancellation support -->
 
 ```csharp
 // TODO: Add cancellation examples

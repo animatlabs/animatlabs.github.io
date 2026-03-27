@@ -1,7 +1,7 @@
 ---
 title: "Zero Dependencies: Building Lean .NET Libraries"
 excerpt: >-
-  "How I built WorkflowForge with zero core dependencies - and why it matters for your library consumers."
+  How I built WorkflowForge with zero core dependencies - and why it matters for your library consumers.
 categories:
   - Technical
   - .NET

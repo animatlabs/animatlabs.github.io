@@ -1,7 +1,7 @@
 ---
 title: "System.IO.Pipelines: High-Performance I/O in .NET"
 excerpt: >-
-  "When streams aren't fast enough: how Pipelines work and when to use them."
+  When streams aren't fast enough: how Pipelines work and when to use them.
 categories:
   - Technical
   - .NET

@@ -1,7 +1,7 @@
 ---
 title: "Saga Pattern in .NET: Automatic Compensation Made Simple"
 excerpt: >-
-  "Distributed transactions are hard. The Saga pattern with automatic compensation in WorkflowForge makes them manageable."
+  Distributed transactions are hard. The Saga pattern with automatic compensation in WorkflowForge makes them manageable.
 categories:
   - Technical
   - .NET

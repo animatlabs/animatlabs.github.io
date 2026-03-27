@@ -1,7 +1,7 @@
 ---
-title: ".NET Resilience with Polly v8"
+title: "Polly v8 in .NET: Retry, Circuit Breaker, and Timeout Resilience Patterns"
 excerpt: >-
-  "Most .NET apps I've worked on had zero resilience until something broke in production. Polly v8 setup I actually use, from the one-liner that covers 80% of cases to custom pipelines for the rest."
+  Practical Polly v8 resilience patterns for .NET including retry, circuit breaker, timeout, and rate limiting. From the one-liner that covers 80% of cases to custom pipelines.
 categories:
   - Technical
   - .NET
@@ -15,11 +15,18 @@ tags:
   - Retry
   - Microservices
 author: animat089
-last_modified_at: 2026-03-21
+last_modified_at: 2026-03-26
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
+faq:
+  - q: "What is Polly v8 in .NET?"
+    a: "The usual resilience toolbox—retry, breaker, timeout, rate limit, hedging—exposed as composable pipelines. Pair it with `IHttpClientFactory` and `Microsoft.Extensions.Http.Resilience` in ASP.NET Core and you're most of the way there."
+  - q: "What is the difference between Polly v7 and v8?"
+    a: "v8 is pipeline-first (`ResiliencePipelineBuilder`) instead of the old policy objects, plays nicer with DI, and lines up with `Microsoft.Extensions.Resilience`. Same ideas, different surface area."
+  - q: "How do I add retry and circuit breaker to HttpClient in .NET?"
+    a: "On the client registration, chain `AddStandardResilienceHandler()` from `Microsoft.Extensions.Http.Resilience`. Honestly, that one line covers most HTTP cases I see—retry with jitter, breaker, timeout—before anyone hand-rolls loops."
 ---
 
 Most .NET apps I've worked on had zero resilience code until something actually broke. A third-party API times out, the connection pool fills up, and suddenly completely unrelated endpoints start failing. The usual pattern: someone adds a try-catch, wraps it in a retry loop with `Thread.Sleep`, and calls it a day. Works until it doesn't.
@@ -234,3 +241,11 @@ The patterns above are what I've settled on after running these in production fo
 The snippets above are standalone. Copy them into any .NET 8+ project with `dotnet add package Polly` (or `Microsoft.Extensions.Http.Resilience` for the `IHttpClientFactory` integration). For WorkflowForge, add `WorkflowForge.Extensions.Resilience.Polly`.
 
 {% include cta-workflowforge.html %}
+
+---
+
+## More on This Topic
+
+- [Redis distributed locking in .NET](/technical/.net/.net-core/redis-distributed-locking/)
+- [Refit API clients](/technical/.net/.net-core/refit-api-sdk/)
+- [MassTransit saga with WorkflowForge](/technical/.net/workflow/masstransit-workflowforge-saga/)

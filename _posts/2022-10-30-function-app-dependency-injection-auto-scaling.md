@@ -1,7 +1,7 @@
 ---
-title: "Function Apps: Dependency Injection and Auto Scaling"
+title: "Azure Function Apps: Dependency Injection and Auto-Scaling in .NET"
 excerpt: >-
-  "Enabling dependency injections and analyzing the auto-scaling in Azure Function Apps"
+  Enabling dependency injection and analyzing auto-scaling behavior in Azure Function Apps with .NET.
 categories:
   - Technical
   - .NET
@@ -22,7 +22,7 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
-With the advent of serverless computing, we aim towards greater scalability, more flexibility, and quicker time to release, all at a reduced cost as compared to the traditional web services (not for everything though). Additionally, with .NET Core adding in-built support for dependency injection and the ability to be able to define the lifetime of an object (singleton, scoped or transient), with all the benefits it provides, we do not have default support for those with Azure Function Apps (serverless apps on Azure). Therefore, in this article, we would be looking into how we could leverage the goodness of dependency injections and scoping the created objects with Function Apps.
+With the advent of serverless computing, we aim towards greater scalability, more flexibility, and quicker time to release, all at a reduced cost as compared to the traditional web services (not for everything though). Additionally, with .NET Core adding in-built support for dependency injection and the ability to be able to define the lifetime of an object (singleton, scoped or transient), with all the benefits it provides, we do not have default support for those with Azure Function Apps (serverless apps on Azure). Therefore, in this article, we would be looking into how we could use dependency injection and scoping the created objects with Function Apps.
 
 We could debate over the fact that serverless computing is expected to be small and short-lived without (m)any dependencies whereas we over here are talking about dependency injections and handling the lifetime of objects where they would expect to handle objects with every invocation. Actually, in Azure, the function apps have been designed to work on top of Azure Web Jobs/App Services, which is an Azure flavour for hosting traditional web services, therefore they support long-running workloads.
 
@@ -113,7 +113,7 @@ internal abstract class BaseService : IBaseService
 }
 ```
 
-As we can observe in the base service, we provide a unique `Identifier` on object creation and log it as is. This would help us understand how the comes into the picture at the time of execution of the function app. Now, we can set up the rest of the scoped lifetime services pretty straightforwardly.
+As we can observe in the base service, we provide a unique `Identifier` on object creation and log it as is. This would help us understand how DI comes into the picture at the time of execution of the function app. Now, we can set up the rest of the scoped lifetime services directly.
 
 ```c#
 internal class SingletonService : BaseService, ISingletonService
@@ -246,7 +246,7 @@ From the executions above, we observe that there was only 1 singleton instance c
 
 #### Message Blaster
 
-Now, hosting the function app in Azure on a Linux-based pay-as-you-go (Consumption) plan and utilizing the message blaster function to push 2000 messages to the service bus quickly.
+Now, hosting the function app in Azure on a Linux-based pay-as-you-go (Consumption) plan and using the message blaster function to push 2000 messages to the service bus quickly.
 
 ```c#
 public static void Main()
@@ -319,10 +319,17 @@ The other way to look at it is the overall executions that happened irrespective
 
 {% include figure image_path="/assets/images/posts/2022-10-30/OverallConsumptionPerSecond.jpg" alt="Overall executions per second" caption="Overall executions per second" %}
 
-## Conclusions
+## Putting It Together
 
 We observed what we set out to do, basically setup a function app with dependency injections and then it auto-scaling when hosted on azure thereby adding another dimension on how we could create and host applications, based on our needs.
 
 ## References
 
 [Rahul P. Nath - Dependency Injection In Azure Functions](https://www.rahulpnath.com/blog/dependency-injection-in-azure-functions/)
+
+---
+
+## More on This Topic
+
+- [Multiple implementations of the same interface](/technical/.net/.net-core/di-multiple-implementations-of-same-interface/)
+- [Clean Architecture with MediatR](/technical/.net/architecture/clean-architecture/)

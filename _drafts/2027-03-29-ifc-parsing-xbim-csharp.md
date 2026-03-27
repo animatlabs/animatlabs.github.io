@@ -1,7 +1,7 @@
 ---
 title: "Parsing Building Models in C#: IFC Files with xBIM Toolkit"
 excerpt: >-
-  "Open IFC files, traverse building hierarchies, extract geometry, and render floor plans -- all in C# without any CAD software installed."
+  Open IFC files, traverse building hierarchies, extract geometry, and render floor plans, all in C# without any CAD software installed.
 categories:
   - Technical
   - .NET
@@ -50,9 +50,9 @@ LOCAL DEV: No cloud services needed. Sample IFC files available free from buildi
 
 ## What is IFC and Why Should You Care?
 
-IFC (Industry Foundation Classes) is the open standard for BIM (Building Information Modeling) data. Think of it as the "JSON of the construction industry" -- a structured, vendor-neutral format that describes an entire building: its geometry, materials, spatial relationships, and metadata.
+IFC (Industry Foundation Classes) is the open standard for BIM (Building Information Modeling) data. Think of it as the "JSON of the construction industry": a structured, vendor-neutral format that describes an entire building: its geometry, materials, spatial relationships, and metadata.
 
-If you work in AEC (Architecture, Engineering, Construction) tech -- or you're just curious about what buildings look like as data -- IFC is the file format you'll encounter most. And xBIM is the best open-source .NET toolkit to work with it.
+If you work in AEC (Architecture, Engineering, Construction) tech, or you're just curious about what buildings look like as data, IFC is the file format you'll encounter most. And xBIM is the best open-source .NET toolkit to work with it.
 
 ## Setting Up xBIM
 
@@ -87,7 +87,7 @@ Console.WriteLine($"Project: {project?.Name}");
 
 ## Traversing the Building Hierarchy
 
-IFC models have a strict hierarchy: Project > Site > Building > Storey > Space. Here's how to walk it:
+IFC models have a strict hierarchy: Project > Site > Building > Storey > Space. Walk the hierarchy like this:
 
 ```csharp
 public static void TraverseBuildingHierarchy(IModel model)
@@ -214,7 +214,7 @@ public static void ExtractMaterials(IIfcWall wall)
 
 ## Rendering a Simple Floor Plan with SkiaSharp
 
-Here's where it gets visual -- let's extract wall outlines and render a 2D floor plan:
+This is where it gets visual: let's extract wall outlines and render a 2D floor plan:
 
 ```csharp
 using SkiaSharp;
@@ -393,13 +393,13 @@ var results = model.Instances.OfType<IIfcBuildingElement>()
 
 This is part 1 of the **Geometry & CAD in C#** series:
 1. **IFC Files with xBIM** (this post)
-2. [DWG/DXF Files with ACadSharp](/technical/.net/.net-core/dwg-dxf-acadsharp-dotnet/) -- reading AutoCAD files
-3. [Interactive Geometry Viewer with Blazor WASM](/technical/.net/.net-core/blazor-wasm-geometry-viewer/) -- browser-based visualization
-4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/) -- geometric algorithms
+2. [DWG/DXF Files with ACadSharp](/technical/.net/.net-core/dwg-dxf-acadsharp-dotnet/): reading AutoCAD files
+3. [Interactive Geometry Viewer with Blazor WASM](/technical/.net/.net-core/blazor-wasm-geometry-viewer/): browser-based visualization
+4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/): geometric algorithms
 
 ## IFC from .NET with xBIM
 
-xBIM makes IFC files accessible to any .NET developer -- no AutoCAD, no Revit, no expensive licenses. Whether you're building a model viewer, automating quantity takeoffs, or validating BIM data, xBIM gives you the full power of IFC in idiomatic C#.
+xBIM makes IFC files accessible to any .NET developer: no AutoCAD, no Revit, no expensive licenses. Whether you're building a model viewer, automating quantity takeoffs, or validating BIM data, xBIM gives you the full power of IFC in idiomatic C#.
 
 The AEC industry is massive and underserved by modern developer tooling. If you're looking for a niche where .NET skills translate directly into real-world impact, BIM technology is it.
 

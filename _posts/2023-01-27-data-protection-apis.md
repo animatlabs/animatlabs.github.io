@@ -1,7 +1,7 @@
 ---
-title: ".NET Apps: Securing data with Data Protection APIs"
+title: "Data Protection APIs in .NET: Encrypt Sensitive Data with IDataProtector"
 excerpt: >-
-  "Dealing with the unavoidable eventuality of storing sensitive information and leveraging IDataProtector data protection APIs to solve the problem at hand."
+  Dealing with the unavoidable eventuality of storing sensitive information and using IDataProtector data protection APIs to solve the problem at hand.
 categories:
   - Technical
   - .NET
@@ -20,7 +20,7 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
-We discussed in the previous article about securing the IDs from the public APIs. In the same direction, we may end up in a situation with the commercial set-up where might need to persist security-sensitive data. There are a few reasons why we would wish to encrypt data available in the system which could majorly be categorized into either client requirements, compliance or untrusted persistence/transmission or third parties involved, for example, validation tokens, passwords, etc.
+We discussed in the previous article about securing the IDs from the public APIs. In the same direction, we may end up in a situation with the commercial set-up where we might need to persist security-sensitive data. There are a few reasons why we would wish to encrypt data available in the system which could majorly be categorized into either client requirements, compliance or untrusted persistence/transmission or third parties involved, for example, validation tokens, passwords, etc.
 
 This is a far common problem to go unnoticed by Microsoft for which they released a package in dotnet core which helps toward providing a solution for certain such problems. In this article, we are going to discuss some of the facets of the same and explore its capabilities.
 
@@ -141,3 +141,10 @@ The article does not cover all the aspects of the data protection API in detail,
 
 - [Official Microsoft Documentation](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/introduction?view=aspnetcore-6.0)
 - [Introduction to DP Api - Andrew Lock](https://andrewlock.net/an-introduction-to-the-data-protection-system-in-asp-net-core/)
+
+---
+
+## Related Reading
+
+- [Hashing internal IDs](/technical/.net/.net-core/secure-alternate-to-exposing-identifiers/)
+- [ASP.NET Core security](/technical/.net/.net-core/security-dotnet/)

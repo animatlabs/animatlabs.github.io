@@ -1,7 +1,7 @@
 ---
-title: "Source Generators in C#: Eliminate Repetitive Code, Boost Performance"
+title: "C# Source Generators: Compile-Time Code Generation with Roslyn in .NET"
 excerpt: >-
-  "Stop writing repetitive code. Source generators create it at compile time - zero runtime cost, full IntelliSense, completely debuggable."
+  Stop writing repetitive code. C# source generators create it at compile time with zero runtime cost, full IntelliSense support, and complete debuggability.
 categories:
   - Technical
   - .NET
@@ -15,7 +15,7 @@ tags:
   - Performance
   - Metaprogramming
 author: animat089
-last_modified_at: 2026-02-03
+last_modified_at: 2026-03-26
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
@@ -389,3 +389,11 @@ One long rant worth the pixels: if your team keeps copy-pasting the same mapper 
 ---
 
 *If you've built a generator for a different pattern, I'd be curious to see it.*
+
+---
+
+## Related
+
+- [Aspect-oriented programming in C#](/technical/.net/.net-core/aspect-oriented-programming/)
+- [C# 12 highlights](/technical/.net/.net-core/interesting-enhancements-cs12/)
+- [Result pattern in C#](/technical/.net/.net-core/better-result-handling-with-result-object/)

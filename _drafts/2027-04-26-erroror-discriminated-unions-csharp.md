@@ -1,7 +1,7 @@
 ---
 title: "ErrorOr, OneOf, and the Result Pattern: Discriminated Unions in C#"
 excerpt: >-
-  "Three libraries, one goal: stop throwing exceptions for expected failures. How ErrorOr, OneOf, and Ardalis.Result compare -- and which one fits your project."
+  Three libraries, one goal: stop throwing exceptions for expected failures. How ErrorOr, OneOf, and Ardalis.Result compare, and which one fits your project.
 categories:
   - Technical
   - .NET
@@ -26,7 +26,7 @@ comments: true
 <!-- 
 POST PLAN:
 - Recap: why exceptions for expected failures are problematic (link to Result pattern post)
-- The discriminated union concept (F#, Rust, TypeScript -- C# is catching up)
+- The discriminated union concept (F#, Rust, TypeScript; C# is catching up)
 - Library comparison:
   - ErrorOr (2k stars): fluent API, built-in error types, minimal
   - OneOf (4k stars): general-purpose DU, exhaustive matching
@@ -52,7 +52,7 @@ LOCAL DEV: No cloud services needed.
 
 ## Previously on AnimatLabs...
 
-In [Better Result Handling with Result](/technical/.net/.net-core/better-result-handling-with-result-object/), we explored why exceptions shouldn't control normal program flow and how the Result pattern provides a cleaner alternative. Since then, the .NET ecosystem has evolved -- three libraries now compete for the "best way to handle expected failures" crown.
+In [Better Result Handling with Result](/technical/.net/.net-core/better-result-handling-with-result-object/), we explored why exceptions shouldn't control normal program flow and how the Result pattern provides a cleaner alternative. Since then, the .NET ecosystem has evolved: three libraries now compete for the "best way to handle expected failures" crown.
 
 Let's compare them honestly.
 
@@ -136,7 +136,7 @@ var userValue = result.Value;
 
 ### OneOf (4k GitHub Stars)
 
-General-purpose discriminated unions -- not limited to success/error.
+General-purpose discriminated unions: not limited to success/error.
 
 ```csharp
 // dotnet add package OneOf
@@ -395,7 +395,7 @@ Until then, ErrorOr, OneOf, and Ardalis.Result are the best options available.
 
 All three libraries solve the same fundamental problem: making error handling explicit instead of relying on exceptions. The "right" choice depends on your project's architecture, team experience, and how general-purpose you need the discriminated union to be.
 
-My personal pick for most projects in 2027? **ErrorOr** -- it's the simplest, most focused, and the fluent API makes code read beautifully. But I reach for **OneOf** when I need true exhaustive matching, and **Ardalis.Result** when I'm working in Clean Architecture.
+My personal pick for most projects in 2027? **ErrorOr**: it's the simplest, most focused, and the fluent API makes code read beautifully. But I reach for **OneOf** when I need true exhaustive matching, and **Ardalis.Result** when I'm working in Clean Architecture.
 
 ---
 
