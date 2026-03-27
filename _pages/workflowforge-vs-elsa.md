@@ -8,8 +8,6 @@ author: animat089
 sitemap: true
 toc: true
 toc_label: "Comparison"
-sidebar:
-  nav: "guides"
 last_modified_at: 2026-03-26
 faq:
   - q: "Is WorkflowForge faster than Elsa Workflows?"

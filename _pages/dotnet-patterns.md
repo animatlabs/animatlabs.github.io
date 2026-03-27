@@ -8,8 +8,6 @@ author: animat089
 sitemap: true
 toc: true
 toc_label: "Guide Contents"
-sidebar:
-  nav: "guides"
 last_modified_at: 2026-03-26
 ---
 

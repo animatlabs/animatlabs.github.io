@@ -1,8 +1,6 @@
 main:
   - title: "Posts"
     url: /posts/
-  - title: "Guides"
-    url: /dotnet-patterns/
   - title: "Categories"
     url: /categories/
   - title: "Tags"
@@ -11,15 +9,3 @@ main:
     url: /subscribe/
   - title: "About"
     url: /about/
-
-guides:
-  - title: "Guides"
-    children:
-      - title: ".NET Patterns"
-        url: /dotnet-patterns/
-      - title: "WorkflowForge"
-        url: /workflowforge-guide/
-      - title: "WorkflowForge vs Elsa"
-        url: /workflowforge-vs-elsa/
-      - title: "WorkflowForge vs Workflow Core"
-        url: /workflowforge-vs-workflow-core/
