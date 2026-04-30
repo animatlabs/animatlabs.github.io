@@ -22,13 +22,17 @@ toc_label: "Table of Contents"
 comments: true
 ---
 
-Picture a checkout service. A payment clears, you insert the order row, and the next line of code fires `OrderPaid` to Kafka so inventory and shipping can react. The process dies after `SaveChanges` and before the publish. You have money captured and a fulfilled-looking database, but downstream never heard about it. Flip the failure around: the message goes out, then the DB write rolls back. Now you have subscribers acting on an order that does not exist.
+Picture a checkout service. A payment clears, you insert the order row, and the next line of code fires `OrderPaid` to Kafka so inventory and shipping can react.
 
-That is the dual-write problem in a form you will actually see in production. Two different systems (your database and your broker) do not share a transaction boundary. Your code can try to be careful; the failure modes stay ugly.
+The process dies after `SaveChanges` and before the publish. You have money captured and a fulfilled-looking database, but downstream never heard about it.
 
-I have debugged reconciliation jobs that existed only because someone published before persisting, or persisted without publishing. The fixes are never a one-line change. You end up with compensating transactions, manual republish scripts, and trust in your team that nobody will add another `PublishAsync` in the wrong place.
+Flip it: the message goes out, then the DB write rolls back. Now subscribers are acting on an order that doesn't exist.
 
-## The pattern that looks fine until it is not
+That's the dual-write problem in a form you'll actually see in production. Your database and your broker don't share a transaction boundary. Your code can try to be careful; the failure modes stay ugly.
+
+I've debugged reconciliation jobs that only existed because someone published before persisting, or persisted without publishing. The fixes are never a one-line change. You end up with compensating transactions, manual republish scripts, and hoping nobody adds another `PublishAsync` in the wrong place.
+
+## The pattern that looks fine until it's not
 
 The dangerous version is any code path that does two independent commits in sequence:
 
@@ -37,13 +41,13 @@ await _dbContext.SaveChangesAsync();
 await _messageBus.PublishAsync(orderPaidEvent);
 ```
 
-If anything interrupts that gap, you get skew. Retries make it worse: the publisher might succeed while the app thinks it failed, so you double-send. There is no single "atomic" story across SQL Server or PostgreSQL and Kafka without a bridge.
+If anything interrupts that gap, you get skew. Retries make it worse: the publisher might succeed while the app thinks it failed, so you double-send. There's no single "atomic" story across SQL Server or PostgreSQL and Kafka without a bridge.
 
 ## Outbox: one transaction, two inserts
 
-The transactional outbox fixes this by keeping the side effect you care about (the domain row) and the notification you want to fan out (the event) in the same database transaction. You stop calling the message bus from the request thread. You append a row to an `outbox` table next to your business tables. Either both commit, or neither does.
+The transactional outbox fixes this by keeping the domain row and the event you want to fan out in the same database transaction. You stop calling the message bus from the request thread. You append a row to an `outbox` table next to your business tables.
 
-Something else is responsible for moving rows from `outbox` into the broker. That is where CDC or polling comes in.
+Either both commit, or neither does. Something else moves rows from `outbox` into the broker. That's where CDC or polling comes in.
 
 ```
 ┌─────────────────────────────────────────┐
@@ -61,11 +65,11 @@ Something else is responsible for moving rows from `outbox` into the broker. Tha
               └───────────┘
 ```
 
-Debezium reads the database log and turns inserts on `outbox` into Kafka records. Your API stays dumb and fast: write data, write outbox, commit.
+Debezium reads the database log and turns inserts on `outbox` into Kafka records. I like keeping the API dumb: write data, write outbox, commit.
+
+The sample repo is a minimal ASP.NET Core API on PostgreSQL, one endpoint that creates an order and an outbox row under one explicit transaction.
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/OutboxPattern){: .btn .btn--primary}
-
-The sample in the repo is a minimal ASP.NET Core API against PostgreSQL: one endpoint creates an order and an outbox row under an explicit transaction.
 
 ## PostgreSQL schema
 
@@ -92,11 +96,11 @@ CREATE TABLE outbox (
 );
 ```
 
-`aggregate_type` and `event_type` give you topic or subject routing without parsing JSON first. `payload` holds the serialized event body (JSON in the sample). `aggregate_id` ties back to the business key consumers use for ordering and deduplication.
+`aggregate_type` and `event_type` give you topic routing without peeling JSON apart first. `payload` is the serialized body here (JSON). `aggregate_id` is what I'd key on for consumer ordering and dedup.
 
 ## EF Core: explicit transaction, order first, then outbox
 
-The implementation is intentionally boring. `BeginTransactionAsync` wraps both `SaveChangesAsync` calls so the order row exists before the outbox row references it. The outbox `AggregateId` uses the generated order id.
+I kept the implementation boring on purpose: `BeginTransactionAsync` wraps both `SaveChangesAsync` calls so the order row exists before the outbox row references it. The outbox `AggregateId` uses the generated order id.
 
 Entities and mapping live in `AppDbContext.cs`:
 
@@ -159,7 +163,7 @@ public class OutboxEvent
 }
 ```
 
-The API endpoint in `Program.cs` shows the transaction boundaries:
+`Program.cs` has the transactional endpoint:
 
 ```csharp
 app.MapPost("/api/orders", async (OrderRequest req, AppDbContext db) =>
@@ -202,23 +206,29 @@ app.MapPost("/api/orders", async (OrderRequest req, AppDbContext db) =>
 });
 ```
 
-Same pattern works with a domain service and repository layer; the important part is one transaction spanning both writes. If you refactor, keep that guarantee.
+Same pattern fits a domain service and repository layer. What matters is one transaction spanning both writes; if you refactor, keep that.
 
 ## CDC versus polling
 
-Polling means a worker `SELECT ... FROM outbox WHERE ... FOR UPDATE SKIP LOCKED` (or similar), publish, then mark processed or delete the row. It is simple to reason about and works everywhere. Latency is usually seconds unless you hammer the database. You also own backoff, locking, and poison-message behavior.
+Polling usually means a worker `SELECT ... FROM outbox WHERE ... FOR UPDATE SKIP LOCKED` (or similar), publish, then mark processed or delete the row. It's simple to reason about and works everywhere.
 
-Some teams add a `processed_at` column and sweep stale rows for alerts. Others delete on success so the table stays small. Both are fine. The shared idea is that the database remains the source of truth until Kafka acknowledges the handoff in whatever way you define "done."
+Latency is typically seconds unless you hammer the database. You own backoff, locking, and poison-message behavior.
 
-CDC (Debezium on PostgreSQL with `pgoutput`) watches the WAL. Inserts to `outbox` show up as change events quickly, often sub-second. You trade operational complexity: replication slots, connector upgrades, and schema history topics. For anything customer-facing or with tight SLAs, CDC is the usual pick. For internal notifications or low volume, polling can be enough.
+Some teams add a `processed_at` column and sweep stale rows for alerts. Others delete on success so the table stays small.
 
-You are not picking a religion forever. I have seen services start with a poller to ship something, then swap to Debezium when traffic or coupling made latency visible. The application code does not change when you make that switch. The outbox table is already there.
+Both are fine. The database stays the source of truth until Kafka acknowledges the handoff, however you define "done."
+
+CDC (Debezium on PostgreSQL with `pgoutput`) watches the WAL. Inserts to `outbox` show up as change events quickly, often sub-second.
+
+You pay in ops: replication slots, connector upgrades, schema history topics. For customer-facing paths or tight SLAs, I'd reach for CDC first. For internal noise or low volume, polling is often enough.
+
+You're not picking a religion forever. I've shipped a poller first, then swapped to Debezium when latency started to hurt. Application code didn't change either time; the outbox table was already there.
 
 The repo’s `docker-compose` sets `wal_level=logical` so PostgreSQL is ready for a connector when you are.
 
 ## Debezium outbox connector (sketch)
 
-You still use the PostgreSQL connector. You add Debezium’s `EventRouter` transform so Kafka messages look like domain events instead of raw table tuples. Names and hostnames should match your deployment; this mirrors the shape of the [CDC post](/2026/04/20/cdc-debezium-kafka/) pipeline while targeting `outbox` instead of only `orders`.
+I still use the stock PostgreSQL connector, then bolt on Debezium's `EventRouter` so Kafka gets domain-shaped messages instead of naked table tuples. Tweak names and hostnames for your deployment. Same overall shape as the [CDC post](/technical/.net/data%20engineering/cdc-debezium-kafka/) pipeline, except the interesting table is `outbox`, not only `orders`.
 
 ```json
 {
@@ -249,31 +259,41 @@ You still use the PostgreSQL connector. You add Debezium’s `EventRouter` trans
 }
 ```
 
-Wire this into the same Kafka Connect stack described in the CDC article. Full stack setup (Compose, topics, first connector registration) is there so this post stays focused on the outbox side.
+Wire this into the same Kafka Connect stack described in the CDC article. Compose, topics, and first connector registration live in that walkthrough; I stayed on the outbox side here.
 
 ## Consumer idempotency (short version)
 
-At-least-once delivery is the realistic assumption. Your handler must tolerate duplicates.
+At-least-once delivery is the realistic assumption; your handler has to tolerate duplicates.
 
-Common approaches: store a unique event id (the outbox row’s `id` is a natural choice) in a `processed_events` table and skip if seen; or use an idempotent upsert keyed by business id so a second delivery is a no-op. For Kafka, stable keys on published records help partition ordering for a single aggregate. None of that removes the need for defensive handlers.
+I usually track the outbox row `id` in a `processed_events` table and skip repeats. Or I'll use an idempotent upsert on business id so a redelivery does nothing harmful.
 
-Ordering is a separate headache. Per-aggregate ordering is achievable when all events for that aggregate land in one partition (keyed by `aggregate_id`). Global ordering across the whole system is usually not worth chasing. Design handlers so a slightly late message still makes sense, or detect staleness with version fields inside the payload.
+Either way, defensive handlers beat trying to solve everything in the publisher.
+
+Kafka-wise, stable keys help keep one aggregate ordered on one partition. That doesn't replace thinking through poison messages.
+
+Ordering is its own headache. Per-aggregate ordering works when everything for that aggregate lands in one partition (keyed by `aggregate_id`). Global ordering across the system is rarely worth it.
+
+I'd design handlers so a slightly late message still makes sense, or use version fields in the payload to spot staleness.
 
 ## What you get
 
-You stop lying to yourself about atomicity between the database and the bus. Failures surface as "transaction did not commit" instead of silent drift. You can replay from Kafka without guessing which domain version produced a message, because the outbox row and the order row committed together.
+Atomicity stops being fiction between the DB and the bus. Failures show up as "transaction didn't commit," not silent drift.
 
-Rollback behavior is simple. If validation fails after you have staged the `Order` but before `CommitAsync`, nothing reaches Kafka. If the bus is down, your API can still take the order as long as the database is healthy; events flow when CDC catches up. That decoupling is the whole point.
+Replay gets easier too: the outbox row and the order row committed together, so you're not guessing which domain version spawned a given message.
 
-You still monitor replication lag and consumer lag. The outbox does not delete distributed systems problems. It removes an entire class of consistency bugs between your write model and your first hop into messaging.
+If validation blows up after you've staged `Order` but before `CommitAsync`, nothing touches Kafka.
 
-If you are building the full pipeline (Kafka, Connect, Debezium, PostgreSQL replication), start with the walkthrough that already exists for this blog: [CDC post](/2026/04/20/cdc-debezium-kafka/). Point the connector at `outbox` when you are ready to go from "correct writes" to "events in the cluster."
+When the bus is down, my API can still take orders if the database is healthy; events catch up when CDC does. That's the decoupling I want.
+
+You'll still watch replication lag and consumer lag. The outbox doesn't make distributed systems easy; it just kills a whole class of bugs between your write model and messaging.
+
+If you're wiring the whole thing (Kafka, Connect, Debezium, PostgreSQL replication), I'd start here: [CDC post](/technical/.net/data%20engineering/cdc-debezium-kafka/). Point the connector at `outbox` when you're ready to move from "correct writes" to "events in the cluster."
 
 ---
 
-*If you have shipped outbox in production, how did you handle connector upgrades and slot lag?*
+*If you've shipped outbox in production, how did you handle connector upgrades and slot lag?*
 
 <!--
 LinkedIn promo:
-Dual-write bugs are the kind that only show up under load or after a deploy. I wrote up how the transactional outbox plus CDC closes the gap between PostgreSQL and Kafka, with EF Core code and a Debezium EventRouter sketch. Full stack steps link to the earlier CDC piece. Working sample: github.com/animat089/playground (OutboxPattern).
+Dual-write bugs are the kind that only show up under load or after a deploy. I wrote up how the transactional outbox plus CDC closes the gap between PostgreSQL and Kafka, with EF Core code and a Debezium EventRouter sketch. End-to-end stack steps are in the earlier CDC piece. Working sample: github.com/animat089/playground (OutboxPattern).
 -->

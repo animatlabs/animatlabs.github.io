@@ -50,11 +50,15 @@ LOCAL DEV: No cloud services. Sample DXF files easily created or downloaded.
 
 ## The Problem: AutoCAD Files Are Everywhere
 
-DWG and DXF files are the lingua franca of engineering drawings. Architects, mechanical engineers, electrical designers: they all produce DWG files. And sooner or later, a developer gets asked: "Can you extract data from these drawings?"
+DWG and DXF files are the lingua franca of engineering drawings. Architects ship DWG files, and mechanical and electrical designers aren't far behind.
 
-The traditional answer involves expensive AutoCAD licenses or proprietary SDKs. ACadSharp changes that: it's a free, MIT-licensed .NET library that reads and writes DWG/DXF files with zero dependencies on Autodesk software.
+Sooner or later someone asks you whether you can extract data from those drawings.
+
+The usual answer is an expensive AutoCAD seat or a proprietary SDK. I reach for ACadSharp instead: MIT-licensed .NET that reads and writes DWG/DXF without Autodesk on the machine.
 
 ## Setting Up ACadSharp
+
+I add the packages once per project; the APIs below work the same for DWG and DXF once you have `ACadSharp` referenced.
 
 ```csharp
 // dotnet add package ACadSharp
@@ -86,13 +90,13 @@ Console.WriteLine($"Blocks: {document.BlockRecords.Count()}");
 using var reader = new DxfReader("FloorPlan.dxf");
 var document = reader.Read();
 
-// Same API as DWG -- ACadSharp abstracts the format difference
+// Same API as DWG; ACadSharp abstracts the format difference.
 Console.WriteLine($"Entities: {document.Entities.Count()}");
 ```
 
 ## Understanding the Document Structure
 
-A CAD document has a well-defined structure:
+When I'm debugging a messy customer file, I start with header, layers, then entity counts grouped by type:
 
 ```csharp
 public static void InspectDocument(CadDocument document)
@@ -268,7 +272,7 @@ public static void GenerateDrawingReport(CadDocument document, string outputPath
 
 ## Spatial Queries with NetTopologySuite
 
-Combine ACadSharp with NetTopologySuite for powerful spatial analysis:
+I wire ACadSharp geometry into NetTopologySuite when I need envelopes, intersects, or an STRtree over linework:
 
 ```csharp
 using NetTopologySuite.Geometries;
@@ -316,7 +320,7 @@ public static void SpatialQueries(CadDocument document)
 
 ## Writing DXF Files
 
-Create drawings programmatically:
+Minimal example: one layer, four lines for a box, one `TextEntity`:
 
 ```csharp
 public static void CreateSimpleDrawing(string outputPath)
@@ -362,6 +366,10 @@ public static void CreateSimpleDrawing(string outputPath)
 
 ## Performance Considerations
 
+On 50MB+ DWGs I still use `DwgReader`/`Read()` as shown. I filter in the query before `ToList()` so I'm not hanging on to every entity.
+
+For spatial work, build the STRtree first (log-ish lookups instead of scanning every segment). Dispose the document when you're done; it can pin a lot of memory.
+
 ```csharp
 // For large DWG files (50MB+):
 
@@ -369,7 +377,7 @@ public static void CreateSimpleDrawing(string outputPath)
 using var reader = new DwgReader("Massive.dwg");
 var document = reader.Read();
 
-// 2. Filter early -- don't materialize all entities
+// 2. Filter early. Don't materialize all entities.
 var wallLines = document.Entities
     .OfType<Line>()
     .Where(l => l.Layer?.Name == "WALLS")
@@ -379,22 +387,22 @@ var wallLines = document.Entities
 // 3. For spatial queries, build an index first (O(log n) vs O(n))
 // See the NetTopologySuite STRtree example above
 
-// 4. Dispose properly -- CadDocument can hold significant memory
+// 4. Dispose properly. CadDocument can hold significant memory.
 ```
 
 ## What's Next
 
-This is part 2 of the **Geometry & CAD in C#** series:
-1. [IFC Files with xBIM](/technical/.net/.net-core/ifc-parsing-xbim-csharp/): parsing building information models
-2. **DWG/DXF Files with ACadSharp** (this post)
-3. [Interactive Geometry Viewer with Blazor WASM](/technical/.net/.net-core/blazor-wasm-geometry-viewer/): browser-based visualization
-4. [Computational Geometry with Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/): geometric algorithms
+This is part 2 of my **Geometry & CAD in C#** thread. I already wrote about [IFC with xBIM](/technical/.net/.net-core/ifc-parsing-xbim-csharp/). Up next I’ve got [Blazor WASM geometry viewer](/technical/.net/.net-core/blazor-wasm-geometry-viewer/) and [Math.NET Spatial](/technical/.net/.net-core/computational-geometry-mathnet/) for algorithms.
+
+You’re reading the DWG/DXF installment.
 
 ## CAD files without AutoCAD
 
-ACadSharp proves you don't need AutoCAD to work with CAD files. For data extraction, automated reporting, format conversion, or building custom viewers, it's a capable, free, and actively maintained library.
+I don’t install AutoCAD on a server just to scrape layers or dump counts. ACadSharp covers the three things I care about most: extraction, reporting, and writing DXF back out. It’s MIT, maintained, and good enough for production-style batch jobs I’ve run.
 
-Combined with NetTopologySuite for spatial queries and SkiaSharp for rendering, you have a complete CAD processing pipeline in pure .NET.
+NetTopologySuite for spatial indexes and SkiaSharp if I’m actually drawing pixels rounds out the stack; nothing magic, just .NET.
+
+**You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/CAD.ACadSharp){: .btn .btn--primary}
 
 ---
 

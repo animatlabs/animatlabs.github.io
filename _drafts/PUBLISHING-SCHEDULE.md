@@ -1,10 +1,10 @@
 # Blog Publishing Schedule
 
-**65+ drafts | Weekly on Mondays | Feb 2026 - May 2027**
+**Quality over quantity | April 2026 - December 2026**
 
-> **Local-First Approach:** All posts can be developed and tested locally with Docker. No Azure, AWS, or cloud subscriptions required. Each playground project includes its own `docker-compose.yml` for any required infrastructure.
+> **Local-First:** All posts run locally with Docker/Podman. No cloud subscriptions. Each playground project ships its own `docker-compose.yml`.
 
-> **Content Strategy:** Every post has a unique angle (opinionated take, real benchmarks, library discovery, problem-solving narrative, or fun/visual content). No generic docs rewrites. Posts are organized in content chains where each post drives traffic to related posts.
+> **Content Mix:** Visual/geometry, infrastructure, and WorkflowForge anchor posts on rotation. No generic tutorials.
 
 ---
 
@@ -15,290 +15,150 @@
 | Jan 26, 2026 | WorkflowForge 2.0: Performance Unleashed | **PUBLISHED** |
 | Feb 3, 2026 | Source Generators: Eliminate Boilerplate, Boost Performance | **PUBLISHED** |
 | Feb 9, 2026 | WorkflowForge + Coravel: Scheduled Workflows | **PUBLISHED** |
-| Feb 23, 2026 | .NET Resilience: When the Defaults Aren't Enough | **PUBLISHED** |
-| Mar 8, 2026 | What It Actually Takes to Ship a Quality .NET OSS Release | **PUBLISHED** |
-| Mar 15, 2026 | Run .NET Behind Traefik: Fix Port Conflicts Forever | **PUBLISHED** |
-| Mar 16, 2026 | MassTransit Saga + WorkflowForge Compensation | **PUBLISHED** |
-| Mar 19, 2026 | Real-Time Events in C# with Server-Sent Events | **PUBLISHED** |
+| Mar 8, 2026 | Ship a Quality .NET OSS Release | **PUBLISHED** |
+| Mar 10, 2026 | Polly v8 Resilience Patterns | **PUBLISHED** |
+| Mar 14, 2026 | Traefik Reverse Proxy for .NET Docker Services | **PUBLISHED** |
+| Mar 15, 2026 | MassTransit Saga + WorkflowForge Compensation | **PUBLISHED** |
+| Mar 16, 2026 | Server-Sent Events in ASP.NET Core | **PUBLISHED** |
+| Mar 24, 2026 | HTMX Dashboard with WorkflowForge | **PUBLISHED** |
+| Apr 27, 2026 | CDC with Debezium + Kafka: PostgreSQL Changes to Typed .NET Events | **PUBLISHED** |
 
 ---
 
-## Ready to Publish (Mar - May 2026) - Content Chains
-
-Posts are ordered by content chains: each post links to its neighbors. Alternates WF / non-WF.
-
-### March 2026
-
-| Date | Post | Type | Chain | Playground | Status |
-|------|------|------|-------|------------|--------|
-| ~~Mar 16~~ | ~~.NET + Docker + Traefik~~ | ~~PUBLISHED~~ | | | |
-| ~~Mar 19~~ | ~~Real-Time Events in C# with SSE~~ | ~~PUBLISHED~~ | | | |
-| Mar 23 | HTMX + WorkflowForge: Live Workflow Dashboard | WF + Web | Chain A (Real-Time) | `WorkflowForge/HtmxDashboard` (:5075) | READY |
-| ~~Mar 26~~ | ~~.NET Resilience: When the Defaults Aren't Enough~~ | ~~PUBLISHED~~ | | | |
-| Mar 30 | Spectre.Console: Beautiful CLI Tools in C# | Discovery | Standalone | `SpectreConsole/` (console app) | READY |
-
-### April 2026
-
-| Date | Post | Type | Chain | Deps |
-|------|------|------|-------|------|
-| Apr 6 | Serilog in Production: The Setup I Actually Use | Production | Chain B (Production Stack) | None |
-| Apr 10 | Health Checks and Metrics in .NET: A Production Setup | Production | Chain B (Production Stack) | Docker (Prometheus, Grafana, PostgreSQL) |
-| Apr 13 | Scalar Replaced Swagger in .NET 9: Migration Path | Discovery | Standalone | None |
-| Apr 20 | Event Sourcing Without the Framework: CDC + Debezium + .NET | CDC Pipeline | Chain D (CDC) | Docker (PG, Kafka, Debezium) |
-| Apr 27 | CDC Events to the Browser: Kafka + SignalR + SSE in .NET | Real-Time | Chain D (CDC) | Docker (Kafka) |
+## Roadmap: May - December 2026
 
 ### May 2026
 
 | Date | Post | Type | Playground | Status |
 |------|------|------|------------|--------|
-| May 4 | Transactional Outbox with CDC: Never Lose an Event | CDC Pipeline | `OutboxPattern/` (:5190) | READY |
-| May 4 | Marten: PostgreSQL as Doc DB + Event Store | Discovery | `MartenEventStore/` (:5192) | READY |
-| May 11 | I Replaced MediatR and MassTransit with Wolverine | Discovery | `WolverineMessaging/` (:5194) | READY |
-| May 18 | FastEndpoints: Why I Stopped Using Minimal APIs | Discovery | `FastEndpoints/` (:5196) | READY |
+| May 4 | CDC Events to the Browser: Kafka + SignalR + SSE in .NET | Real-time | `KafkaSignalR/` | READY |
+| May 5 | Computational Geometry in C#: Math.NET Spatial + NetTopologySuite | Visual | `ComputationalGeometry/` | READY |
+| May 19 | 3D Shapes in C# with WPF and Helix Toolkit | Visual | `HelixToolkit3D/` | READY |
 
 ### June 2026
 
-| Date | Post | Type |
-|------|------|------|
-| Jun 1 | **AI Code Review Bot in 50 Lines of C#** | NEW - AI Series |
-| Jun 8 | Testcontainers: Stop Mocking, Start Testing (+ WF test example) | Testing |
-| Jun 15 | **Verify.NET: Snapshot Testing That Works** | NEW - Discovery |
-| Jun 22 | Kafka Alternatives: Redpanda, Pulsar, NATS (+ broker comparison) | Comparison |
-| Jun 29 | Channels: The Most Underused .NET Feature | LIGHT - Rescued |
+| Date | Post | Type | Playground | Status |
+|------|------|------|------------|--------|
+| Jun 2 | Parsing Building Models in C#: IFC Files with xBIM | Visual | `IFC.xBIM/` | DRAFT |
+| Jun 16 | FastEndpoints: Why I Stopped Using Minimal APIs | Technical | `FastEndpoints/` | DRAFT |
 
 ### July 2026
 
-| Date | Post | Type |
-|------|------|------|
-| Jul 6 | **Computational Geometry with Math.NET Spatial** | NEW - Fun |
-| Jul 13 | OpenTelemetry: The Complete .NET Guide (+ WF instrumentation) | Observability stack |
-| Jul 20 | **Kiota: Microsoft's API Client Generator** | NEW - Discovery |
-| Jul 27 | Local-First: CRDTs and Offline-First Apps | Architecture |
+| Date | Post | Type | Playground | Status |
+|------|------|------|------------|--------|
+| Jul 7 | Reading AutoCAD Files in .NET: DWG/DXF with ACadSharp | Visual | `CAD.ACadSharp/` | DRAFT |
+| Jul 21 | Transactional Outbox with CDC: Never Lose an Event | Infra | `OutboxPattern/` | DRAFT |
 
 ### August 2026
 
-| Date | Post | Type |
-|------|------|------|
-| Aug 3 | **Podman: Docker Without the Daemon** | NEW - DevOps |
-| Aug 10 | **5 Hidden .NET Performance APIs** | LIGHT - Combined |
-| Aug 17 | **Elsa Workflows vs WorkflowForge: Honest Comparison** | NEW - WF Promotion |
-| Aug 24 | Platform Engineering: Internal Developer Platform | DevOps |
-| Aug 31 | Feature Flags + Trunk-Based Deployments | DevOps |
+| Date | Post | Type | Playground | Status |
+|------|------|------|------------|--------|
+| Aug 4 | WorkflowForge + Geometry Pipeline: Orchestrated CAD Processing | WF Anchor | `WorkflowForge/` | DRAFT |
+| Aug 18 | SharpGLTF: Building 3D Models in Code | Visual | `SharpGLTF/` | DRAFT |
 
 ### September 2026
 
-| Date | Post | Type |
-|------|------|------|
-| Sep 7 | **Supply Chain Security: SBOM & Package Signing** | NEW - Security |
-| Sep 14 | Chaos Engineering in .NET | SRE |
-| ~~Sep 21~~ | ~~Real-Time Dashboard: .NET + HTMX + SSE~~ | ~~CUT (overlaps with Mar 23 HTMX+WF post)~~ |
-| Sep 28 | BenchmarkDotNet Mastery | Performance |
+| Date | Post | Type | Playground | Status |
+|------|------|------|------------|--------|
+| Sep 1 | Elsa Workflows 3.0 vs WorkflowForge: Honest Comparison | WF Anchor | Both | DRAFT |
+| Sep 15 | System.IO.Pipelines + Channels for High-Throughput Parsing | Technical | `IoPipelines/` | DRAFT |
 
 ### October 2026
 
-| Date | Post | Type |
-|------|------|------|
-| Oct 5 | **n8n vs Code: Build vs Buy Workflows** | NEW - WF Promotion |
-| Oct 12 | .NET Aspire: Cloud-Native Development (consolidated) | Platform |
-| Oct 19 | Stop Loading Everything Into Memory: IAsyncEnumerable | LIGHT - Rescued |
-| Oct 26 | **My Developer Toolbox 2026** | NEW - Personal |
+| Date | Post | Type | Playground | Status |
+|------|------|------|------------|--------|
+| Oct 6 | Hidden .NET Performance APIs You're Not Using | Technical | `HiddenPerfApis/` | DRAFT |
+| Oct 20 | Zero Dependencies: How I Built WorkflowForge | WF Anchor | - | DRAFT |
 
 ### November 2026
 
-| Date | Post | Type |
-|------|------|------|
-| Nov 2 | Validation: FluentValidation vs DataAnnotations vs Manual | LIGHT - Comparison |
-| Nov 9 | Pattern Matching Recipes: 10 Problems Solved | LIGHT - Cookbook |
-| Nov 16 | The Postmortem Playbook | Unique |
-| Nov 23 | 5 Hidden SPOFs in Microservices | Practical |
-| Nov 30 | Zero Dependencies in .NET Libraries | Opinionated |
-
----
-
-## Buffer / Overflow (Dec 2026 - Mar 2027) - 15 Posts
-
-These are Tier 2 posts for busy-week substitution or overflow scheduling.
+| Date | Post | Type | Playground | Status |
+|------|------|------|------------|--------|
+| Nov 3 | Wolverine: I Replaced MediatR and MassTransit | Infra | `WolverineMessaging/` | DRAFT |
 
 ### December 2026
 
-| Date | Post | Type |
-|------|------|------|
-| Dec 7 | Vertical Slice vs Clean Architecture: Hybrid Approach | Architecture |
-| Dec 14 | Minimal APIs vs FastEndpoints vs Controllers: When to Use Each | Comparison (replaces generic Minimal APIs) |
-| ~~Dec 21~~ | ~~Saga Pattern with Compensation~~ | ~~MERGED (covered in MassTransit post)~~ |
-| Dec 28 | EF Core 10 vs Dapper: Has the Gap Closed? | Comparison (fresh .NET 10 benchmarks) |
-
-### January 2027
-
-| Date | Post | Type |
-|------|------|------|
-| Jan 4 | I/O Pipelines Deep Dive | Performance |
-| Jan 11 | Domain Events: Decoupling Your Architecture | Pattern |
-| Jan 18 | Native AOT in .NET | Performance |
-| Jan 25 | gRPC in .NET Services | Communication |
-
-### February 2027
-
-| Date | Post | Type |
-|------|------|------|
-| Feb 1 | EF Core 10: What's New | Release Notes |
-| Feb 8 | .NET 10 Performance Improvements | Benchmarks |
-| ~~Feb 15~~ | ~~MassTransit in 2026~~ | ~~CUT (covered in MassTransit+WF saga post)~~ |
-| Feb 22 | Zero Trust for Developers | Security |
-
-### March 2027
-
-| Date | Post | Type |
-|------|------|------|
-| Mar 1 | Developer Productivity Metrics | DX |
-| Mar 8 | Records, Structs, Classes: Decision Framework | LIGHT |
-| Mar 15 | Rate Limiting, Throttling, Circuit Breaking: Resilience Kit | LIGHT |
-| Mar 22 | TimeProvider: How Microsoft Fixed Time-Based Testing | LIGHT |
+| Date | Post | Type | Playground | Status |
+|------|------|------|------------|--------|
+| Dec 1 | Marten: PostgreSQL as Document DB + Event Store | Infra | `MartenEventStore/` | DRAFT |
+| Dec 15 | Saga Pattern in .NET: Automatic Compensation | WF Anchor | `WorkflowForge/` | DRAFT |
 
 ---
 
-## Extension (Apr - May 2027) - 7 Posts
+## Content Chains
 
-Geometry/CAD series and high-impact library discovery posts.
+### Geometry & CAD
+Math.NET Spatial -> Helix Toolkit 3D -> xBIM IFC -> ACadSharp DWG/DXF -> SharpGLTF -> WF Geometry Pipeline
 
-### March-April 2027 (Geometry & CAD)
+### CDC Pipeline
+CDC + Debezium -> Kafka + SignalR/SSE -> Transactional Outbox with CDC
 
-| Date | Post | Type |
-|------|------|------|
-| Mar 29 | **Parsing Building Models in C#: IFC Files with xBIM Toolkit** | NEW - Geometry/CAD |
-| Apr 5 | **Reading AutoCAD Files in .NET: DWG and DXF with ACadSharp** | NEW - Geometry/CAD |
-| Apr 12 | **Build an Interactive Geometry Viewer with Blazor WebAssembly** | NEW - Geometry/CAD |
-
-### April-May 2027 (Library Discovery Extension)
-
-| Date | Post | Type |
-|------|------|------|
-| Apr 19 | **Mapperly: Why I Ditched AutoMapper for Source-Generated Mapping** | NEW - Library Discovery |
-| Apr 26 | **ErrorOr, OneOf, and the Result Pattern: Discriminated Unions in C#** | NEW - Library Discovery |
-| May 3 | **YARP: Build a Custom API Gateway in 50 Lines of C#** | NEW - Infrastructure |
-| May 10 | **Humanizer: The .NET Library That Should Be in Every Project** | NEW - Library Discovery |
+### WorkflowForge Anchors
+Geometry Pipeline -> Elsa Comparison -> Zero Deps Philosophy -> Saga Deep Dive
 
 ---
 
-## Content Chains (NEW)
+## Backlog (2027, unscheduled)
 
-### Chain A: Real-Time
-SSE Foundations → HTMX+WF Dashboard
-- Post 1: Server-Sent Events in C# (concept-first, no frameworks)
-- Post 2: HTMX + WorkflowForge live dashboard (builds on SSE)
+- Testcontainers
+- Threading Channels
+- Local-first CRDTs
+- Podman
+- BenchmarkDotNet mastery
+- n8n vs code workflows
+- .NET Aspire
+- IAsyncEnumerable patterns
+- Developer Toolbox 2026
+- Postmortem Playbook
+- 5 Hidden SPOFs
+- Vertical Slice vs Clean
+- I/O Pipelines
+- Domain Events
+- Native AOT
+- gRPC
+- EF Core 10
+- .NET 10 Performance
+- Records vs Classes
+- Rate Limiting
+- TimeProvider
+- Blazor WASM Geometry Viewer (capstone)
+- Mapperly
+- ErrorOr/OneOf
+- YARP
+- Humanizer
 
-### Chain B: Production Stack
-Serilog → Monitoring
-- Post 1: Structured Logging with Serilog (production config, correlation IDs)
-- Post 2: Production Monitoring (health checks + Prometheus + Grafana, references Serilog)
+## Moved to Someday (low-value or redundant)
 
-### Chain C: Resilience
-.NET Resilience → MassTransit+WF Saga
-- Post 1: .NET Resilience: When the Defaults Aren't Enough (+ WF extension integration)
-- Post 2: MassTransit saga with WF compensation (uses resilience concepts)
-
-### Chain D: CDC Pipeline
-CDC → Browser Streaming → Outbox
-- Post 1: Event Sourcing with CDC + Debezium + .NET (database WAL to typed domain events)
-- Post 2: CDC Events to the Browser: Kafka + SignalR + SSE (streams CDC events to browser)
-- Post 3: Transactional Outbox with CDC (reliable event publishing, May)
-
----
-
-## Content Categories
-
-### AI Series (4 posts) - DEFERRED until Ollama setup documented
-- Semantic Kernel + Ollama (local agents, playground exists, needs Ollama running)
-- Microsoft.Extensions.AI (unified abstraction)
-- RAG in C# (retrieval-augmented generation)
-- AI Code Review Bot (50 lines)
-
-### CDC & Real-Time Pipeline (4 posts)
-- CDC with Debezium + Kafka
-- Transactional Outbox with CDC
-- Kafka to Browser with SignalR
-- Kafka Alternatives (Redpanda, Pulsar, NATS)
-
-### Library Discovery (7 posts) - NEW
-- Spectre.Console (11.1k stars)
-- Marten (PostgreSQL doc DB + event store)
-- Verify.NET (snapshot testing)
-- Kiota (API client generator)
-- Wolverine (MediatR + MassTransit replacement)
-- FastEndpoints (Minimal APIs alternative)
-- Scalar (Swagger replacement)
-
-### WorkflowForge Promotion (3 standalone + woven into 4 others)
-- WorkflowForge + Coravel (standalone)
-- Elsa vs WorkflowForge (standalone comparison)
-- n8n vs Code (standalone, positions WF)
-- Woven into: CDC, Modular Monolith, OpenTelemetry, Testcontainers
-
-### Geometry & CAD in C# (4 posts) - NEW
-- Computational Geometry with Math.NET Spatial (Fun/Visual)
-- IFC Files with xBIM Toolkit (AEC industry)
-- DWG/DXF with ACadSharp (AutoCAD file parsing)
-- Interactive Geometry Viewer with Blazor WebAssembly (capstone project)
-
-### Fun / Visual / Different (3 posts) - NEW
-- Computational Geometry with Math.NET (also part of Geometry & CAD)
-- Real-Time Dashboard with HTMX + SSE
-- My Developer Toolbox 2026
-
-### Infrastructure & Security (3 posts) - NEW
-- Podman (daemonless containers)
-- Supply Chain Security (SBOM)
-- Platform Engineering
-
-### Library Discovery Extension (3 posts) - NEW
-- Mapperly (source-generated mapping, sequel to mapping performance posts)
-- ErrorOr + OneOf (discriminated unions, sequel to Result pattern post)
-- Humanizer (string/date/number formatting utility)
-
-### Rescued "Docs Rewrites" with Unique Angles (6 posts)
-- Channels (most underused feature)
-- 5 Hidden Performance APIs (combined)
-- IAsyncEnumerable (stop loading into memory)
-- Pattern Matching Recipes (cookbook)
-- Validation Comparison (3-way)
-- Resilience Kit (rate limiting + throttling + circuit breaking)
+- Microsoft.Extensions.AI
+- Spectre.Console CLI
+- Serilog structured logging
+- Health checks and metrics
+- RAG with Ollama
+- Scalar vs Swagger
+- Kafka alternatives comparison
+- OpenTelemetry complete guide
+- HTMX+SSE dashboard (duplicate)
+- FluentValidation patterns
+- Pattern matching deep dive
+- Minimal APIs deep dive
+- DORA Metrics (process-heavy, no code)
+- 4 Pillars of Architecture (generic)
+- Architecture Decision Records (widely covered)
+- EF Core vs Dapper benchmarks (done to death)
+- AI Code Review Bot (AI content deferred)
+- Verify.NET snapshot testing (niche)
+- Kiota API client generation (MS tooling intro)
+- Semantic Kernel + Ollama (AI content deferred)
 
 ---
 
-## Promotion Strategy
+## Quality Bar
 
-### For Every Post
-- Cross-post to dev.to with canonical URL to animatlabs.com
-- Share on LinkedIn with a 2-3 sentence hook
-- Post to relevant subreddits (r/dotnet, r/csharp, r/programming)
-
-### For WorkflowForge Posts Specifically
-- Submit Elsa comparison to Hacker News "Show HN"
-- Add WorkflowForge to "Awesome .NET" GitHub lists
-- Create short demo GIF for GitHub README
-- Engage in Reddit comments mentioning workflow needs
-
-### For AI Posts
-- Submit to r/MachineLearning and r/LocalLLaMA
-- Cross-post to Hashnode and Medium
-
----
-
-## Docker Services Available
-
-Internal infrastructure stack provides:
-- **Azure**: Azurite, Service Bus Emulator, SQL Server
-- **Data**: PostgreSQL (:5432)
-- **CDC**: Kafka, Zookeeper, Debezium, Kafka UI
-- **Messaging**: RabbitMQ (:5673, non-standard to avoid Service Bus conflict), Redis
-- **Observability**: Jaeger (:16686), Prometheus (:9090), Grafana (:3000)
-- **Security**: HashiCorp Vault
-
-**Not in docker-compose (run separately):**
-- **AI**: Ollama (`docker run -d -p 11434:11434 ollama/ollama` then `ollama pull phi3`)
-
-### Additional Tools (no Docker required)
-- **Geometry/CAD**: xBIM Toolkit, ACadSharp, NetTopologySuite, Math.NET Spatial, SkiaSharp (all NuGet packages)
-- **YARP**: Microsoft's reverse proxy (NuGet package, runs as ASP.NET Core app)
-- **Mapperly**: Source generator (compile-time, no runtime dependency)
-- **Humanizer**: String formatting utility (NuGet package)
+- Working playground code, clone-and-run in 5 minutes
+- Docker-compose for infra deps (PostgreSQL, Kafka, etc.)
+- All tools free and open source (Podman/Rancher compatible)
+- .NET 10 where possible, .NET 8 LTS where libraries need it
+- Visual output or tangible demo
+- Humanized content, ZeroGPT target under 15% AI
+- GitHub playground button in every post
+- README with run instructions matching the blog

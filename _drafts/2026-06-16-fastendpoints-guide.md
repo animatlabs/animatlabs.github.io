@@ -14,7 +14,7 @@ tags:
   - Web API
   - Performance
 author: animat089
-last_modified_at: 2026-05-18
+last_modified_at: 2026-06-16
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
@@ -23,11 +23,11 @@ comments: true
 
 Picture `Program.cs` after a few sprints. You open it and scroll. MapGet, MapPost, MapPut, another MapGet. Half the file is delegate wiring. The other half is `using` statements and shared helpers nobody agreed on.
 
-That is the Minimal APIs scaling problem in one file. It starts cute. Ten routes feel fine. At a hundred, you are hunting for the handler that touches `OrderId` while your IDE search hits five partial matches.
+That's the Minimal APIs scaling problem. Starts cute. Ten routes feel fine. At a hundred, you're hunting for the handler that touches `OrderId` while your IDE search returns five partial matches.
 
-Minimal APIs stay fast at runtime. The pain is human. You still need a place to put validation, auth, and tests. When everything routes through one startup file, that place becomes "wherever we put it last week."
+Minimal APIs stay fast at runtime. The pain is human. You still need a place for validation, auth, tests. When everything lives in one startup file, that place becomes "wherever we put it last week."
 
-Teams fight this with partial classes, extension methods, or a `Map*` method per area. Those tricks work until someone adds a tenth import and three people touch the same merge conflict. The runtime cost stays low. The cognitive cost does not.
+Teams fight this with partial classes, extension methods, `Map*` per area. Those tricks work until three people touch the same merge conflict. The runtime cost stays low. The cognitive cost doesn't.
 
 ## REPR: one endpoint, one file
 
@@ -35,9 +35,9 @@ FastEndpoints sticks to the **Request–Endpoint–Response** idea. You name the
 
 Each endpoint class owns its route, verbs, and authorization in `Configure()`. Request and response shapes sit next to the handler or in a shared folder if you prefer. Validators are separate classes that plug in automatically if they inherit from `Validator<T>`.
 
-You are not buying back full MVC. No views, no `ControllerBase` ceremony, no action filters unless you want them. You get folders that match your API surface and code that reads top to bottom.
+You're not buying back full MVC. No views, no `ControllerBase` ceremony, no action filters unless you want them. Folders match your API surface and code reads top to bottom.
 
-At startup, FastEndpoints scans assemblies for endpoint types and wires routes. You do not maintain a central list of `MapGet` calls unless you opt into manual registration for odd cases. New file under `Endpoints`, new route shows up. Delete the file, the route disappears. That beats grep-driven development.
+At startup, FastEndpoints scans assemblies and wires routes automatically. New file under `Endpoints/`, new route shows up. Delete the file, route disappears. Beats grep-driven development.
 
 ## Three lines that matter
 
@@ -207,7 +207,7 @@ If you outgrow inline policies, FastEndpoints still plays nicely with the same `
 
 ## Performance: not the reason to say no
 
-People worry that an abstraction layer means slower requests. Benchmarks that compare raw Minimal APIs, FastEndpoints, and MVC usually land in the same ballpark for throughput. Allocation and pipeline depth matter more than the class name on your endpoint.
+People assume an abstraction layer means slower requests. In practice, they land in the same ballpark.
 
 | Framework | Requests/sec (approx.) | Latency (approx.) | Memory |
 |-----------|-------------------------|-------------------|--------|
@@ -267,21 +267,12 @@ Hit `GET /api/users/42` to exercise the path-bound endpoint. You should see JSON
 
 ## When FastEndpoints fits, and when Minimal APIs stay put
 
-**FastEndpoints** helps when you have many routes, multiple contributors, and you want one file per use case without resurrecting MVC controllers. Validation, auth, and response typing stay next to the route definition. Onboarding is quick if the team already knows Minimal APIs and FluentValidation.
+Many routes, multiple contributors, one file per use case. That's when FastEndpoints pays for itself. Code review gets easier when the diff is one endpoint file instead of a chunk of `Program.cs`.
 
-Code review gets easier when the diff is one endpoint file instead of a chunk of `Program.cs` plus whatever static helper absorbed the logic last time.
+I still reach for raw Minimal APIs when the service is tiny or I'm prototyping. If `Program.cs` stays under a screenful, extra types buy you nothing.
 
-**Stick with plain Minimal APIs** when the API is tiny, internal, or you are prototyping in a single file on purpose. If `Program.cs` stays under a screenful and you do not care about folder structure yet, extra types buy you little. Glue code in Azure Functions, GitHub Actions custom steps, or a one-off admin API often never needs the ceremony.
+MVC still wins if you're deep in controller filters, areas, and conventions. Migration cost matters.
 
-**MVC** still wins when you are already deep in controller filters, areas, and conventions that FastEndpoints would fight. Migration cost matters. Some teams like the attribute model and Razor in the same assembly. That is a valid reason to stay put.
+For anything I expect to live past the first release, I prefer the REPR layout. Greenfield services with clear bounded contexts are the sweet spot. Brownfield apps with a thousand controller tests need a slower, slice-by-slice move.
 
-I still use Minimal APIs for scripts and spikes. For anything I expect to live in production past the first release, I prefer the REPR layout and the way FastEndpoints keeps cross-cutting rules visible in `Configure()`.
-
-Greenfield services with clear bounded contexts are the sweet spot. Brownfield apps with a thousand controller tests might need a slower, slice-by-slice move instead of a big bang.
-
-What is your cutoff: how many endpoints before `Program.cs` starts to feel wrong?
-
-<!--
-LinkedIn promo (paste when sharing):
-FastEndpoints gave me Minimal API speed with files I can actually navigate. Wrote up REPR, validation, auth in Configure(), and why I still reach for plain Minimal APIs for tiny services. Link in first comment.
--->
+How many endpoints before `Program.cs` starts to feel wrong for you?

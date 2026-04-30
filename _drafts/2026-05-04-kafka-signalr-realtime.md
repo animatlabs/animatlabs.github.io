@@ -15,24 +15,24 @@ tags:
   - ASP.NET Core
   - Event-Driven
 author: animat089
-last_modified_at: 2026-04-27
+last_modified_at: 2026-05-04
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
 ---
 
-Open a browser tab. In another terminal, insert a row into PostgreSQL. Within a second, the browser updates.
+Insert a row in PostgreSQL. Open your browser. The change shows up in under a second.
 
-That is the full loop: database change, captured by Debezium, streamed through Kafka, consumed by a .NET `BackgroundService`, pushed to the browser via SignalR and SSE simultaneously. The [CDC piece](/2026/04/20/cdc-debezium-kafka/) stopped at the console consumer; this one gets those same events into the browser.
+Database row change, captured by Debezium, piped through Kafka, consumed by a .NET `BackgroundService`, pushed to the browser. The [CDC post](/technical/.net/data%20engineering/cdc-debezium-kafka/) ended at a console consumer. This picks up where that left off and gets those events into a browser tab.
 
-I wanted both SignalR and SSE side by side because someone always asks which to use. Fundamentals of SSE without Kafka or SignalR live in the [March SSE write-up](/2026/03/16/server-sent-events-dotnet/).
+I wired both SignalR and SSE to the same Kafka consumer so you can compare them. If you want SSE fundamentals without Kafka, I covered that in the [March SSE post](/technical/.net/server-sent-events-dotnet/).
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/KafkaSignalR){: .btn .btn--primary}
 
 ## The BackgroundService
 
-The Kafka consumer runs as a hosted service, which sounds dull until you realize you are multiplexing the same firehose into WebSocket frames and an HTTP stream without standing up two separate consumers. Each message gets pushed to two places: a SignalR hub group and a `Channel<string>` that feeds the SSE endpoint.
+One `BackgroundService`, two outputs. Every Kafka message goes to a SignalR hub group and to a `Channel<string>` that feeds the SSE endpoint. No need for two separate consumers.
 
 ```csharp
 using System.Threading.Channels;
@@ -107,15 +107,15 @@ public sealed class KafkaConsumerService : BackgroundService
 }
 ```
 
-The `Task.Yield()` at the top is important. Without it, `ExecuteAsync` blocks the host startup because `Consume()` is synchronous. The yield lets the rest of the pipeline (Kestrel, SignalR hub registration) start first.
+`Task.Yield()` at the top matters. `Consume()` is synchronous, so without the yield it blocks host startup and Kestrel never starts.
 
-The outer `while` loop with `catch (ConsumeException)` handles the case where Kafka or the topic is not ready yet. Without it, the hosted service crashes the app on the first failed consume. The 5-second retry gives infrastructure time to settle.
+The outer try/catch retries on `ConsumeException`. If Kafka or the topic is not ready, the service waits 5 seconds and tries again instead of crashing the whole app.
 
-`AutoOffsetReset = Latest` means the consumer only picks up new messages. If you want historical replay, change it to `Earliest`, but keep in mind that replayed events will flood connected browsers.
+`AutoOffsetReset = Latest` skips old messages. Change to `Earliest` if you want replay, but expect a flood in the browser.
 
 ## SignalR Hub
 
-The hub itself is minimal. Clients join a group matching the Kafka topic name. When the `BackgroundService` calls `SendAsync` on that group, every connected client gets the message.
+Bare minimum. Clients join a group matching the Kafka topic. `BackgroundService` calls `SendAsync` on that group, every connected client gets the event.
 
 ```csharp
 using Microsoft.AspNetCore.SignalR;
@@ -134,11 +134,11 @@ public sealed class EventHub : Hub
 }
 ```
 
-Groups are the right abstraction here. If you later add a second Kafka topic (say `orders.public.customers`), clients can subscribe to just the topics they care about.
+Groups scale. Add a second topic like `orders.public.customers` and clients subscribe only to what they need.
 
 ## SSE Endpoint
 
-The SSE alternative is a single endpoint. A `Channel<string>` acts as the bridge between the `BackgroundService` and the HTTP response stream.
+Single endpoint. A `Channel<string>` bridges the `BackgroundService` and the HTTP response stream.
 
 ```csharp
 app.MapGet("/sse/events", async (Channel<string> channel, HttpContext ctx, CancellationToken ct) =>
@@ -150,6 +150,9 @@ app.MapGet("/sse/events", async (Channel<string> channel, HttpContext ctx, Cance
     var feature = ctx.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>();
     feature?.DisableBuffering();
 
+    await ctx.Response.WriteAsync(": connected\n\n", ct);
+    await ctx.Response.Body.FlushAsync(ct);
+
     await foreach (var json in channel.Reader.ReadAllAsync(ct))
     {
         await ctx.Response.WriteAsync($"data: {json}\n\n", ct);
@@ -158,9 +161,15 @@ app.MapGet("/sse/events", async (Channel<string> channel, HttpContext ctx, Cance
 });
 ```
 
-`DisableBuffering` is critical. Without it, Kestrel buffers the response and the browser sees nothing until the buffer fills up.
+Two things worth calling out.
 
-One caveat: the `Channel<string>` is a single-reader by default. If two browser tabs open the SSE endpoint, only one gets events. For multiple SSE clients, you would need a broadcast pattern (a list of channels, or a `Subject` from System.Reactive). For this demo, the single channel is enough. In production, I would lean towards SignalR for multi-client scenarios.
+`DisableBuffering` is non-negotiable. Without it, Kestrel buffers the response and the browser sees nothing until the buffer fills.
+
+The `: connected` comment and immediate flush sends the HTTP response headers back to the client right away. Without this, `EventSource` (and curl) hang until the first Kafka message arrives. SSE comments (lines starting with `:`) are ignored by the browser but they force the response to start streaming.
+
+The `Channel<string>` has one reader. Two browser tabs hitting `/sse/events` means one gets events, the other starves. For multi-client use, you'd need a broadcast pattern or switch to SignalR groups.
+
+For this demo, the single channel is enough.
 
 ## Wiring It Up
 
@@ -200,7 +209,7 @@ The Kafka config lives in `appsettings.json`:
 
 ## The Browser
 
-A plain HTML page with two columns. The left column uses the SignalR JavaScript client. The right column uses native `EventSource`. Both show the same events, so you can compare latency and behavior.
+Plain HTML. Left column uses the SignalR JS client. Right column uses native `EventSource`. Same events, side by side.
 
 ```html
 <div class="columns">
@@ -241,7 +250,7 @@ source.onmessage = function(e) {
 };
 ```
 
-Three lines for the SSE client, about ten for SignalR. That difference in complexity is real and scales with the features you need.
+Three lines for SSE. Ten for SignalR. You pay for features in code.
 
 ## Running It
 
@@ -259,16 +268,18 @@ docker exec -it cdc-postgres psql -U postgres -d orders -c \
   "INSERT INTO orders (customer, product, quantity, total_amount) VALUES ('eve', 'Widget E', 1, 19.99);"
 ```
 
-Both columns update. SignalR negotiates WebSockets first (then long-poll if it has to). The SSE side uses a long-lived HTTP connection. Same data, different transport.
+Both columns update. SignalR negotiates WebSockets first (falls back to long-poll). SSE uses a long-lived HTTP connection.
 
-If you do not have the CDC stack, this project has its own `docker-compose.yml` with a standalone Kafka (official Apache image, KRaft mode, no ZooKeeper). Start it with `docker-compose up -d`, wait about 15 seconds, then create the topic:
+Same data, different pipe.
+
+No CDC stack running? This project ships its own `docker-compose.yml` with standalone Kafka (Apache image, KRaft mode, no ZooKeeper):
 
 ```bash
 docker exec stream-kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:29092 \
   --create --topic orders.public.orders --partitions 1 --replication-factor 1
 ```
 
-Then use the Kafka console producer to push test messages:
+Push test messages with the console producer:
 
 ```bash
 docker exec -it stream-kafka /opt/kafka/bin/kafka-console-producer.sh \
@@ -289,21 +300,10 @@ Type a JSON line, press Enter, and see it appear in the browser.
 | Multiple clients | Scales with backplane (Redis) | Need broadcast pattern |
 | Complexity | More setup, more features | Minimal, fewer moving parts |
 
-I use SSE for dashboards where data flows one way and I do not need per-user targeting. I use SignalR when clients need to subscribe to specific groups, or when I need the server to call specific connected users.
+My rule of thumb: SSE for dashboards where data flows one way. SignalR when clients subscribe to groups or the server targets specific users.
 
-For this CDC pipeline, both work. I keep both transports in the demo on purpose. If you are building a monitoring dashboard that just shows the stream, SSE is less code. If you are building an order-tracking page where each user sees only their orders, SignalR groups are the right fit.
+For this CDC pipeline, both work. Monitoring dashboard that just shows the stream? SSE.
 
----
+Order-tracking page where each user sees only their orders? SignalR groups.
 
-<!-- LINKEDIN PROMO
-
-Insert a row in PostgreSQL, see it in the browser within a second.
-
-Bridges the CDC pipeline from the previous article to the browser. A BackgroundService consumes Kafka events and pushes them to both a SignalR hub and an SSE endpoint simultaneously. A plain HTML page shows both feeds side by side so you can compare them.
-
-Also includes a side-by-side comparison of when to pick SignalR (groups, auth, bidirectional) vs SSE (dashboard, one-way, zero client library).
-
-Working playground: [link]
-
-#dotnet #signalr #sse #kafka #realtime
--->
+What transport are you using for real-time feeds in your projects?

@@ -1,7 +1,7 @@
 ---
-title: "Event Sourcing Without the Framework: CDC + Debezium + .NET"
+title: "CDC with Debezium and Kafka: PostgreSQL Changes to Typed .NET Events"
 excerpt: >-
-  You do not need EventStoreDB or Marten to get event sourcing benefits. Debezium reads the PostgreSQL transaction log, streams row changes through Kafka, and your .NET app consumes typed domain events.
+  Capture PostgreSQL row changes with Debezium, stream them through Apache Kafka, and turn them into typed .NET events without changing the application write path.
 categories:
   - Technical
   - .NET
@@ -15,34 +15,44 @@ tags:
   - Event Sourcing
   - Event Streaming
 author: animat089
-last_modified_at: 2026-04-20
+last_modified_at: 2026-04-27
 sitemap: true
 toc: true
 toc_label: "Table of Contents"
 comments: true
 ---
 
-Every event sourcing tutorial I read assumed I would adopt a full event store. Marten, EventStoreDB, Axon. Remodel first. Event-source second.
+I had a PostgreSQL app where the write model was already fine. Orders were going into tables, the API was boring in the best possible way, and nobody wanted a rewrite.
 
-That felt backwards. I already had PostgreSQL with orders, customers, inventory. I wanted audit trail, replay, real-time reactions to data changes, the usual selling points, without ripping out the database I was already running.
+The missing piece was downstream reactions:
 
-Change Data Capture gave me that. Debezium reads the PostgreSQL write-ahead log, converts every INSERT, UPDATE, and DELETE into a structured event, and pushes it to Kafka. A .NET console app on the other end deserializes those events into typed domain objects. No event store, no schema changes, no new write model. I went into this skeptical that WAL streaming would be stable enough for anything serious; it has been, at least on the workloads I've thrown at it.
+- a read model that stays current when orders change
+- search index updates without polling
+- cross-service notifications that don't add writes inside the request
+
+Marten and EventStoreDB are proper event stores. I like both in the right system.
+
+But this app didn't need a new persistence model. I wanted a smaller move: keep PostgreSQL as the source of truth and listen to its write-ahead log.
+
+That is what this sample does. Debezium reads the WAL, Kafka carries the change events, and a .NET consumer maps the raw envelope into `OrderCreated`, `OrderUpdated`, `OrderDeleted` output. Practical CDC for an existing relational app, not a replacement for event sourcing.
 
 **You can access the entire code from my** [GitHub Repo](https://github.com/animat089/playground/tree/main/CdcEventSourcing){: .btn .btn--primary}
 
 ## How It Fits Together
 
 ```
-PostgreSQL (WAL)  →  Debezium Connect  →  Kafka  →  .NET Consumer
+PostgreSQL WAL -> Debezium Connect -> Apache Kafka -> .NET consumer
 ```
 
-PostgreSQL already writes every change to its WAL for crash recovery. Setting `wal_level=logical` tells Postgres to include enough detail for replication. Debezium connects as a logical replication client, reads those changes, wraps them in a before/after envelope, and publishes to a Kafka topic named after the table. The .NET app subscribes to that topic and maps the raw envelope into domain events like `OrderCreated` and `OrderUpdated` while your OLTP code keeps acting like nothing downstream changed at all.
+PostgreSQL already writes every change to its WAL for crash recovery. Setting `wal_level=logical` tells Postgres to include enough detail for logical replication. Debezium connects as a replication client, reads those changes, wraps them in a before/after envelope, and publishes to a Kafka topic named after the table.
 
-The database does not know about any of this. It keeps working as before. The CDC pipeline is a sidecar.
+The app that writes orders does not publish anything. It only writes to PostgreSQL. CDC sits beside it.
 
 ## The Docker Setup
 
-Four containers: PostgreSQL with logical replication enabled, Kafka (KRaft mode, no ZooKeeper), Debezium Connect, and Kafka UI for debugging. Every image here is free and open-source. Kafka uses the official Apache image (Apache 2.0 licensed), not the Confluent distribution. The `docker-compose` commands work identically with Podman or Rancher Desktop.
+Four containers: PostgreSQL with logical replication, Kafka in KRaft mode, Debezium Connect, and Kafka UI for debugging.
+
+Every image is free and open-source. Kafka uses the official Apache image (Apache 2.0), not the Confluent distribution. Works identically with Podman or Rancher Desktop.
 
 ```yaml
 services:
@@ -133,19 +143,39 @@ INSERT INTO orders (customer, product, quantity, total_amount, status) VALUES
     ('alice', 'Widget A', 2, 49.98, 'pending'),
     ('bob', 'Widget B', 1, 24.99, 'confirmed'),
     ('carol', 'Widget C', 5, 124.95, 'shipped');
+
+ALTER TABLE orders REPLICA IDENTITY FULL;
 ```
 
-Start everything with `docker-compose up -d`. Wait about 30 seconds for Kafka and Debezium to stabilize, then register the connector.
+One detail matters for updates and deletes:
+
+```sql
+ALTER TABLE orders REPLICA IDENTITY FULL;
+```
+
+PostgreSQL's default replica identity only sends the primary key for update/delete before-images. Debezium can't show previous `status`, `customer`, or `total_amount` without it.
+
+`FULL` includes the entire previous row. Small line, big difference: `-> shipped` vs `pending -> shipped`.
+
+Start everything:
+
+```bash
+docker-compose up -d
+```
+
+Wait for Kafka and Debezium to stabilize, then register the connector.
 
 ## Registering the Debezium Connector
 
 Debezium Connect exposes a REST API. You POST a connector config:
 
 ```bash
-curl -X POST http://localhost:8083/connectors \
+curl.exe -X POST http://localhost:8083/connectors \
   -H "Content-Type: application/json" \
   -d @register-connector.json
 ```
+
+On macOS/Linux, `curl` is fine. On Windows PowerShell, use `curl.exe` so PowerShell does not route the command through its `Invoke-WebRequest` alias.
 
 The connector config tells Debezium which database to watch and which tables to capture:
 
@@ -263,6 +293,8 @@ And the consumer loop in `Program.cs`:
 ```csharp
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AnimatLabs.CdcEventSourcing;
+using AnimatLabs.CdcEventSourcing.DomainEvents;
 using Confluent.Kafka;
 
 var config = new ConsumerConfig
@@ -277,7 +309,9 @@ var topic = "orders.public.orders";
 using var consumer = new ConsumerBuilder<string, string>(config).Build();
 consumer.Subscribe(topic);
 
-Console.WriteLine($"Listening on {topic}. Insert or update rows to see events.");
+Console.WriteLine($"Listening on {topic}. Insert or update rows in the orders table to see events.");
+Console.WriteLine("Press Ctrl+C to stop.");
+Console.WriteLine();
 
 var cts = new CancellationTokenSource();
 Console.CancelKeyPress += (_, e) => { e.Cancel = true; cts.Cancel(); };
@@ -358,57 +392,88 @@ internal sealed class OrderRow
 }
 ```
 
-Run `dotnet run` in the project folder, then open another terminal and insert a row:
+Run the consumer:
 
 ```bash
-docker exec -it cdc-postgres psql -U postgres -d orders -c \
+cd AnimatLabs.CdcEventSourcing
+dotnet run
+```
+
+It immediately reads the initial snapshot:
+
+```text
+Listening on orders.public.orders. Insert or update rows in the orders table to see events.
+Press Ctrl+C to stop.
+
+[OrderCreated] #1 alice bought 2x Widget A for $49.98
+[OrderCreated] #2 bob bought 1x Widget B for $24.99
+[OrderCreated] #3 carol bought 5x Widget C for $124.95
+```
+
+Open another terminal and insert a row:
+
+```bash
+docker exec cdc-postgres psql -U postgres -d orders -c \
   "INSERT INTO orders (customer, product, quantity, total_amount) VALUES ('dave', 'Widget D', 3, 74.97);"
 ```
 
-The consumer prints `[OrderCreated] #4 dave bought 3x Widget D for $74.97` within a second or two. Update that row:
+Update it:
 
 ```bash
-docker exec -it cdc-postgres psql -U postgres -d orders -c \
+docker exec cdc-postgres psql -U postgres -d orders -c \
   "UPDATE orders SET status = 'shipped' WHERE customer = 'dave';"
 ```
 
-And you see `[OrderUpdated] #4 pending -> shipped (dave)`.
+Delete it:
+
+```bash
+docker exec cdc-postgres psql -U postgres -d orders -c \
+  "DELETE FROM orders WHERE customer = 'dave';"
+```
+
+This is the verified output from my local run:
+
+```text
+[OrderCreated] #4 dave bought 3x Widget D for $74.97
+[OrderUpdated] #4 pending -> shipped (dave)
+[OrderDeleted] #4 dave
+```
 
 ## What This Gives You
 
-The same database, no schema changes, and now you have:
+The same database write can now feed a few separate jobs:
 
-**Audit trail.** Every row change is in Kafka. Set retention to 7 days (or forever with compaction) and you can replay what happened to any order.
-
-**Cache invalidation.** A separate service subscribes to the same topic and evicts Redis entries when the source row changes. No TTL guessing, no stale data.
-
-**Search sync.** Another consumer indexes order changes into Elasticsearch or Meilisearch. The search index stays in sync without your application explicitly calling two systems on every write.
-
-**Real-time reactions.** A consumer detects when an order status changes to "shipped" and sends a notification email. No polling, no cron job.
+- Keep raw events in Kafka for audit and replay
+- Evict Redis entries when the source row changes instead of guessing TTLs
+- Feed a search index or read model from the same topic
 
 These are all independent consumers on the same Kafka topic. Add them as you need them. The database does not care.
 
+## What I Would Not Use This For
+
+I would not use CDC as a shortcut around domain modeling. If your system needs event-sourced aggregates, explicit commands, versioned domain events, and business-time replay, start with a real event store or a framework designed for that model.
+
+CDC is strongest when:
+
+- the relational schema already exists
+- other services need to react to committed changes
+- you want the application write path to stay simple
+- eventual consistency is acceptable
+
+It is weaker when consumers need perfect domain intent. A row update can tell you that `status` changed from `pending` to `shipped`; it cannot tell you whether that happened because a warehouse scan completed, a support agent overrode the order, or a migration script fixed old data. If that distinction matters, publish an explicit domain event.
+
 ## Things to Watch For
 
-**Connector lag.** If Debezium falls behind, changes pile up in the WAL. Monitor the replication slot lag in PostgreSQL with `pg_stat_replication` or the Debezium metrics endpoint.
+**Connector lag.** If Debezium falls behind, changes pile up in the WAL. Watch replication slot lag in PostgreSQL and the Debezium metrics endpoint.
 
-**Schema changes.** Adding a column is fine (Debezium picks it up). Renaming or removing columns can break consumers. Version your domain events if your schema evolves frequently.
+**Replica identity.** If you need previous row values for updates/deletes, set `REPLICA IDENTITY FULL` on the captured table. Otherwise delete events may only include the primary key.
 
-**Exactly-once delivery.** Kafka gives you at-least-once by default. If your consumers are not idempotent, you can get duplicate processing. Use the Debezium event ID or the row primary key as an idempotency key.
+**Schema changes.** Adding a column is usually fine. Renaming or removing columns can break consumers. Version the events you expose from your consumer if other teams depend on them.
 
-The [Kafka + SignalR follow-up](/2026/04/27/kafka-signalr-realtime/) pipes these same CDC events to the browser over SignalR and SSE. Same Kafka topic, different consumer.
+**At-least-once delivery.** Kafka consumers can see duplicates. Make handlers idempotent with the row primary key, Debezium metadata, or your own processed-event table.
+
+**Startup order.** Kafka and Debezium take a few seconds to settle. The README keeps the commands separate on purpose so you can see each moving part.
+
+A follow-up post covers piping these same CDC events to the browser over SignalR and SSE. Same Kafka topic, different consumer.
 
 ---
-
-<!-- LINKEDIN PROMO
-
-Event sourcing without replacing your database.
-
-Debezium reads the PostgreSQL WAL, turns row changes into structured events, and streams them through Kafka. A .NET console app on the other end deserializes them into typed domain events (OrderCreated, OrderUpdated). No event store framework, no schema migration, no new write model.
-
-The post walks through the full pipeline: docker-compose with Postgres + Kafka + Debezium, the connector config, the Debezium envelope format, and a .NET consumer with Confluent.Kafka. Insert a row, see a typed domain event within seconds.
-
-Working playground with docker-compose and run instructions: [link]
-
-#dotnet #cdc #debezium #kafka #eventsourcing
--->

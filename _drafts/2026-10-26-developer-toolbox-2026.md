@@ -12,7 +12,7 @@ tags:
   - Docker
   - Git
   - Terminal
-  - 2026
+  - "2026"
 author: animat089
 last_modified_at: 2026-10-26
 sitemap: true
